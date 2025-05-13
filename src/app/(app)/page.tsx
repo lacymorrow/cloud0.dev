@@ -1,107 +1,48 @@
-import { VercelDeployButton } from "@/components/buttons/vercel-deploy-button";
-import {
-	PageHeader,
-	PageHeaderDescription,
-	PageHeaderHeading,
-} from "@/components/primitives/page-header";
-import { Attribution } from "@/components/ui/attribution";
-import { buttonVariants } from "@/components/ui/button";
-import { TextLoop } from "@/components/ui/text-loop";
-import { routes } from "@/config/routes";
-import { cn } from "@/lib/utils";
-import { IconBrandGithub } from "@tabler/icons-react";
-import { Space_Grotesk } from "next/font/google";
-import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { CommandInput } from "@/components/ui/command";
+import { ThemeToggle } from "@/components/ui/theme";
+import { SparklesIcon } from "lucide-react";
 
-const font = Space_Grotesk({
-	weight: ["400"],
-	style: ["normal"],
-	subsets: ["latin"],
-	variable: "--font-space-grotesk",
-});
+export default function Home() {
+  return (
+    <main className="flex min-h-screen w-full flex-col items-center justify-center relative overflow-x-hidden bg-transparent">
+      <div className="absolute top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
 
-export default function Page() {
-	return (
-		<>
-			<div className="container flex flex-col items-center justify-center gap-2xl py-6 text-center min-h-screen">
-				<PageHeader className="flex flex-col items-center justify-center">
-					<PageHeaderHeading
-						className={cn("relative font-bold md:text-[6rem] py-6 flex items-center justify-center gap-3", font.className)}
-					>
-						Bones
-					</PageHeaderHeading>
-					<PageHeaderDescription className="text-xl">
-						The Next.js stack for Shadcn/UI.
-					</PageHeaderDescription>
-					<PageHeaderDescription className="text-lg text-muted-foreground">
-						Next.js v15, Auth.JS v5, Tailwind v4 (soon), and a built-in interface for installing UI
-						components.
-					</PageHeaderDescription>
+      <div className="z-10 w-full max-w-3xl px-4 sm:px-6 md:px-8">
+        <div className="text-center mb-10">
+          <Badge
+            variant="outline"
+            className="bg-background/10 backdrop-blur-sm border-border/20 px-3 py-1 mb-4"
+          >
+            <SparklesIcon className="h-3.5 w-3.5 mr-1.5 text-primary" />
+            <span className="text-sm font-medium">Cloud0 Alpha</span>
+          </Badge>
 
-				<div className="my-4 flex flex-col gap-md md:flex-row">
-					<Link
-						href={"https://github.com/shipkit-io/bones"}
-						className={buttonVariants({ variant: "outline", size: "lg" })}
-						>
-						<IconBrandGithub className="mr-2 h-5 w-5" /> View on GitHub
-					</Link>
-					<VercelDeployButton href={routes.external.vercelDeployBones} />
-				</div>
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
+            Hi there
+          </h1>
+          <p className="text-xl md:text-2xl text-foreground/80 max-w-2xl mx-auto">
+            What would you like to do today?
+          </p>
+        </div>
 
-				{/* <div className="mt-auto flex flex-col items-center gap-md text-sm md:flex-row">
-					<Link
-						href={"https://log.bones.sh"}
-						className={buttonVariants({ variant: "link", size: "sm" })}
-						>
-						See user errors in real-time with Bones Log
-					</Link>
-				</div> */}
-						</PageHeader>
-			</div>
-			<Attribution
-				variant="popover"
-				heading={<>
-					Shipkit works with{' '}
-					{/* For users of */}
-      <TextLoop
-	  	interval={10}
-        className='overflow-y-clip'
-        transition={{
-          type: 'spring',
-          stiffness: 900,
-          damping: 80,
-          mass: 10,
-        }}
-        variants={{
-          initial: {
-            y: 20,
-            rotateX: 90,
-            opacity: 0,
-            filter: 'blur(4px)',
-          },
-          animate: {
-            y: 0,
-            rotateX: 0,
-            opacity: 1,
-            filter: 'blur(0px)',
-          },
-          exit: {
-            y: -20,
-            rotateX: -90,
-            opacity: 0,
-            filter: 'blur(4px)',
-          },
-        }}
-      >
-        <span>Cursor</span>
-        <span>v0</span>
-        <span>Shadcn/UI</span>
-        <span>Next.js</span>
-      </TextLoop>
-				</>}
-				description="Start your next project pre-configured with the best tools and ship faster"
-				href="https://shipkit.io"
-			/>
-		</>
-	);
+        <div className="w-full">
+          <CommandInput />
+        </div>
+
+        <div className="mt-16 text-center text-foreground/60 text-sm">
+          Cloud0 is in early alpha.{" "}
+          <Button
+            variant="link"
+            className="text-foreground/60 hover:text-foreground p-0 h-auto font-normal text-sm"
+          >
+            Learn more here
+          </Button>
+        </div>
+      </div>
+    </main>
+  );
 }
