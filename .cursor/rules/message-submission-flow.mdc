@@ -1,0 +1,48 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Message Submission Flow Guide
+
+This guide explains how messages are submitted and handled within the chat interface, from the initial interaction to ongoing conversations.
+
+## Initial Message Submission
+
+1.  **Entry Point**: The user first interacts with the `CommandInput` component located in [src/components/ui/command-input.tsx](mdc:src/components/ui/command-input.tsx), as rendered on the homepage ([src/app/(app)/page.tsx](mdc:src/app/(app)/page.tsx)).
+
+2.  **Input Handling**: `CommandInput` captures the user's text.
+
+3.  **Submission Trigger**: On pressing Enter (without Shift) or clicking the send button, the `handleSubmit` function in `CommandInput` is called.
+
+4.  **`useThreadRuntime().append`**: The `handleSubmit` function uses `threadRuntime.append()` to send the message. `threadRuntime` is obtained via the `useThreadRuntime` hook from `@assistant-ui/react`.
+    ```typescript
+    // Simplified example from CommandInput.tsx
+    if (threadRuntime && typeof threadRuntime.append === "function") {
+      threadRuntime.append({
+        role: "user",
+        content: [{ type: "text", text: inputValue.trim() }],
+      });
+    }
+    ```
+
+5.  **UI Transition**: If this is the first message submitted through `CommandInput`, the `onFirstSubmit` callback (passed from [src/app/(app)/page.tsx](mdc:src/app/(app)/page.tsx)) is invoked. This callback sets a state variable (`hasChatStarted`) which causes the UI to re-render, replacing the initial welcome screen with the main chat interface (`ThreadList` and `Thread`).
+
+## Ongoing Message Submission (within `Thread`)
+
+1.  **Composer**: Once the main chat interface is visible, the `Thread` component ([src/components/blocks/thread.tsx](mdc:src/components/blocks/thread.tsx)) has its own `Composer` primitive for sending subsequent messages.
+
+2.  **Input and Send**: Users type into the `ComposerPrimitive.Input` within the `Thread`.
+    -   Clicking the send button (`ComposerPrimitive.Send`) or pressing Enter triggers message submission.
+
+3.  **Backend Communication**: The `assistant-ui` library, through the `AssistantRuntimeProvider` and the configured API endpoint (e.g., `/api/chat`), handles the actual sending of the message to the backend and receiving responses.
+
+4.  **Message Display**: New messages (both user and assistant) are automatically added to the `ThreadPrimitive.Messages` display area within the `Thread` component.
+
+## Key Files
+
+-   Initial Input & Transition Logic: [src/app/(app)/page.tsx](mdc:src/app/(app)/page.tsx)
+-   Initial Input Component: [src/components/ui/command-input.tsx](mdc:src/components/ui/command-input.tsx)
+-   Main Chat Interface & Ongoing Composer: [src/components/blocks/thread.tsx](mdc:src/components/blocks/thread.tsx)
+
+See also: [Assistant UI Integration Guide](mdc:.cursor/rules/assistant-ui-integration.mdc)

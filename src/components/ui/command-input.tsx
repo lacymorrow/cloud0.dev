@@ -1,40 +1,70 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useRef, useEffect } from "react"
-import { ArrowUp, Paperclip, Sparkles } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { motion } from "framer-motion"
-import { useTheme } from "next-themes"
+import { Button } from "@/components/ui/button";
+import { useThreadRuntime } from "@assistant-ui/react";
+import { motion } from "framer-motion";
+import { ArrowUpIcon, PaperclipIcon, SparklesIcon } from "lucide-react";
+import { useTheme } from "next-themes";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
 
-export default function CommandInput() {
-  const [inputValue, setInputValue] = useState("")
-  const [isFocused, setIsFocused] = useState(false)
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const { theme } = useTheme()
-  const isDark = theme === "dark"
+export default function CommandInput({
+  onFirstSubmit,
+}: { onFirstSubmit?: () => void } = {}) {
+  const [inputValue, setInputValue] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+  const threadRuntime = useThreadRuntime();
+  const [isFirstSubmit, setIsFirstSubmit] = useState(true);
+
+  useEffect(() => {
+    console.log("CommandInput mounted. Thread runtime:", threadRuntime);
+    if (threadRuntime) {
+      console.log(
+        "append function available on threadRuntime:",
+        typeof threadRuntime.append === "function"
+      );
+    }
+  }, [threadRuntime]);
 
   // Auto-resize textarea
   useEffect(() => {
-    const textarea = textareaRef.current
-    if (!textarea) return
+    const textarea = textareaRef.current;
+    if (!textarea) return;
 
-    textarea.style.height = "auto"
-    textarea.style.height = `${Math.min(textarea.scrollHeight, 200)}px`
-  }, [inputValue])
+    textarea.style.height = "auto";
+    textarea.style.height = `${Math.min(textarea.scrollHeight, 200)}px`;
+  }, [inputValue]);
 
   const handleSubmit = () => {
-    if (!inputValue.trim()) return
-    console.log("Submitted:", inputValue)
-    setInputValue("")
-  }
+    if (!inputValue.trim()) return;
+    console.log("Attempting to append message:", inputValue.trim());
+    if (threadRuntime && typeof threadRuntime.append === "function") {
+      threadRuntime.append({
+        role: "user",
+        content: [{ type: "text", text: inputValue.trim() }],
+      });
+      console.log("Message appended via threadRuntime.append");
+      if (isFirstSubmit) {
+        onFirstSubmit?.();
+        setIsFirstSubmit(false);
+      }
+    } else {
+      console.error(
+        "append function is not available on threadRuntime or threadRuntime is null"
+      );
+    }
+    setInputValue("");
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      handleSubmit()
+      e.preventDefault();
+      handleSubmit();
     }
-  }
+  };
 
   return (
     <div
@@ -69,14 +99,14 @@ export default function CommandInput() {
               size="icon"
               className="h-9 w-9 rounded-full text-foreground/70 hover:text-foreground hover:bg-background/20"
             >
-              <Paperclip className="h-5 w-5" />
+              <PaperclipIcon className="h-5 w-5" />
             </Button>
             <Button
               variant="ghost"
               size="sm"
               className="text-foreground/70 hover:text-foreground hover:bg-background/20 gap-1.5"
             >
-              <Sparkles className="h-4 w-4" />
+              <SparklesIcon className="h-4 w-4" />
               <span>Enhance</span>
             </Button>
           </div>
@@ -92,7 +122,7 @@ export default function CommandInput() {
                   : "bg-background/20 text-foreground/50"
               }`}
             >
-              <ArrowUp className="h-5 w-5" />
+              <ArrowUpIcon className="h-5 w-5" />
             </Button>
           </motion.div>
         </div>
@@ -115,5 +145,5 @@ export default function CommandInput() {
       {/* Invisible border to create mask shape */}
       <div className="absolute inset-0 rounded-2xl border border-transparent z-0"></div>
     </div>
-  )
+  );
 }

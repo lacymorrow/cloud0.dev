@@ -1,0 +1,30 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Assistant UI Integration Guide
+
+This project uses the `assistant-ui` library to build its chat interface.
+
+## Core Setup
+
+-   **Runtime Provider**: The root of the chat interface is wrapped in `<AssistantRuntimeProvider>`. This component takes a `runtime` instance, typically created using `useChatRuntime` from `@assistant-ui/react-ai-sdk`.
+    -   Example: See [src/app/(app)/page.tsx](mdc:src/app/(app)/page.tsx) and [src/app/(app)/assistant.tsx](mdc:src/app/(app)/assistant.tsx).
+
+-   **API Endpoint**: The `useChatRuntime` hook is configured with an API endpoint (e.g., `/api/chat`) that handles the backend communication for the chat.
+
+## Key Components
+
+-   **`Thread`**: ([src/components/blocks/thread.tsx](mdc:src/components/blocks/thread.tsx)) Displays the conversation messages and includes a composer for sending new messages.
+-   **`ThreadList`**: ([src/components/blocks/thread-list.tsx](mdc:src/components/blocks/thread-list.tsx)) Displays a list of available chat threads and allows for creating new threads.
+-   **`CommandInput`**: ([src/components/ui/command-input.tsx](mdc:src/components/ui/command-input.tsx)) A custom input component used for submitting the initial user query on the homepage. It uses `useThreadRuntime().append` to send messages.
+
+## Usage Pattern
+
+1.  The main application pages like [src/app/(app)/page.tsx](mdc:src/app/(app)/page.tsx) initialize `useChatRuntime` and wrap their content with `AssistantRuntimeProvider`.
+2.  The `CommandInput` component is used for the first user interaction.
+3.  Upon first submission, the UI transitions to show the `ThreadList` and `Thread` components for a full chat experience.
+4.  The `Thread` component then handles subsequent message composition and display.
+
+Refer to the official [Assistant UI Documentation](mdc:https:/www.assistant-ui.com/docs/getting-started) for more details on the library's capabilities and components.

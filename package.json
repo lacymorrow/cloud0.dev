@@ -168,6 +168,16 @@
     "overrides": {
       "react": "19.1.0",
       "react-dom": "19.1.0"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "@biomejs/biome",
+      "@vercel/speed-insights",
+      "@vscode/ripgrep",
+      "bufferutil",
+      "esbuild",
+      "isolated-vm",
+      "sharp",
+      "utf-8-validate"
+    ]
   }
 }

@@ -51,7 +51,7 @@
     "src/types/next-auth.d.ts",
     "next.config.ts",
     "src/workers/**/*",
-    "tailwind.config.ts2"
+    "tailwind.config.ts"
   ],
   "exclude": [
     "node_modules",

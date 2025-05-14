@@ -1,0 +1,36 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Chat UI Components Guide
+
+This guide details the core React components used for the chat interface, built with `assistant-ui` and custom implementations.
+
+## Main Chat View Components
+
+-   **`ThreadList`**: ([src/components/blocks/thread-list.tsx](mdc:src/components/blocks/thread-list.tsx))
+    -   **Purpose**: Displays a list of chat threads. Allows users to switch between conversations or start new ones.
+    -   **Key Primitives**: Uses `ThreadListPrimitive.Root`, `ThreadListPrimitive.New`, and `ThreadListPrimitive.Items` from `@assistant-ui/react`.
+    -   **Styling**: Styled with Tailwind CSS and custom styles for a seamless look within the application, adhering to the [UI Styling Guide](mdc:.cursor/rules/ui-styling-guide.mdc).
+
+-   **`Thread`**: ([src/components/blocks/thread.tsx](mdc:src/components/blocks/thread.tsx))
+    -   **Purpose**: Renders the messages of a selected chat thread and provides a composer for user input.
+    -   **Key Primitives**: Uses `ThreadPrimitive.Root`, `ThreadPrimitive.Viewport`, `ThreadPrimitive.Messages`, `MessagePrimitive`, and `ComposerPrimitive` from `@assistant-ui/react`.
+    -   **Message Rendering**: Customizes the display of user and assistant messages (`UserMessage`, `AssistantMessage`).
+    -   **Composer**: Includes an embedded `Composer` for ongoing message input within an active thread.
+    -   **Styling**: Styled with Tailwind CSS and custom styles, consistent with the project's theme.
+
+## Initial User Input
+
+-   **`CommandInput`**: ([src/components/ui/command-input.tsx](mdc:src/components/ui/command-input.tsx))
+    -   **Purpose**: Serves as the initial point of interaction on the homepage ([src/app/(app)/page.tsx](mdc:src/app/(app)/page.tsx)) before the full chat interface is displayed.
+    -   **Functionality**: Captures the user's first query. Uses `useThreadRuntime().append` to submit the message. Triggers a callback (`onFirstSubmit`) to transition the UI to the main chat view.
+    -   **Styling**: Features a distinct glass morphism effect and animations, managed by its own styles and `framer-motion`.
+
+## Interaction Flow
+
+1.  User lands on [src/app/(app)/page.tsx](mdc:src/app/(app)/page.tsx) and interacts with `CommandInput`.
+2.  Upon submitting the first message via `CommandInput`, the `onFirstSubmit` callback transitions the page state.
+3.  The page then renders `ThreadList` and `Thread` components.
+4.  Subsequent interactions (sending messages, switching threads) are handled within the `Thread` and `ThreadList` components.

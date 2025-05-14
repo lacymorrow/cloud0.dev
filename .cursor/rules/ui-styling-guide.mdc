@@ -1,0 +1,14 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# UI and Styling Guide
+
+This project follows these guidelines for UI and styling:
+
+-   **Frameworks**: Uses Shadcn UI, Radix UI, and Tailwind CSS.
+-   **Responsive Design**: Implements responsive design with Tailwind CSS, favoring a mobile-first approach.
+-   **Styling Approach**: Applies styling using Tailwind classes, often combined with the `cn` utility for conditional classes.
+-   **Theme Consistency**: Components should align with the project's theme, which includes using transparent backgrounds and backdrop blur effects where appropriate, as seen in [src/app/(app)/page.tsx](mdc:src/app/(app)/page.tsx), [src/app/(app)/assistant.tsx](mdc:src/app/(app)/assistant.tsx), [src/components/blocks/thread.tsx](mdc:src/components/blocks/thread.tsx), and [src/components/blocks/thread-list.tsx](mdc:src/components/blocks/thread-list.tsx).
+-   **Component Structure**: UI components are often composed of primitive components from libraries like `@assistant-ui/react`, with custom styling applied via Tailwind classes.
