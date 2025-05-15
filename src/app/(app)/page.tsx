@@ -41,17 +41,17 @@ export default function Home() {
               <div className="text-center mb-10">
                 <Badge
                   variant="outline"
-                  className="bg-background/10 backdrop-blur-sm border-border/20 px-3 py-1 mb-4"
+                  className="bg-background/10 backdrop-blur-sm border-primary/20 px-3 py-1 mb-4 rounded-full"
                 >
                   <SparklesIcon className="h-3.5 w-3.5 mr-1.5 text-primary" />
                   <span className="text-sm font-medium">Cloud0 Alpha</span>
                 </Badge>
 
                 <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
-                  Hi there
+                  What can I do for you?
                 </h1>
                 <p className="text-xl md:text-2xl text-foreground/80 max-w-2xl mx-auto">
-                  What would you like to do today?
+                  Ask me anything, I can help you with anything you need.
                 </p>
               </div>
 
@@ -63,10 +63,11 @@ export default function Home() {
                 Cloud0 is in early alpha.{" "}
                 <Link
                   href="https://lacy.sh"
-                  className="text-foreground/60 hover:text-foreground p-0 h-auto font-normal text-sm"
+                  className="transition-colors text-foreground/60 hover:text-foreground p-0 h-auto font-normal text-sm"
                 >
                   Learn more here
                 </Link>
+                .
               </div>
             </div>
           </motion.main>
