@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useThreadRuntime } from "@assistant-ui/react";
 import { motion } from "framer-motion";
-import { ArrowUpIcon, PaperclipIcon, SparklesIcon } from "lucide-react";
+import { ArrowUpIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
@@ -24,7 +24,7 @@ export default function CommandInput({
     if (threadRuntime) {
       console.log(
         "append function available on threadRuntime:",
-        typeof threadRuntime.append === "function",
+        typeof threadRuntime.append === "function"
       );
     }
   }, [threadRuntime]);
@@ -53,7 +53,7 @@ export default function CommandInput({
       }
     } else {
       console.error(
-        "append function is not available on threadRuntime or threadRuntime is null",
+        "append function is not available on threadRuntime or threadRuntime is null"
       );
     }
     setInputValue("");
@@ -93,7 +93,7 @@ export default function CommandInput({
         </div>
 
         <div className="flex items-center justify-between px-5 pb-5 relative z-10">
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <Button
               variant="ghost"
               size="icon"
@@ -109,7 +109,7 @@ export default function CommandInput({
               <SparklesIcon className="h-4 w-4" />
               <span>Enhance</span>
             </Button>
-          </div>
+          </div> */}
 
           <motion.div whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.05 }}>
             <Button
