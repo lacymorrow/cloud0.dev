@@ -1,4 +1,8 @@
-import { ArrowLeftIcon, ArrowRightIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  MagnifyingGlassIcon,
+} from "@radix-ui/react-icons";
 
 export default function Titlebar() {
   return (
@@ -29,5 +33,5 @@ export default function Titlebar() {
         </div>
       </div>
     </div>
-  )
+  );
 }

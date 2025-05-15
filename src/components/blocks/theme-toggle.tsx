@@ -1,18 +1,18 @@
-"use client"
-import { useTheme } from "next-themes"
-import { Button } from "@/components/ui/button"
-import { useEffect, useState } from "react"
-import { motion } from "framer-motion"
-import { MoonIcon, SunIcon } from "@radix-ui/react-icons"
+"use client";
+import { Button } from "@/components/ui/button";
+import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
+import { motion } from "framer-motion";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 export default function ThemeToggle() {
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   // Avoid hydration mismatch by only rendering after mount
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   if (!mounted) {
     return (
@@ -24,10 +24,10 @@ export default function ThemeToggle() {
         <span className="sr-only">Toggle theme</span>
         <SunIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
       </Button>
-    )
+    );
   }
 
-  const isDark = theme === "dark"
+  const isDark = theme === "dark";
 
   return (
     <Button
@@ -75,5 +75,5 @@ export default function ThemeToggle() {
         }}
       />
     </Button>
-  )
+  );
 }

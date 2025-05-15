@@ -97,7 +97,7 @@ function TreeNode({
         className={cn(
           "h-8 justify-start px-2 hover:bg-muted",
           selectedFile === node.path && "bg-muted",
-          currentStyle === "brutalist" && "rounded-none"
+          currentStyle === "brutalist" && "rounded-none",
         )}
         style={{ paddingLeft: `${(level + 1) * 12}px` }}
         onClick={() => {

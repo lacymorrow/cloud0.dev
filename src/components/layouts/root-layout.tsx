@@ -41,7 +41,7 @@ export function RootLayout({ children }: { children: ReactNode }) {
             "min-h-screen antialiased",
             "font-sans font-normal leading-relaxed",
             fontSans.variable,
-            fontSerif.variable
+            fontSerif.variable,
           )}
         >
           <SessionProvider>

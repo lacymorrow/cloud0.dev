@@ -24,7 +24,7 @@ export default function CommandInput({
     if (threadRuntime) {
       console.log(
         "append function available on threadRuntime:",
-        typeof threadRuntime.append === "function"
+        typeof threadRuntime.append === "function",
       );
     }
   }, [threadRuntime]);
@@ -53,7 +53,7 @@ export default function CommandInput({
       }
     } else {
       console.error(
-        "append function is not available on threadRuntime or threadRuntime is null"
+        "append function is not available on threadRuntime or threadRuntime is null",
       );
     }
     setInputValue("");

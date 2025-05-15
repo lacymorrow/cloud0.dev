@@ -3,3 +3,49 @@ description:
 globs:
 alwaysApply: false
 ---
+<!--
+This rule documents the correct usage of the `useThreadRuntime` hook from `@assistant-ui/react` for sending messages in the chat interface.
+-->
+
+# `@assistant-ui/react` Message Sending
+
+When using the `@assistant-ui/react` library for chat functionality, messages should be sent using the `append` method available on the object returned by the `useThreadRuntime` hook.
+
+## Correct Usage
+
+1.  **Import `useThreadRuntime`**:
+    ```typescript
+    import { useThreadRuntime } from "@assistant-ui/react";
+    ```
+
+2.  **Get the thread runtime object**:
+    ```typescript
+    const threadRuntime = useThreadRuntime();
+    ```
+
+3.  **Call the `append` method**:
+    To send a user message, call `threadRuntime.append()` with the message object. The message object should have a `role` and `content`.
+
+    ```typescript
+    if (threadRuntime && typeof threadRuntime.append === "function") {
+      threadRuntime.append({
+        role: "user",
+        content: [{ type: "text", text: "Your message here" }],
+      });
+    } else {
+      console.error("append function is not available on threadRuntime or threadRuntime is null");
+    }
+    ```
+
+## Incorrect Usage (Deprecated or Misleading)
+
+Previously, one might assume a `sendMessage` method. However, the correct method is `append`.
+
+```typescript
+// Incorrect: threadRuntime.sendMessage(...)
+```
+
+## Relevant Files
+
+-   For an example implementation, see [`src/components/ui/command-input.tsx`](mdc:src/components/ui/command-input.tsx).
+-   The provider setup is in [`src/app/(app)/page.tsx`](mdc:src/app/(app)/page.tsx).

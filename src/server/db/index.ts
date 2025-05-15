@@ -9,5 +9,5 @@ export const db = client ? drizzle(client, { schema }) : undefined;
 
 // Export a function to check if the database is initialized
 export const isDatabaseInitialized = () => {
-	return !!db;
+  return !!db;
 };

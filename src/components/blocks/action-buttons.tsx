@@ -1,29 +1,29 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
-import { Lightbulb, Database, Code, BookOpen } from "lucide-react"
-import { motion } from "framer-motion"
-import { useTheme } from "next-themes"
-import { MagnifyingGlassIcon } from "@radix-ui/react-icons"
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { motion } from "framer-motion";
+import { BookOpen, Code, Database, Lightbulb } from "lucide-react";
+import { useTheme } from "next-themes";
+import type React from "react";
+import { useState } from "react";
 
 type ActionButton = {
-  icon: React.ReactNode
-  label: string
+  icon: React.ReactNode;
+  label: string;
   lightColors: {
-    color: string
-    hoverColor: string
-  }
+    color: string;
+    hoverColor: string;
+  };
   darkColors: {
-    color: string
-    hoverColor: string
-  }
-}
+    color: string;
+    hoverColor: string;
+  };
+};
 
 export default function ActionButtons() {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
-  const { theme } = useTheme()
-  const isDark = theme === "dark"
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   const buttons: ActionButton[] = [
     {
@@ -86,16 +86,16 @@ export default function ActionButtons() {
         hoverColor: "from-pink-500 to-rose-400",
       },
     },
-  ]
+  ];
 
   const getColors = (button: ActionButton) => {
-    return isDark ? button.darkColors : button.lightColors
-  }
+    return isDark ? button.darkColors : button.lightColors;
+  };
 
   return (
     <div className="flex flex-wrap justify-center gap-3">
       {buttons.map((button, index) => {
-        const colors = getColors(button)
+        const colors = getColors(button);
 
         return (
           <motion.button
@@ -195,8 +195,8 @@ export default function ActionButtons() {
               </motion.div>
             )}
           </motion.button>
-        )
+        );
       })}
     </div>
-  )
+  );
 }

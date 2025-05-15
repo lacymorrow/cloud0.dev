@@ -2,14 +2,14 @@ import { db } from "@/server/db";
 import { sql } from "drizzle-orm";
 
 async function dropDatabase() {
-	console.info("🗑️  Starting database cleanup...");
+  console.info("🗑️  Starting database cleanup...");
 
-	try {
-		// Drop all tables in the public schema
-		console.info("📦 Dropping all tables...");
+  try {
+    // Drop all tables in the public schema
+    console.info("📦 Dropping all tables...");
 
-		// Drop Payload tables
-		await db?.execute(sql`
+    // Drop Payload tables
+    await db?.execute(sql`
 			DO $$ DECLARE
 				r RECORD;
 			BEGIN
@@ -30,14 +30,14 @@ async function dropDatabase() {
 			END $$;
 		`);
 
-		// Drop schemas
-		await db?.execute(sql`
+    // Drop schemas
+    await db?.execute(sql`
 			DROP SCHEMA IF EXISTS payload CASCADE;
 			DROP SCHEMA IF EXISTS drizzle CASCADE;
 		`);
 
-		// Drop custom types
-		await db?.execute(sql`
+    // Drop custom types
+    await db?.execute(sql`
 			DO $$ DECLARE
 				r RECORD;
 			BEGIN
@@ -47,12 +47,12 @@ async function dropDatabase() {
 			END $$;
 		`);
 
-		console.info("✅ Database cleanup completed");
-		process.exit(0);
-	} catch (error) {
-		console.error("❌ Error cleaning up database:", error);
-		process.exit(1);
-	}
+    console.info("✅ Database cleanup completed");
+    process.exit(0);
+  } catch (error) {
+    console.error("❌ Error cleaning up database:", error);
+    process.exit(1);
+  }
 }
 
 void dropDatabase();

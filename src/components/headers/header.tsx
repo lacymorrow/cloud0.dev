@@ -17,7 +17,7 @@ import { useMemo } from "react";
 
 import { Logo } from "@/components/assets/logo";
 import { Search } from "@/components/search/search";
-import { defaultNavLinks, type NavLink } from "@/config/navigation";
+import { type NavLink, defaultNavLinks } from "@/config/navigation";
 import { useSignInRedirectUrl } from "@/hooks/use-sign-in-redirect-url";
 import styles from "@/styles/header.module.css";
 import { BuyButton } from "../buttons/buy-button";
@@ -55,7 +55,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [{ y }] = useWindowScroll();
   const isOpaque = useMemo(
     () => variant === "floating" && y && y > 100,
-    [y, variant]
+    [y, variant],
   );
   const { data: session } = useSession();
   const signInRedirectUrl = useSignInRedirectUrl();
@@ -69,7 +69,7 @@ export const Header: React.FC<HeaderProps> = ({
           variant === "floating" && isOpaque && styles.opaque,
           variant === "floating" &&
             isOpaque &&
-            "-top-[12px] [--background:#fafafc70] dark:[--background:#1c1c2270]"
+            "-top-[12px] [--background:#fafafc70] dark:[--background:#1c1c2270]",
         )}
       >
         {variant === "floating" && <div className="h-[12px] w-full" />}
@@ -112,7 +112,7 @@ export const Header: React.FC<HeaderProps> = ({
                     href={link.href}
                     className={cn(
                       "text-muted-foreground hover:text-foreground",
-                      link.isCurrent ? "text-foreground" : ""
+                      link.isCurrent ? "text-foreground" : "",
                     )}
                   >
                     {link.label}
@@ -124,7 +124,7 @@ export const Header: React.FC<HeaderProps> = ({
                       href={routes.launch}
                       className={cn(
                         buttonVariants({ variant: "default" }),
-                        "w-full justify-center"
+                        "w-full justify-center",
                       )}
                     >
                       Get Shipkit
@@ -133,7 +133,7 @@ export const Header: React.FC<HeaderProps> = ({
                       href={signInRedirectUrl}
                       className={cn(
                         buttonVariants({ variant: "ghost" }),
-                        "w-full justify-center"
+                        "w-full justify-center",
                       )}
                     >
                       Login
@@ -145,7 +145,7 @@ export const Header: React.FC<HeaderProps> = ({
                     <Link
                       href={routes.docs}
                       className={cn(
-                        "text-muted-foreground hover:text-foreground"
+                        "text-muted-foreground hover:text-foreground",
                       )}
                     >
                       Documentation
@@ -154,7 +154,7 @@ export const Header: React.FC<HeaderProps> = ({
                       href={routes.app.dashboard}
                       className={cn(
                         buttonVariants({ variant: "default" }),
-                        "w-full justify-center"
+                        "w-full justify-center",
                       )}
                     >
                       Dashboard
@@ -171,7 +171,7 @@ export const Header: React.FC<HeaderProps> = ({
                   key={routes.docs}
                   href={routes.docs}
                   className={cn(
-                    "text-muted-foreground transition-colors hover:text-foreground"
+                    "text-muted-foreground transition-colors hover:text-foreground",
                   )}
                 >
                   Documentation
@@ -183,7 +183,9 @@ export const Header: React.FC<HeaderProps> = ({
                   href={link.href}
                   className={cn(
                     "transition-colors hover:text-foreground",
-                    link.isCurrent ? "text-foreground" : "text-muted-foreground"
+                    link.isCurrent
+                      ? "text-foreground"
+                      : "text-muted-foreground",
                   )}
                 >
                   {link.label}

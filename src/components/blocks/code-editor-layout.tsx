@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Sidebar from "./sidebar"
-import EditorTabs from "./editor-tabs"
-import CodePanel from "./code-panel"
-import ExplanationPanel from "./explanation-panel"
-import Titlebar from "./titlebar"
-import type { File } from "./types"
+import { useState } from "react";
+import CodePanel from "./code-panel";
+import EditorTabs from "./editor-tabs";
+import ExplanationPanel from "./explanation-panel";
+import Sidebar from "./sidebar";
+import Titlebar from "./titlebar";
+import type { File } from "./types";
 
 export default function CodeEditorLayout() {
-  const [activeFile, setActiveFile] = useState<string>("bubble-sort.py")
+  const [activeFile, setActiveFile] = useState<string>("bubble-sort.py");
 
   const files: File[] = [
     {
@@ -38,9 +38,10 @@ sorted_array = bubble_sort(test_array)
 
 print("Sorted array:", sorted_array)`,
     },
-  ]
+  ];
 
-  const activeFileContent = files.find((file) => file.id === activeFile)?.content || ""
+  const activeFileContent =
+    files.find((file) => file.id === activeFile)?.content || "";
 
   return (
     <div className="flex flex-col h-screen bg-[#1e1e1e] text-white overflow-hidden">
@@ -50,19 +51,29 @@ print("Sorted array:", sorted_array)`,
         <Sidebar />
 
         <div className="flex-1 flex flex-col overflow-hidden">
-          <EditorTabs files={files} activeFile={activeFile} onSelectFile={setActiveFile} />
+          <EditorTabs
+            files={files}
+            activeFile={activeFile}
+            onSelectFile={setActiveFile}
+          />
 
           <div className="flex-1 flex overflow-hidden">
             <CodePanel
               content={activeFileContent}
-              language={files.find((file) => file.id === activeFile)?.language || "python"}
+              language={
+                files.find((file) => file.id === activeFile)?.language ||
+                "python"
+              }
               fileName={activeFile}
             />
 
-            <ExplanationPanel fileName={activeFile} content={activeFileContent} />
+            <ExplanationPanel
+              fileName={activeFile}
+              content={activeFileContent}
+            />
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

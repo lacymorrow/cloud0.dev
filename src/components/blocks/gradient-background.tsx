@@ -1,28 +1,28 @@
-"use client"
+"use client";
 
-import { useEffect, useRef } from "react"
-import { useTheme } from "next-themes"
+import { useTheme } from "next-themes";
+import { useEffect, useRef } from "react";
 
 export default function GradientBackground() {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const { theme } = useTheme()
-  const isDark = theme === "dark"
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
     // Set canvas to full screen
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-    }
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
 
-    resizeCanvas()
-    window.addEventListener("resize", resizeCanvas)
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
 
     // Create gradient blobs with theme-dependent colors - using calmer, softer colors
     const getBlobs = (isDarkMode: boolean) => [
@@ -59,61 +59,61 @@ export default function GradientBackground() {
         vy: -0.09,
         phase: 4,
       },
-    ]
+    ];
 
-    let blobs = getBlobs(isDark)
-    let animationId: number
+    let blobs = getBlobs(isDark);
+    let animationId: number;
 
     const drawBlob = (x: number, y: number, radius: number, color: string) => {
-      ctx.beginPath()
-      ctx.filter = "blur(120px)" // Increased blur for softer edges
-      ctx.fillStyle = color
-      ctx.arc(x, y, radius, 0, Math.PI * 2)
-      ctx.fill()
-    }
+      ctx.beginPath();
+      ctx.filter = "blur(120px)"; // Increased blur for softer edges
+      ctx.fillStyle = color;
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fill();
+    };
 
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Draw theme-dependent background
       const bgColor = isDark
         ? "rgba(15, 23, 42, 0.95)" // Slightly transparent dark
-        : "rgba(248, 250, 252, 0.95)" // Slightly transparent light
-      ctx.fillStyle = bgColor
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
+        : "rgba(248, 250, 252, 0.95)"; // Slightly transparent light
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Update blobs for current theme
-      blobs = getBlobs(isDark)
+      blobs = getBlobs(isDark);
 
       // Draw and move blobs
       blobs.forEach((blob) => {
         // Update phase for gentle pulsing effect
-        blob.phase = (blob.phase + 0.005) % (Math.PI * 2) // Slower pulsing
+        blob.phase = (blob.phase + 0.005) % (Math.PI * 2); // Slower pulsing
 
         // Make radius pulse very slightly
-        const pulsingRadius = blob.radius * (1 + 0.08 * Math.sin(blob.phase)) // Reduced pulsing
+        const pulsingRadius = blob.radius * (1 + 0.08 * Math.sin(blob.phase)); // Reduced pulsing
 
         // Update position with very slight wobble
-        blob.x += blob.vx + Math.sin(blob.phase) * 0.1 // Reduced wobble
-        blob.y += blob.vy + Math.cos(blob.phase) * 0.1
+        blob.x += blob.vx + Math.sin(blob.phase) * 0.1; // Reduced wobble
+        blob.y += blob.vy + Math.cos(blob.phase) * 0.1;
 
         // Bounce off edges
-        if (blob.x < -100 || blob.x > canvas.width + 100) blob.vx *= -1
-        if (blob.y < -100 || blob.y > canvas.height + 100) blob.vy *= -1
+        if (blob.x < -100 || blob.x > canvas.width + 100) blob.vx *= -1;
+        if (blob.y < -100 || blob.y > canvas.height + 100) blob.vy *= -1;
 
-        drawBlob(blob.x, blob.y, pulsingRadius, blob.color)
-      })
+        drawBlob(blob.x, blob.y, pulsingRadius, blob.color);
+      });
 
-      animationId = requestAnimationFrame(animate)
-    }
+      animationId = requestAnimationFrame(animate);
+    };
 
-    animate()
+    animate();
 
     return () => {
-      window.removeEventListener("resize", resizeCanvas)
-      cancelAnimationFrame(animationId)
-    }
-  }, [theme, isDark]) // Re-run when theme changes
+      window.removeEventListener("resize", resizeCanvas);
+      cancelAnimationFrame(animationId);
+    };
+  }, [theme, isDark]); // Re-run when theme changes
 
   return (
     <>
@@ -123,7 +123,11 @@ export default function GradientBackground() {
           backgroundColor: isDark ? "rgb(15, 23, 42)" : "rgb(248, 250, 252)",
         }}
       />
-      <canvas ref={canvasRef} className="fixed inset-0 w-full h-full -z-10" style={{ opacity: 1 }} />
+      <canvas
+        ref={canvasRef}
+        className="fixed inset-0 w-full h-full -z-10"
+        style={{ opacity: 1 }}
+      />
     </>
-  )
+  );
 }
