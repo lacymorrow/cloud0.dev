@@ -2,6 +2,7 @@
 
 import { buttonVariants } from "@/components/ui/button";
 import { routes } from "@/config/routes";
+import { siteConfig } from "@/config/site-config";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -14,13 +15,13 @@ export const BuyButton = () => {
   if (session?.user?.email) {
     checkoutUrl.searchParams.set(
       "checkout[custom][user_email]",
-      session.user.email,
+      session.user.email
     );
     // Also pass user ID for additional verification
     if (session.user.id) {
       checkoutUrl.searchParams.set(
         "checkout[custom][user_id]",
-        session.user.id,
+        session.user.id
       );
     }
     // Pre-fill the email field
@@ -32,7 +33,7 @@ export const BuyButton = () => {
       href={checkoutUrl.toString()}
       className={cn(buttonVariants({ variant: "default" }))}
     >
-      Get Shipkit
+      Get {siteConfig.name}
     </Link>
   );
 };

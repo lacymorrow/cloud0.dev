@@ -16,11 +16,9 @@ import type React from "react";
 import { useMemo } from "react";
 
 import { Logo } from "@/components/assets/logo";
-import { Search } from "@/components/search/search";
 import { type NavLink, defaultNavLinks } from "@/config/navigation";
 import { useSignInRedirectUrl } from "@/hooks/use-sign-in-redirect-url";
 import styles from "@/styles/header.module.css";
-import { BuyButton } from "../buttons/buy-button";
 
 interface HeaderProps {
   navLinks?: NavLink[];
@@ -55,7 +53,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [{ y }] = useWindowScroll();
   const isOpaque = useMemo(
     () => variant === "floating" && y && y > 100,
-    [y, variant],
+    [y, variant]
   );
   const { data: session } = useSession();
   const signInRedirectUrl = useSignInRedirectUrl();
@@ -69,7 +67,7 @@ export const Header: React.FC<HeaderProps> = ({
           variant === "floating" && isOpaque && styles.opaque,
           variant === "floating" &&
             isOpaque &&
-            "-top-[12px] [--background:#fafafc70] dark:[--background:#1c1c2270]",
+            "-top-[12px] [--background:#fafafc70] dark:[--background:#1c1c2270]"
         )}
       >
         {variant === "floating" && <div className="h-[12px] w-full" />}
@@ -83,7 +81,7 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="block">{logoText}</span>
               <span className="sr-only">{logoText}</span>
             </Link>
-            <Search />
+            {/* <Search /> */}
           </div>
 
           <Sheet>
@@ -112,7 +110,7 @@ export const Header: React.FC<HeaderProps> = ({
                     href={link.href}
                     className={cn(
                       "text-muted-foreground hover:text-foreground",
-                      link.isCurrent ? "text-foreground" : "",
+                      link.isCurrent ? "text-foreground" : ""
                     )}
                   >
                     {link.label}
@@ -124,7 +122,7 @@ export const Header: React.FC<HeaderProps> = ({
                       href={routes.launch}
                       className={cn(
                         buttonVariants({ variant: "default" }),
-                        "w-full justify-center",
+                        "w-full justify-center"
                       )}
                     >
                       Get Shipkit
@@ -133,7 +131,7 @@ export const Header: React.FC<HeaderProps> = ({
                       href={signInRedirectUrl}
                       className={cn(
                         buttonVariants({ variant: "ghost" }),
-                        "w-full justify-center",
+                        "w-full justify-center"
                       )}
                     >
                       Login
@@ -142,19 +140,19 @@ export const Header: React.FC<HeaderProps> = ({
                 )}
                 {session && (
                   <>
-                    <Link
+                    {/* <Link
                       href={routes.docs}
                       className={cn(
                         "text-muted-foreground hover:text-foreground",
                       )}
                     >
                       Documentation
-                    </Link>
+                    </Link> */}
                     <Link
                       href={routes.app.dashboard}
                       className={cn(
                         buttonVariants({ variant: "default" }),
-                        "w-full justify-center",
+                        "w-full justify-center"
                       )}
                     >
                       Dashboard
@@ -166,7 +164,7 @@ export const Header: React.FC<HeaderProps> = ({
           </Sheet>
           <div className="flex items-center gap-2 md:ml-auto lg:gap-4">
             <div className="hidden items-center justify-between gap-md text-sm md:flex">
-              {session && (
+              {/* {session && (
                 <Link
                   key={routes.docs}
                   href={routes.docs}
@@ -176,16 +174,14 @@ export const Header: React.FC<HeaderProps> = ({
                 >
                   Documentation
                 </Link>
-              )}
+              )} */}
               {navLinks.map((link) => (
                 <Link
                   key={`${link.href}-${link.label}`}
                   href={link.href}
                   className={cn(
                     "transition-colors hover:text-foreground",
-                    link.isCurrent
-                      ? "text-foreground"
-                      : "text-muted-foreground",
+                    link.isCurrent ? "text-foreground" : "text-muted-foreground"
                   )}
                 >
                   {link.label}
@@ -203,7 +199,7 @@ export const Header: React.FC<HeaderProps> = ({
 
               <UserMenu size="sm" />
 
-              {!session && <BuyButton />}
+              {/* {!session && <BuyButton />} */}
             </div>
           </div>
         </nav>

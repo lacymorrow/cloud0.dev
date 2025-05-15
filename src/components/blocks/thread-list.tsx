@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 
 export const ThreadList: FC = () => {
   return (
-    <ThreadListPrimitive.Root className="flex flex-col items-stretch gap-1.5 overflow-y-auto max-h-[50vh]">
+    <ThreadListPrimitive.Root className="flex flex-col items-stretch gap-1.5 overflow-y-auto max-h-[50vh] bg-background/10 backdrop-blur-md border-border/20 p-2 rounded-lg">
       <ThreadListNew />
       <ThreadListItems />
     </ThreadListPrimitive.Root>

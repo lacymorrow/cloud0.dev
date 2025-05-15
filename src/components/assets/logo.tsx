@@ -1,5 +1,5 @@
-import { BoneIcon } from "lucide-react";
+import { BoneIcon, CloudLightningIcon } from "lucide-react";
 
 export const Logo = (props: React.ComponentProps<typeof BoneIcon>) => {
-  return <BoneIcon {...props} />;
+  return <CloudLightningIcon {...props} />;
 };
