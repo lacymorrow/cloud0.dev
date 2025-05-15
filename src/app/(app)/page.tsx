@@ -4,12 +4,12 @@ import { Thread } from "@/components/blocks/thread";
 import { ThreadList } from "@/components/blocks/thread-list";
 import GradientBackground from "@/components/gradient-background";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import CommandInput from "@/components/ui/command-input";
 import { AssistantRuntimeProvider } from "@assistant-ui/react";
 import { useChatRuntime } from "@assistant-ui/react-ai-sdk";
 import { AnimatePresence, motion } from "framer-motion";
 import { SparklesIcon } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function Home() {
@@ -61,12 +61,12 @@ export default function Home() {
 
               <div className="pt-8 pb-4 text-center text-foreground/60 text-sm">
                 Cloud0 is in early alpha.{" "}
-                <Button
-                  variant="link"
+                <Link
+                  href="https://lacy.sh"
                   className="text-foreground/60 hover:text-foreground p-0 h-auto font-normal text-sm"
                 >
                   Learn more here
-                </Button>
+                </Link>
               </div>
             </div>
           </motion.main>
