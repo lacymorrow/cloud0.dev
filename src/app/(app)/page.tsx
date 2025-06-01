@@ -14,7 +14,7 @@ import { useState } from "react";
 
 export default function Home() {
   const runtime = useChatRuntime({
-    api: "/api/chat",
+    api: "/chat",
   });
   const [hasChatStarted, setHasChatStarted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

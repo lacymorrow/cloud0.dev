@@ -10,7 +10,7 @@ This project uses the `assistant-ui` library to build its chat interface.
 ## Core Setup
 
 -   **Runtime Provider**: The root of the chat interface is wrapped in `<AssistantRuntimeProvider>`. This component takes a `runtime` instance, typically created using `useChatRuntime` from `@assistant-ui/react-ai-sdk`.
-    -   Example: See [src/app/(app)/page.tsx](mdc:src/app/(app)/page.tsx) and [src/app/(app)/assistant.tsx](mdc:src/app/(app)/assistant.tsx).
+    -   Example: See [src/app/(app)/page.tsx](mdc:src/app/(app)/page.tsx).
 
 -   **API Endpoint**: The `useChatRuntime` hook is configured with an API endpoint (e.g., `/api/chat`) that handles the backend communication for the chat.
 
