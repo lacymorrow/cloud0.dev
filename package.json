@@ -179,5 +179,10 @@
       "sharp",
       "utf-8-validate"
     ]
-  }
+  },
+  "trustedDependencies": [
+    "@biomejs/biome",
+    "@vercel/speed-insights",
+    "unrs-resolver"
+  ]
 }
