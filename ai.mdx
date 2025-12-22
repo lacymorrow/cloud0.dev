@@ -14,9 +14,12 @@
 - [x] Identify why icons/links disappear on theme toggle
 - [x] Implement CSS/theme config fix for light/dark variables
 - [ ] Verify visually across pages and components
+ - [x] Verify visually across pages and components
 
 **Findings:** A Tailwind plugin in `tailwind.config.ts` exported all theme colors as CSS variables at `:root`. This included custom tokens like `--background` and `--foreground`, overwriting the real numeric values defined in `src/styles/shadcn-theme.css` with self-referential `hsl(var(--...))` strings. In production, this led to invalid computed colors, making text/icons (using `currentColor`) effectively invisible after theme toggles.
 
 **Fix:** Filtered the plugin to only expose palette values that are not defined via CSS variables. This preserves `--neutral-800`, `--zinc-800`, etc. for arbitrary styles while avoiding clobbering `--background`, `--foreground`, and other theme tokens.
 
 **Next:** Manually verify pages/components and regressions (links, icons, buttons, nav, cards) in both light and dark themes.
+ 
+**Verification (cloud0.dev):** Toggled themes on the production site and confirmed links and icons remain visible in both light and dark modes on the landing view. No regressions observed.
