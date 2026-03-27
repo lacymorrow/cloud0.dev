@@ -1,12 +1,13 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { type VariantProps, cva } from "class-variance-authority";
+import { cva, type VariantProps } from "class-variance-authority";
 import { AnimatePresence, motion } from "framer-motion";
 import type React from "react";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { LinkOrButton } from "../primitives/link-or-button";
+import { cn } from "@/lib/utils";
+import { Link } from "../primitives/link";
+
 interface NavLink {
   label: string | React.ReactNode;
   href: string;
@@ -26,7 +27,7 @@ const navigationVariants = cva(
     defaultVariants: {
       variant: "hover",
     },
-  },
+  }
 );
 
 const buttonVariants = cva(
@@ -36,18 +37,16 @@ const buttonVariants = cva(
     variants: {
       variant: {
         hover: "",
-        click:
-          "transition-colors hover:text-neutral-600 dark:hover:text-neutral-400",
+        click: "transition-colors hover:text-neutral-600 dark:hover:text-neutral-400",
       },
     },
     defaultVariants: {
       variant: "hover",
     },
-  },
+  }
 );
 
-interface VercelNavigationProps
-  extends VariantProps<typeof navigationVariants> {
+interface VercelNavigationProps extends VariantProps<typeof navigationVariants> {
   navLinks?: NavLink[];
   className?: string;
 }
@@ -64,7 +63,7 @@ export const VercelNavigation = ({
   className,
 }: VercelNavigationProps) => {
   const [elementFocused, setElementFocused] = useState<number | null>(
-    variant === "hover" ? null : 0,
+    variant === "hover" ? null : 0
   );
 
   const handleInteraction = (index: number | null) => {
@@ -79,17 +78,13 @@ export const VercelNavigation = ({
       })}
     >
       {navLinks.map((link, index) => (
-        <LinkOrButton
+        <Link
           href={link.href}
-          className={cn(
-            buttonVariants({ variant }),
-            "items-center justify-center",
-          )}
+          className={cn(buttonVariants({ variant }), "items-center justify-center")}
           key={uuidv4()}
           {...(variant === "hover"
             ? { onMouseEnter: () => handleInteraction(index) }
             : { onClick: () => handleInteraction(index) })}
-          type="button"
         >
           {link.label}
           <AnimatePresence>
@@ -108,7 +103,7 @@ export const VercelNavigation = ({
               />
             )}
           </AnimatePresence>
-        </LinkOrButton>
+        </Link>
       ))}
     </nav>
   );

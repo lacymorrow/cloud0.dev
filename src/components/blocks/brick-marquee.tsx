@@ -35,9 +35,7 @@ export function BrickMarquee() {
         const cornerY = window.innerHeight;
 
         // Calculate distance from mouse to detection point
-        const distance = Math.sqrt(
-          (e.clientX - cornerX) ** 2 + (e.clientY - cornerY) ** 2
-        );
+        const distance = Math.sqrt((e.clientX - cornerX) ** 2 + (e.clientY - cornerY) ** 2);
 
         // Set nearby state based on distance threshold
         setIsNearby(distance < threshold);
@@ -94,99 +92,95 @@ export function BrickMarquee() {
   return (
     <>
       <style jsx>{`
-        /* Base styles */
-        .dev-tools-container {
-          position: fixed;
-          bottom: 0;
-          right: 0;
-          z-index: 50;
-          width: 100%;
-          overflow: hidden;
-        }
+  /* Base styles */
+  .dev-tools-container {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 50;
+    width: 100%;
+    overflow: hidden;
+  }
 
-        /* Combined bar and square as a single element with smooth transitions */
-        .bar {
-          opacity: 0.5;
-          position: fixed;
-          bottom: 0;
-          right: 0;
-          height: 16px;
-          width: 16px; /* Square width when collapsed */
-          cursor: pointer;
-          transform-origin: bottom right;
-          /* Smooth transition for width change */
-          transition: width 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
 
-        /* When nearby, grow in width instead of translating */
-        .bar.nearby {
-          opacity: 1;
-          width: 20px; /* Grow by 4px instead of translating */
-        }
+  /* Combined bar and square as a single element with smooth transitions */
+  .bar {
+	opacity: 0.5;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    height: 16px;
+    width: 16px; /* Square width when collapsed */
+    cursor: pointer;
+    transform-origin: bottom right;
+    /* Smooth transition for width change */
+    transition: width 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
 
-        /* When expanded, show full bar with square */
-        .bar.expanded {
-          opacity: 1;
-          width: 316px; /* 300px bar + 16px square */
-        }
+  /* When nearby, grow in width instead of translating */
+  .bar.nearby {
+	opacity: 1;
+    width: 20px; /* Grow by 4px instead of translating */
+  }
 
-        /* Marquee styles */
-        .marquee-container {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 16px; /* Leave space for square */
-          height: 16px;
-          overflow: hidden;
-          display: flex;
-          align-items: center;
-          opacity: 0;
-          transition: opacity 400ms ease;
-        }
+  /* When expanded, show full bar with square */
+  .bar.expanded {
+	opacity: 1;
+    width: 316px; /* 300px bar + 16px square */
+  }
 
-        .marquee-container.visible {
-          opacity: 1;
-        }
+  /* Marquee styles */
+  .marquee-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 16px; /* Leave space for square */
+    height: 16px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 400ms ease;
+  }
 
-        .marquee {
-          white-space: nowrap;
-          display: flex;
-          align-items: center;
-          height: 100%;
-          padding-top: 2px;
-          padding-bottom: 2px;
-          padding-left: 22px;
-          font-size: 10px;
-          line-height: 1;
-          font-weight: 500;
-          font-family:
-            ui-sans-serif,
-            system-ui,
-            -apple-system,
-            BlinkMacSystemFont,
-            sans-serif;
-        }
+  .marquee-container.visible {
+    opacity: 1;
+  }
 
-        .marquee span:hover {
-          transform: scale(1.2);
-          color: #f0f0f0;
-        }
+  .marquee {
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding-top:2px;
+    padding-bottom:2px;
+    padding-left: 22px;
+    font-size: 10px;
+    line-height: 1;
+    font-weight: 500;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  }
 
-        /* Animation for marquee */
-        @keyframes marquee {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-100%);
-          }
-        }
+  .marquee span:hover {
+    transform: scale(1.2);
+    color: #f0f0f0;
+  }
 
-        .animate-marquee {
-          display: inline-block;
-          animation: marquee 20s linear infinite;
-        }
-      `}</style>
+  /* Animation for marquee */
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  .animate-marquee {
+    display: inline-block;
+    animation: marquee 20s linear infinite;
+  }
+`}</style>
 
       <div ref={containerRef} className="dev-tools-container">
         {/* Hidden checkbox for state */}
@@ -207,9 +201,7 @@ export function BrickMarquee() {
           {/* Marquee container */}
           <div className={`marquee-container ${isExpanded ? "visible" : ""}`}>
             {/* Marquee of websites */}
-            <div
-              className={`marquee animate-marquee ${isExpanded ? "pointer-events-none" : ""}`}
-            >
+            <div className={`marquee animate-marquee ${isExpanded ? "pointer-events-none" : ""}`}>
               {/* Map over the links array */}
               {links.map((link) => (
                 <a

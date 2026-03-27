@@ -1,12 +1,25 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.0/schema.json",
   "files": {
     "ignoreUnknown": false,
-    "ignore": ["node_modules", ".next", "*.css", "src/components/ui/*"]
+    "includes": [
+      "**/*.ts",
+      "**/*.tsx",
+      "**/*.js",
+      "**/*.jsx",
+      "!**/node_modules",
+      "!**/.next",
+      "!**/.vercel",
+      "!**/cli/dist",
+      "!**/public/workers",
+      "!**/public/**/*.js",
+      "!**/public/**/*.mjs",
+      "!**/*.css"
+    ]
   },
   "formatter": {
     "enabled": true,
-    "indentStyle": "tab",
+    "indentStyle": "space",
     "indentWidth": 2,
     "lineWidth": 100,
     "formatWithErrors": true
@@ -31,21 +44,82 @@
       },
       "suspicious": {
         "noExplicitAny": "warn",
-        "noConsoleLog": "warn",
         "noControlCharactersInRegex": "off",
-        "noShadowRestrictedNames": "off"
+        "noShadowRestrictedNames": "off",
+        "noConsole": {
+          "level": "warn",
+          "options": { "allow": ["log", "warn", "error", "info"] }
+        }
       },
       "style": {
         "noNonNullAssertion": "warn",
         "useNodejsImportProtocol": "warn",
-        "useTemplate": "error"
+        "useTemplate": "error",
+        "noParameterAssign": "error",
+        "useAsConstAssertion": "error",
+        "useDefaultParameterLast": "error",
+        "useEnumInitializers": "error",
+        "useSelfClosingElements": "error",
+        "useSingleVarDeclarator": "error",
+        "noUnusedTemplateLiteral": "error",
+        "useNumberNamespace": "error",
+        "noInferrableTypes": "error",
+        "noUselessElse": "error"
       },
       "a11y": {
         "noSvgWithoutTitle": "warn"
       }
     }
   },
-  "organizeImports": {
-    "enabled": true
-  }
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "overrides": [
+    {
+      "includes": ["**/scripts/**/*", "playwright.config.ts", "vitest.config*.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useNodejsImportProtocol": "off",
+            "noNonNullAssertion": "off"
+          },
+          "suspicious": {
+            "noConsole": "off",
+            "noExplicitAny": "off",
+            "useIterableCallbackReturn": "off"
+          },
+          "correctness": {
+            "noUnusedVariables": "off",
+            "noUnusedFunctionParameters": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["**/tests/**/*"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedVariables": "off",
+            "noUnusedFunctionParameters": "off"
+          },
+          "suspicious": {
+            "noConsole": "off",
+            "noExplicitAny": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["**/src/components/ui/**/*"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noExplicitAny": "warn"
+          },
+          "style": {
+            "noNonNullAssertion": "warn"
+          }
+        }
+      }
+    }
+  ]
 }

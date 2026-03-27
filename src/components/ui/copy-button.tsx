@@ -1,17 +1,13 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
-import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, Copy } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
+import { haptic } from "@/hooks/use-haptics";
+import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 interface CopyButtonProps {
   value: string;
@@ -33,6 +29,7 @@ export const CopyButton = ({
   const { isCopied, copyToClipboard } = useCopyToClipboard({
     timeout: 2000,
     onCopy: () => {
+      haptic("success");
       toast({
         title: successTitle,
         description: successDescription,

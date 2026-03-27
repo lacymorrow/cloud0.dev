@@ -82,9 +82,7 @@ export const reducer = (state: State, action: Action): State => {
     case "UPDATE_TOAST":
       return {
         ...state,
-        toasts: state.toasts.map((t) =>
-          t.id === action.toast.id ? { ...t, ...action.toast } : t,
-        ),
+        toasts: state.toasts.map((t) => (t.id === action.toast.id ? { ...t, ...action.toast } : t)),
       };
 
     case "DISMISS_TOAST": {
@@ -108,7 +106,7 @@ export const reducer = (state: State, action: Action): State => {
                 ...t,
                 open: false,
               }
-            : t,
+            : t
         ),
       };
     }
@@ -126,7 +124,7 @@ export const reducer = (state: State, action: Action): State => {
   }
 };
 
-const listeners: Array<(state: State) => void> = [];
+const listeners: ((state: State) => void)[] = [];
 
 let memoryState: State = { toasts: [] };
 
@@ -169,9 +167,11 @@ function toast({ ...props }: Toast) {
 }
 
 function useToast() {
+  const isBrowser = typeof window !== "undefined";
   const [state, setState] = React.useState<State>(memoryState);
 
   React.useEffect(() => {
+    if (!isBrowser) return;
     listeners.push(setState);
     return () => {
       const index = listeners.indexOf(setState);
@@ -179,7 +179,15 @@ function useToast() {
         listeners.splice(index, 1);
       }
     };
-  }, [state]);
+  }, [isBrowser]);
+
+  if (!isBrowser) {
+    return {
+      toasts: [],
+      toast: () => ({ id: "", dismiss: () => {}, update: () => {} }),
+      dismiss: () => {},
+    };
+  }
 
   return {
     ...state,
