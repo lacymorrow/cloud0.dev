@@ -63,12 +63,12 @@ export function Search({ ...props }: DialogProps) {
       <Button
         variant="outline"
         className={cn(
-          "relative h-8 w-full justify-start rounded-[0.5rem] bg-muted/50 text-sm font-normal text-muted-foreground shadow-none sm:pr-12 md:max-w-40 lg:max-w-64",
+          "relative h-8 w-full justify-start bg-muted/50 text-sm font-normal text-muted-foreground shadow-none sm:pr-12 md:max-w-40 lg:max-w-64",
         )}
         onClick={() => setOpen(true)}
         {...props}
       >
-        <span className="hidden lg:inline-flex">Search docs...</span>
+        <span className="hidden lg:inline-flex">Search...</span>
         <span className="inline-flex lg:hidden">Search...</span>
         <kbd className="pointer-events-none absolute right-[0.3rem] top-[0.3rem] hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
           <span className="text-xs">⌘</span>K
@@ -80,22 +80,32 @@ export function Search({ ...props }: DialogProps) {
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading="Links">
-            {docsConfig.mainNav
-              .filter((navitem) => !navitem.external)
-              .map((navItem: MainNavItem) => (
-                <CommandItem
-                  key={navItem.href}
-                  value={navItem.title}
-                  onSelect={() => {
-                    if (navItem.href) {
-                      runCommand(() => router.push(navItem.href!));
-                    }
-                  }}
-                >
-                  <FileIcon className="mr-2 h-4 w-4" />
-                  {navItem.title}
-                </CommandItem>
-              ))}
+            {docsConfig.mainNav.map((navItem: MainNavItem) => (
+              <CommandItem
+                key={navItem.href}
+                value={navItem.title}
+                onSelect={() => {
+                  const href = navItem.href;
+                  if (href) {
+                    runCommand(() => {
+                      if (navItem.external) {
+                        window.open(href, "_blank");
+                      } else {
+                        router.push(href);
+                      }
+                    });
+                  }
+                }}
+              >
+                <FileIcon className="mr-2 h-4 w-4" />
+                {navItem.title}
+                {navItem.external && (
+                  <span className="ml-auto text-xs text-muted-foreground">
+                    ↗
+                  </span>
+                )}
+              </CommandItem>
+            ))}
           </CommandGroup>
           {docsConfig.sidebarNav.map((group) => (
             <CommandGroup key={group.title} heading={group.title}>
@@ -104,8 +114,15 @@ export function Search({ ...props }: DialogProps) {
                   key={navItem.href}
                   value={navItem.title}
                   onSelect={() => {
-                    if (navItem.href) {
-                      runCommand(() => router.push(navItem.href!));
+                    const href = navItem.href;
+                    if (href) {
+                      runCommand(() => {
+                        if (href.startsWith("http")) {
+                          window.open(href, "_blank");
+                        } else {
+                          router.push(href);
+                        }
+                      });
                     }
                   }}
                 >
@@ -113,6 +130,11 @@ export function Search({ ...props }: DialogProps) {
                     <CircleIcon className="h-3 w-3" />
                   </div>
                   {navItem.title}
+                  {navItem.label && (
+                    <span className="ml-auto text-xs text-muted-foreground">
+                      {navItem.label}
+                    </span>
+                  )}
                 </CommandItem>
               ))}
             </CommandGroup>

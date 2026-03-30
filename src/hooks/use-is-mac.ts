@@ -33,10 +33,10 @@ export function useIsMac(): boolean {
         determinedIsMac = /Mac|iPod|iPhone|iPad/.test(nav.platform);
       } else {
         // Last resort fallback using the existing utility
-        determinedIsMac = is.mac;
+        determinedIsMac = is.mac();
       }
     }
-    queueMicrotask(() => setIsMac(determinedIsMac));
+    setIsMac(determinedIsMac);
   }, []);
 
   return isMac;

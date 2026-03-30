@@ -1,85 +1,81 @@
-// @ts-nocheck
-// Add a type annotation for startIndex
-export function restArguments<T extends any[], R>(
-  func: (...args: [...T, ...R[]]) => any,
-  startIndex: number = func.length - 1
+export function restArguments<F extends (...args: unknown[]) => unknown>(
+	func: F,
+	startIndex: number = func.length - 1
 ) {
-  return function (this: any, ...args: T) {
-    const length = Math.max(args.length - startIndex, 0);
-    const rest = Array(length);
-    let index = 0;
-    for (; index < length; index += 1) {
-      rest[index] = args[index + startIndex];
-    }
-    switch (startIndex) {
-      case 0:
-        return func.call(this, rest) as R;
-      case 1:
-        return func.call(this, args[0], rest) as R;
-      case 2:
-        return func.call(this, args[0], args[1], rest) as R;
-      default: {
-        const _args: [...T, R[]] = Array(startIndex + 1) as [...T, R[]];
-        for (index = 0; index < startIndex; index += 1) {
-          _args[index] = args[index];
-        }
-        _args[startIndex] = rest;
-        return func.apply(this, _args) as R;
-      }
-    }
-  };
+	return function (this: unknown, ...args: unknown[]) {
+		const length = Math.max(args.length - startIndex, 0);
+		const rest = Array(length);
+		let index = 0;
+		for (; index < length; index += 1) {
+			rest[index] = args[index + startIndex];
+		}
+		switch (startIndex) {
+			case 0:
+				return func.call(this, rest);
+			case 1:
+				return func.call(this, args[0], rest);
+			case 2:
+				return func.call(this, args[0], args[1], rest);
+			default: {
+				const _args = Array(startIndex + 1);
+				for (index = 0; index < startIndex; index += 1) {
+					_args[index] = args[index];
+				}
+				_args[startIndex] = rest;
+				return func.apply(this, _args);
+			}
+		}
+	};
 }
 
-// Add type annotation for this
-export function debounce<T extends any[], R>(
-  func: (...args: T) => R,
-  wait: number,
-  immediate?: boolean
+export function debounce<T extends unknown[], R>(
+	func: (...args: T) => R,
+	wait: number,
+	immediate?: boolean
 ) {
-  let timeout: NodeJS.Timeout | null;
-  let previous: number;
-  let args: T | undefined;
-  let result: R | undefined;
-  let context: any;
+	let timeout: NodeJS.Timeout | null;
+	let previous: number;
+	let args: T | undefined;
+	let result: R | undefined;
+	let context: unknown;
 
-  const now = () => Date.now();
+	const now = () => Date.now();
 
-  const later = function (this: any) {
-    const passed = now() - previous;
-    if (wait > passed) {
-      // Ensure timeout value is never negative
-      const remainingWait = Math.max(wait - passed, 0);
-      timeout = setTimeout(later, remainingWait);
-    } else {
-      timeout = null;
-      if (!immediate) {
-        result = func.apply(context, args!);
-      }
-      if (!timeout) {
-        args = context = undefined;
-      }
-    }
-  };
+	const later = function () {
+		const passed = now() - previous;
+		if (wait > passed) {
+			timeout = setTimeout(later, wait - passed);
+		} else {
+			timeout = null;
+			if (!immediate) {
+				result = func.apply(context, args!);
+			}
+			if (!timeout) {
+				args = undefined;
+				context = undefined;
+			}
+		}
+	};
 
-  const debounced = restArguments(function (this: any, _args: T) {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    context = this;
-    args = _args;
-    previous = now();
-    if (!timeout) {
-      timeout = setTimeout(later, wait);
-      if (immediate) {
-        result = func.apply(context, args);
-      }
-    }
-    return result;
-  });
+	const debounced = restArguments(function (this: unknown, _args: unknown) {
+		context = this;
+		args = _args as T;
+		previous = now();
+		if (!timeout) {
+			timeout = setTimeout(later, wait);
+			if (immediate) {
+				result = func.apply(context, args);
+			}
+		}
+		return result;
+	});
 
-  // Add cancel property
-  debounced.cancel = function (this: any) {
-    clearTimeout(timeout!);
-    timeout = args = context = undefined;
-  };
+	(debounced as typeof debounced & { cancel: () => void }).cancel = function () {
+		if (timeout) clearTimeout(timeout);
+		timeout = null;
+		args = undefined;
+		context = undefined;
+	};
 
-  return debounced;
+	return debounced as typeof debounced & { cancel: () => void };
 }

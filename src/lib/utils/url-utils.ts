@@ -28,6 +28,6 @@ export const isVercel = Boolean(process.env.VERCEL);
 export const environment = process.env.NODE_ENV || "development";
 
 /**
- * Check if we're running at shipkit.io
+ * Check if we're running at bones.sh
  */
-export const isShipkitIo = BASE_URL.toLowerCase().includes("shipkit.io");
+export const isBonesApp = BASE_URL.toLowerCase().includes("bones.sh");
