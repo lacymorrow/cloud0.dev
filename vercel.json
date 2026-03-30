@@ -11,9 +11,9 @@
     }
   ],
 
-  "buildCommand": "bun run build:vercel",
-  "devCommand": "bun run dev",
-  "installCommand": "bun install --frozen-lockfile",
+  "buildCommand": "pnpm run build:vercel",
+  "devCommand": "pnpm run dev",
+  "installCommand": "pnpm install --frozen-lockfile",
   "cleanUrls": true,
   "trailingSlash": false,
 
