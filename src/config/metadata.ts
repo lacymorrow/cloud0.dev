@@ -171,3 +171,14 @@ export const routeMetadata = {
     description: `Comprehensive guides, API references, and examples to help you build production-ready apps with ${siteConfig.branding.projectName}. From quick starts to advanced topics.`,
   },
 };
+
+export type HeadLinkHint = {
+	rel: string;
+	href: string;
+	crossOrigin?: "" | "anonymous" | "use-credentials";
+};
+
+export const headLinkHints: HeadLinkHint[] = [
+	{ rel: "dns-prefetch", href: "https://fonts.googleapis.com" },
+	{ rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+];

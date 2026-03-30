@@ -27,6 +27,8 @@ export const routes = {
   // Legal routes
   terms: "/terms-of-service",
   privacy: "/privacy-policy",
+  eula: "/eula",
+  legal: "/legal",
 
   // Marketing routes
   faq: "/faq",
@@ -38,6 +40,41 @@ export const routes = {
   download: "/download",
   components: "/components",
   tasks: "/tasks",
+
+  // CMS routes (top-level shortcut)
+  cms: {
+    index: "/admin/cms",
+  },
+
+  // AI routes
+  ai: {
+    index: "/ai",
+    codeCompletion: "/ai/code-completion",
+    crossEncoder: "/ai/cross-encoder",
+    spam: "/ai/spam",
+    reportGen: "/ai/report-gen",
+    moonshineWeb: "/ai/moonshine-web",
+    zeroShotClassification: "/ai/zero-shot-classification",
+    whisper: "/ai/whisper",
+  },
+
+  // Settings routes (top-level shortcut)
+  settings: {
+    index: "/settings",
+    profile: "/settings/profile",
+    appearance: "/settings/appearance",
+    account: "/settings/account",
+    security: "/settings/security",
+  },
+
+  // Pages router routes
+  pages: {
+    index: "/pages",
+    static: "/pages/static",
+    dynamic: "/pages/dynamic",
+    apiExample: "/pages/api-example",
+    markdown: "/pages/markdown",
+  },
 
   // Auth routes
   // Auth routes
@@ -59,7 +96,13 @@ export const routes = {
     logs: "/logs",
     network: "/network",
     live: "/live",
-    settings: "/settings",
+    settings: {
+      index: "/settings",
+      profile: "/settings/profile",
+      appearance: "/settings/appearance",
+      account: "/settings/account",
+      security: "/settings/security",
+    },
     tools: "/tools",
     downloads: "/downloads",
     admin: "/admin",

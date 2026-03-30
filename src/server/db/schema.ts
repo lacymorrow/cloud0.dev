@@ -4,6 +4,7 @@ import {
   boolean,
   index,
   integer,
+  pgEnum,
   pgTableCreator,
   primaryKey,
   serial,
@@ -191,3 +192,300 @@ export const authenticators = createTable(
     }),
   }),
 );
+
+// ============================================================
+// Extended schema tables (synced from shipkit base)
+// ============================================================
+
+export const teamType = pgEnum("team_type", ["personal", "workspace"]);
+
+export const teams = createTable("team", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }).notNull(),
+  type: teamType("type").default("personal").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+});
+
+export const teamsRelations = relations(teams, ({ many }) => ({
+  members: many(teamMembers),
+}));
+
+export const teamMembers = createTable("team_member", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: varchar("user_id", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  teamId: varchar("team_id", { length: 255 })
+    .notNull()
+    .references(() => teams.id, { onDelete: "cascade" }),
+  role: varchar("role", { length: 50 }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+});
+
+export const teamMembersRelations = relations(teamMembers, ({ one }) => ({
+  team: one(teams, { fields: [teamMembers.teamId], references: [teams.id] }),
+  user: one(users, { fields: [teamMembers.userId], references: [users.id] }),
+}));
+
+export const projects = createTable("project", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }).notNull(),
+  teamId: varchar("team_id", { length: 255 }).references(() => teams.id, {
+    onDelete: "cascade",
+  }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+  expiresAt: timestamp("expires_at", { withTimezone: true }),
+});
+
+export const projectMembers = createTable("project_member", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  projectId: varchar("project_id", { length: 255 })
+    .notNull()
+    .references(() => projects.id),
+  userId: varchar("user_id", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  role: varchar("role", { length: 50 }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+});
+
+export const apiKeys = createTable("api_key", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  key: varchar("key", { length: 255 }).notNull(),
+  userId: varchar("user_id", { length: 255 })
+    .references(() => users.id),
+  projectId: varchar("project_id", { length: 255 }).references(() => projects.id),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: text("description"),
+  expiresAt: timestamp("expires_at"),
+  lastUsedAt: timestamp("last_used_at"),
+  createdAt: timestamp("created_at")
+    .notNull()
+    .$defaultFn(() => new Date()),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .$defaultFn(() => new Date()),
+  deletedAt: timestamp("deleted_at"),
+});
+
+export const apiKeysRelations = relations(apiKeys, ({ one }) => ({
+  user: one(users, { fields: [apiKeys.userId], references: [users.id] }),
+  project: one(projects, { fields: [apiKeys.projectId], references: [projects.id] }),
+}));
+
+export const userCredits = createTable(
+  "user_credit",
+  {
+    id: varchar("id", { length: 255 })
+      .notNull()
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: varchar("user_id", { length: 255 })
+      .notNull()
+      .unique()
+      .references(() => users.id, { onDelete: "cascade" }),
+    balance: integer("balance").notNull().default(0),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+  },
+  (table) => ({
+    userIdIdx: index("user_credit_user_id_idx").on(table.userId),
+  })
+);
+
+export type UserCredit = typeof userCredits.$inferSelect;
+export type NewUserCredit = typeof userCredits.$inferInsert;
+
+export const creditTransactions = createTable(
+  "credit_transaction",
+  {
+    id: varchar("id", { length: 255 })
+      .notNull()
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: varchar("user_id", { length: 255 })
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    amount: integer("amount").notNull(),
+    type: varchar("type", { length: 50 }).notNull(),
+    description: text("description"),
+    metadata: text("metadata"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => ({
+    userIdIdx: index("credit_transaction_user_id_idx").on(table.userId),
+    typeIdx: index("credit_transaction_type_idx").on(table.type),
+  })
+);
+
+export type CreditTransaction = typeof creditTransactions.$inferSelect;
+export type NewCreditTransaction = typeof creditTransactions.$inferInsert;
+
+export const userCreditsRelations = relations(userCredits, ({ one }) => ({
+  user: one(users, { fields: [userCredits.userId], references: [users.id] }),
+}));
+
+export const creditTransactionsRelations = relations(creditTransactions, ({ one }) => ({
+  user: one(users, { fields: [creditTransactions.userId], references: [users.id] }),
+}));
+
+export const deployments = createTable(
+  "deployments",
+  {
+    id: text("id")
+      .notNull()
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    projectName: text("project_name").notNull(),
+    description: text("description"),
+    githubRepoUrl: text("github_repo_url"),
+    githubRepoName: text("github_repo_name"),
+    vercelProjectId: text("vercel_project_id"),
+    vercelProjectUrl: text("vercel_project_url"),
+    vercelDeploymentId: text("vercel_deployment_id"),
+    vercelDeploymentUrl: text("vercel_deployment_url"),
+    status: text("status", {
+      enum: ["deploying", "completed", "failed", "timeout"],
+    })
+      .notNull()
+      .default("deploying"),
+    error: text("error"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (deployment) => ({
+    userIdIdx: index("deployment_user_id_idx").on(deployment.userId),
+    statusIdx: index("deployment_status_idx").on(deployment.status),
+    createdAtIdx: index("deployment_created_at_idx").on(deployment.createdAt),
+  })
+);
+
+export type Deployment = typeof deployments.$inferSelect;
+export type NewDeployment = typeof deployments.$inferInsert;
+
+export const deploymentsRelations = relations(deployments, ({ one }) => ({
+  user: one(users, { fields: [deployments.userId], references: [users.id] }),
+}));
+
+// ============================================================
+// RBAC and Feedback schema (synced from shipkit base)
+// ============================================================
+
+export const roles = createTable("role", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: text("description"),
+  isSystem: boolean("is_system").default(false).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+});
+
+export const permissions = createTable("permission", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: text("description"),
+  resource: varchar("resource", { length: 255 }).notNull(),
+  action: varchar("action", { length: 255 }).notNull(),
+  attributes: text("attributes"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+});
+
+export const rolePermissions = createTable(
+  "role_permission",
+  {
+    roleId: varchar("role_id", { length: 255 })
+      .notNull()
+      .references(() => roles.id, { onDelete: "cascade" }),
+    permissionId: varchar("permission_id", { length: 255 })
+      .notNull()
+      .references(() => permissions.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.roleId, table.permissionId] }),
+  })
+);
+
+export const rolesRelations = relations(roles, ({ many }) => ({
+  permissions: many(rolePermissions),
+}));
+
+export const permissionsRelations = relations(permissions, ({ many }) => ({
+  roles: many(rolePermissions),
+}));
+
+export const rolePermissionsRelations = relations(rolePermissions, ({ one }) => ({
+  role: one(roles, {
+    fields: [rolePermissions.roleId],
+    references: [roles.id],
+  }),
+  permission: one(permissions, {
+    fields: [rolePermissions.permissionId],
+    references: [permissions.id],
+  }),
+}));
+
+export const feedback = createTable("feedback", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  content: text("content").notNull(),
+  source: varchar("source", { length: 50 }).notNull(),
+  metadata: text("metadata").default("{}"),
+  status: varchar("status", { length: 20 }).notNull().default("new"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+});

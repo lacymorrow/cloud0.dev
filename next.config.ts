@@ -111,6 +111,37 @@ const nextConfig: NextConfig = {
   // Remove console logs only in production, excluding error logs
   // removeConsole: process.env.NODE_ENV === "production" ? { exclude: ["error"] } : false
   // },
+
+  serverExternalPackages: [
+    "payload",
+    "@payloadcms/db-postgres",
+    "@payloadcms/email-resend",
+    "@payloadcms/payload-cloud",
+    "@payloadcms/richtext-lexical",
+    "@payloadcms/storage-s3",
+    "@payloadcms/storage-vercel-blob",
+    "@payloadcms/next",
+  ],
+
+  webpack: (config) => {
+    const optionalExternals = [
+      /^payload(\/.*)?$/,
+      /^@payloadcms\/.*/,
+      /^@payload-config$/,
+      /^@clerk\/.*/,
+      /^@supabase\/.*/,
+    ];
+    config.externals = [
+      ...(Array.isArray(config.externals) ? config.externals : config.externals ? [config.externals] : []),
+      ({ request }: { request?: string }, callback: (err?: Error | null, result?: string) => void) => {
+        if (request && optionalExternals.some((re) => re.test(request))) {
+          return callback(undefined, `commonjs ${request}`);
+        }
+        callback();
+      },
+    ];
+    return config;
+  },
 };
 
 /*
