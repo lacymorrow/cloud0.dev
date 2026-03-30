@@ -39,7 +39,7 @@
     "test:browser": "vitest --config=vitest.config.browser.ts",
     "test:node": "vitest --config=vitest.config.node.ts",
     "typecheck": "tsc --noEmit",
-    "build:vercel": "NODE_OPTIONS='--max-old-space-size=8192' next build"
+    "build:vercel": "NODE_OPTIONS='--max-old-space-size=8192' next build --webpack"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.88",
