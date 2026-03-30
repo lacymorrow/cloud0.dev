@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { AlertCircle } from "lucide-react";
 import type { Metadata } from "next";
 import { Suspense } from "react";

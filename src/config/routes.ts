@@ -32,6 +32,7 @@ export const routes = {
 
   // Marketing routes
   faq: "/faq",
+  contact: "/contact",
   features: "/features",
   pricing: "/pricing",
   launch: "/launch",
@@ -126,7 +127,13 @@ export const routes = {
   examples: {
     root: "/examples",
     dashboard: "/examples/dashboard",
+    mail: "/examples/mail",
+    tasks: "/examples/tasks",
+    playground: "/examples/playground",
+    music: "/examples/music",
+    cards: "/examples/cards",
     forms: "/examples/forms",
+    formsAccount: "/examples/forms/account",
     authentication: "/examples/authentication",
     notifications: "/examples/forms/notifications",
     profile: "/examples/forms/profile",

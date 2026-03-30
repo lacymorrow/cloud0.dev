@@ -52,7 +52,7 @@ export const docsConfig: DocsConfig = {
         },
         {
           title: "Bones CLI WWW",
-          href: routes.bones.cliWww,
+          href: "/bones/cli-www",
           items: [],
         },
       ],

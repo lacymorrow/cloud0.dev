@@ -1,6 +1,6 @@
 "use server";
 
-import { forgotPasswordSchema, signInActionSchema, signUpSchema } from "@/lib/schemas/auth";
+import { forgotPasswordSchema, resetPasswordSchema, signInActionSchema, signUpSchema } from "@/lib/schemas/auth";
 import { validatedAction } from "@/lib/utils/validated-action";
 import { AuthService } from "@/server/services/auth-service";
 import type { UserRole } from "@/types/user";
@@ -77,4 +77,11 @@ export const forgotPasswordAction = createServerAction()
 	.input(forgotPasswordSchema)
 	.handler(async ({ input: _input }) => {
 		// return await forgotPassword(input);
+	});
+
+// Todo: Implement reset password
+export const resetPasswordAction = createServerAction()
+	.input(resetPasswordSchema)
+	.handler(async ({ input: _input }) => {
+		// return await AuthService.resetPassword(input.token, input.password);
 	});

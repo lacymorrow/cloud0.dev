@@ -18,30 +18,61 @@ import { cache } from "react";
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
 
+// Determine if auth should be initialized (requires at least one provider configured)
+const hasAuthProvider = Boolean(
+	env.AUTH_GITHUB_ID ||
+	env.AUTH_GOOGLE_ID ||
+	env.AUTH_DISCORD_ID ||
+	env.RESEND_API_KEY ||
+	env.AUTH_SECRET
+);
+
+const noopAuth = {
+	auth: () => Promise.resolve(null),
+	handlers: {
+		GET: async () => Response.json({ ok: false, error: "AUTH_DISABLED" }, { status: 503 }),
+		POST: async () => Response.json({ ok: false, error: "AUTH_DISABLED" }, { status: 503 }),
+	},
+	signIn: () => Promise.resolve(),
+	signOut: () => Promise.resolve(),
+	unstable_update: () => Promise.resolve({} as any),
+};
+
+let authResult: typeof noopAuth;
+try {
+	authResult = hasAuthProvider
+		? NextAuth({
+			...authOptions,
+			secret: env.AUTH_SECRET ?? "supersecretshipkit",
+			adapter:
+				env?.DATABASE_URL && db
+					? DrizzleAdapter(db, {
+						usersTable: users,
+						accountsTable: accounts,
+						sessionsTable: sessions,
+						verificationTokensTable: verificationTokens,
+					})
+					: undefined,
+			logger: {
+				error: (code: Error, ...message: unknown[]) => logger.error(code, message),
+				warn: (code: string, ...message: unknown[]) => logger.warn(code, message),
+				debug: (code: string, ...message: unknown[]) => logger.debug(code, message),
+			},
+		})
+		: noopAuth;
+} catch (e) {
+	console.warn("[auth] NextAuth initialization failed, using noop auth:", e);
+	authResult = noopAuth;
+}
+
 const {
 	auth: nextAuthAuth,
 	handlers,
 	signIn,
 	signOut,
 	unstable_update: update,
-} = NextAuth({
-	...authOptions,
-	secret: env.AUTH_SECRET ?? "supersecretshipkit",
-	adapter:
-		env?.DATABASE_URL && db
-			? DrizzleAdapter(db, {
-				usersTable: users,
-				accountsTable: accounts,
-				sessionsTable: sessions,
-				verificationTokensTable: verificationTokens,
-			})
-			: undefined,
-	logger: {
-		error: (code: Error, ...message: unknown[]) => logger.error(code, message),
-		warn: (code: string, ...message: unknown[]) => logger.warn(code, message),
-		debug: (code: string, ...message: unknown[]) => logger.debug(code, message),
-	},
-});
+} = authResult ?? noopAuth;
+
 interface AuthProps {
 	errorCode?: string;
 	nextUrl?: string;
@@ -70,19 +101,9 @@ const authWithOptions = async (props?: AuthProps) => {
 		return redirectWithCode(redirectTo, { code, nextUrl });
 	};
 
-	// TODO: Handle refresh token error
-	// if (session?.error === "RefreshTokenError") {
-	//   return handleRedirect(STATUS_CODES.AUTH_REFRESH.code);
-	// }
-
 	if (protect && !session?.user?.id) {
 		return handleRedirect(errorCode ?? STATUS_CODES.AUTH.code);
 	}
-
-	// TODO: RBAC
-	// if (role && session?.user?.role !== role) {
-	//   return handleRedirect(errorCode ?? STATUS_CODES.AUTH_ROLE.code); // TODO: We shouldn't sign them out
-	// }
 
 	return session;
 };
@@ -90,27 +111,3 @@ const authWithOptions = async (props?: AuthProps) => {
 const cachedAuth = cache(authWithOptions);
 
 export { cachedAuth as auth, handlers, signIn, signOut, update };
-
-// TODO: Dedupe like this from create-t3-turbo:
-// import { cache } from "react";
-// import NextAuth from "next-auth";
-
-// import { authConfig } from "./config";
-
-// export type { Session } from "next-auth";
-
-// const { handlers, auth: defaultAuth, signIn, signOut } = NextAuth(authConfig);
-
-// /**
-//  * This is the main way to get session data for your RSCs.
-//  * This will de-duplicate all calls to next-auth's default `auth()` function and only call it once per request
-//  */
-// const auth = cache(defaultAuth);
-
-// export { handlers, auth, signIn, signOut };
-
-// export {
-//     invalidateSessionToken,
-//     validateToken,
-//     isSecureContext,
-// } from "./config";

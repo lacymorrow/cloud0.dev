@@ -48,14 +48,7 @@ const nextConfig: NextConfig = {
   /*
    * Lint configuration
    */
-  eslint: {
-    /*
-			!! WARNING !!
-			* This allows production builds to successfully complete even if
-			* your project has ESLint errors.
-		*/
-    ignoreDuringBuilds: true,
-  },
+  // eslint: ignoreDuringBuilds moved to eslint.config.mjs (Next.js 15+)
   typescript: {
     /*
 			!! WARNING !!

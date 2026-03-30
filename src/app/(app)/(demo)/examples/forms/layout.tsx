@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 
+export const dynamic = "force-dynamic";
+
 import { SidebarNav } from "@/app/(app)/(demo)/examples/forms/components/sidebar-nav";
 import { Separator } from "@/components/ui/separator";
 import { routes } from "@/config/routes";

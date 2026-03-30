@@ -1,3 +1,4 @@
+import { FileTree } from "@/components/mdx/file-tree";
 import * as RadixIcons from "@radix-ui/react-icons";
 import * as LucideIcons from "lucide-react";
 import type { ComponentType, ReactNode } from "react";
@@ -38,7 +39,10 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     ...AlertComponents,
     Card,
     CardGroup,
+    FileTree,
     SiteName: () => <>{siteConfig.title}</>,
     ...components,
   };
 }
+
+export const getMDXComponents = useMDXComponents;

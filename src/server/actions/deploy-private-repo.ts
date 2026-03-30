@@ -6,7 +6,7 @@
  * import { deploymentService } from "@/server/services/deployment-service"
  */
 
-import { generateProjectNameSuggestions } from "@/lib/utils";
+import { generateProjectNameSuggestions } from "@/lib/utils/generate-project-name-suggestions";
 import { auth } from "@/server/auth";
 import {
   type DeploymentResult,

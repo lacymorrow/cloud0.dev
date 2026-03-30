@@ -475,6 +475,73 @@ export const rolePermissionsRelations = relations(rolePermissions, ({ one }) => 
   }),
 }));
 
+export const temporaryLinks = createTable("temporary_link", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: varchar("user_id", { length: 255 }).references(() => users.id),
+  data: text("data"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  type: varchar("type", { length: 50 }).notNull(),
+  metadata: text("metadata"),
+});
+
+export const userFiles = createTable(
+  "user_file",
+  {
+    id: serial("id").primaryKey(),
+    userId: varchar("user_id", { length: 255 })
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    title: varchar("title", { length: 255 }).notNull(),
+    location: text("location").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+  },
+  (userFile) => ({
+    userIdIdx: index("user_file_user_id_idx").on(userFile.userId),
+  })
+);
+
+export type UserFile = typeof userFiles.$inferSelect;
+export type NewUserFile = typeof userFiles.$inferInsert;
+
+export const waitlistEntries = createTable(
+  "waitlist_entry",
+  {
+    id: serial("id").primaryKey(),
+    email: varchar("email", { length: 255 }).notNull().unique(),
+    name: varchar("name", { length: 255 }).notNull(),
+    company: varchar("company", { length: 255 }),
+    role: varchar("role", { length: 100 }),
+    projectType: varchar("project_type", { length: 100 }),
+    timeline: varchar("timeline", { length: 100 }),
+    interests: text("interests"),
+    isNotified: boolean("is_notified").default(false),
+    notifiedAt: timestamp("notified_at", { withTimezone: true }),
+    source: varchar("source", { length: 50 }).default("website"),
+    metadata: text("metadata").default("{}"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(() => new Date()),
+  },
+  (waitlistEntry) => ({
+    emailIdx: index("waitlist_email_idx").on(waitlistEntry.email),
+    createdAtIdx: index("waitlist_created_at_idx").on(waitlistEntry.createdAt),
+    isNotifiedIdx: index("waitlist_is_notified_idx").on(waitlistEntry.isNotified),
+  })
+);
+
+export type WaitlistEntry = typeof waitlistEntries.$inferSelect;
+export type NewWaitlistEntry = typeof waitlistEntries.$inferInsert;
+
 export const feedback = createTable("feedback", {
   id: varchar("id", { length: 255 })
     .notNull()

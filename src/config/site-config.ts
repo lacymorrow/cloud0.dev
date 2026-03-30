@@ -110,6 +110,10 @@ interface SiteConfig {
       light: string;
       dark: string;
     };
+    openGraph: {
+      imageWidth: number;
+      imageHeight: number;
+    };
   };
 
   // Application settings
@@ -224,6 +228,10 @@ export const siteConfig: SiteConfig = {
     themeColor: {
       light: "white",
       dark: "black",
+    },
+    openGraph: {
+      imageWidth: 1200,
+      imageHeight: 630,
     },
   },
 

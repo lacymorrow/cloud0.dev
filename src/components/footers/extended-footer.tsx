@@ -11,8 +11,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { buttonVariants } from "@/components/ui/button";
-import RetroGrid from "@/components/ui/retro-grid";
-import SparklesText from "@/components/ui/sparkles-text";
+import { RetroGrid } from "@/components/ui/retro-grid";
+import { SparklesText } from "@/components/ui/sparkles-text";
 import { TextHoverEffect } from "@/components/ui/text-hover-effect";
 import { routes } from "@/config/routes";
 import { siteConfig } from "@/config/site-config";
