@@ -10,7 +10,7 @@ Get started with ShipKit in three easy steps:
 2. **Connect to Vercel**
 3. **Follow the Setup Wizard**
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fshipkit-io%2Fbones&project-name=bones-app&repository-name=bones-app&redirect-url=https%3A%2F%2Fshipkit.io%2Fx%2Fvercel%2Fdeploy&developer-id=oac_KkY2TcPxIWTDtL46WGqwZ4BF&production-deploy-hook=Shipkit%20Deploy&demo-title=Shipkit%20Preview&demo-description=The%20official%20Shipkit%20Preview.%20A%20full%20featured%20demo%20with%20dashboards%2C%20AI%20tools%2C%20and%20integrations%20with%20Docs%2C%20Payload%2C%20and%20Builder.io&demo-url=https%3A%2F%2Fshipkit.io%2Fdemo&demo-image=%2F%2Fshipkit.io%2Fimages%2Fdemo.png)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fshipkit-io%2Fbones&project-name=bones-app&repository-name=bones-app&redirect-url=https%3A%2F%2Fshipkit.io%2Fx%2Fvercel%2Fdeploy&developer-id=oac_KkY2TcPxIWTDtL46WGqwZ4BF&production-deploy-hook=Shipkit%20Deploy&demo-title=Bones%20%E2%80%93%20Next.js%20SaaS%20Starter&demo-description=Full-stack%20Next.js%20starter%20with%20Auth%2C%20Payments%2C%20CMS%2C%20AI%2C%20and%20100%2B%20components.%20Deploy%20in%2030%20seconds.&demo-url=https%3A%2F%2Fbones.sh&demo-image=https%3A%2F%2Fshipkit.io%2Fimages%2Fdemo.png)
 
 [![Open in Codeflow](https://developer.stackblitz.com/img/open_in_codeflow.svg)](https://pr.new/shipkit-io/bones)
 
@@ -18,14 +18,12 @@ No environment variables needed to start! Our setup wizard will guide you throug
 
 ## What's Included
 
-- 🔐 **Authentication** - Multiple providers (Discord, GitHub, Google)
-- 💳 **Payments** - Integrated with Lemon Squeezy
-- 📝 **CMS** - Built-in Payload CMS
-- 🎨 **Visual Editor** - Builder.io integration
-- 📧 **Email** - Resend for transactional emails
-- 🤖 **AI Ready** - OpenAI/Anthropic integration
-- 🎯 **Analytics** - Track user behavior
-- 🚀 **Performance** - Edge-optimized
+- ⚡️ **Next.js 16 + React 19** — Modern App Router foundation
+- 🔐 **Authentication** — Multiple providers (Discord, GitHub, Google) via NextAuth + Better Auth
+- 🎨 **Shadcn/UI** — Production-ready component library, fully owned in your repo
+- 🚀 **Performance** — Edge-optimized defaults
+
+> Looking for the full stack — database, payments, CMS, AI, and 100+ premium components? See [Shipkit](https://shipkit.io), the paid framework built on top of Bones.
 
 ## Quick Start Guide
 
@@ -86,7 +84,7 @@ Report it on [GitHub Issues](https://github.com/shipkit-io/shipkit/issues).
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details
+FSL-1.1-MIT — source-available, free for any Permitted Purpose (internal use, education, research, professional services). Converts to MIT after 2 years. See [LICENSE](LICENSE) for full terms.
 
 ## Local Development
 
@@ -112,6 +110,8 @@ To learn more about Next.js, take a look at the following resources:
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
 ## Deploy on Vercel
+
+> **Note for maintainers:** [bones.sh](https://bones.sh) production deploys from **this repo** (`shipkit-io/bones`, branch `main`) via the Vercel project `bones`. The old `lacymorrow/bones-www` repo is archived and no longer deploys anywhere — changes for bones.sh belong here.
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 

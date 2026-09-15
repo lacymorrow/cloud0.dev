@@ -22,6 +22,8 @@ export const routes = {
   home: "/",
   docs: "/docs",
   blog: "/blog",
+  cli: "/cli",
+  og: "/og",
   support: `mailto:${siteConfig.email.support}`,
 
   // Legal routes
@@ -33,6 +35,13 @@ export const routes = {
   // Marketing routes
   faq: "/faq",
   contact: "/contact",
+  about: "/about",
+  changelog: "/changelog",
+
+  // Bones-specific routes
+  bones: {
+    cliWww: "/bones/cli-www",
+  },
   features: "/features",
   pricing: "/pricing",
   launch: "/launch",

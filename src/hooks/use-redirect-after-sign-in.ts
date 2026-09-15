@@ -15,7 +15,7 @@ export const useRedirectAfterSignIn = (error: Error) => {
 		const redirectToSignIn = () => {
 			redirectWithCode(routes.auth.signIn, {
 				code: STATUS_CODES.AUTH.code,
-				nextUrl: pathname,
+				nextUrl: pathname ?? undefined,
 			});
 		};
 

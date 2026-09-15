@@ -73,6 +73,8 @@ const nextConfig: NextConfig = {
     // 	mdxType: "gfm",
     // },
 
+    // Cap webpack parallelism so Vercel 8 GB builds do not OOM.
+    cpus: 1,
     nextScriptWorkers: true,
     serverActions: {
       bodySizeLimit: FILE_UPLOAD_MAX_SIZE,
