@@ -16,10 +16,6 @@ export const docsConfig: DocsConfig = {
     // Only include blog link when blog is enabled
     ...(process.env.NEXT_PUBLIC_HAS_BLOG === "true" ? [{ title: "Blog", href: routes.blog }] : []),
     {
-      title: "Examples",
-      href: routes.examples.index,
-    },
-    {
       title: "Pricing",
       href: routes.pricing,
     },
@@ -185,21 +181,6 @@ export const docsConfig: DocsConfig = {
     {
       title: "Core Features",
       items: [
-        {
-          title: "Authentication",
-          href: routes.examples.authentication,
-          items: [],
-        },
-        {
-          title: "Dashboard",
-          href: routes.examples.dashboard,
-          items: [],
-        },
-        {
-          title: "Forms",
-          href: routes.examples.forms,
-          items: [],
-        },
         {
           title: "Deployments",
           href: routes.app.deployments,
