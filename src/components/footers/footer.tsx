@@ -48,7 +48,7 @@ const defaultGroups: FooterElement[] = [
         // { href: routes.docs, label: "Documentation" },
         // { href: routes.blog, label: "Blog" }, // TODO: Add blog
         { href: routes.auth.signIn, label: "Sign in" },
-        { href: routes.external.support, label: "Support" },
+        { href: routes.support, label: "Support" },
       ],
     },
   },
@@ -146,10 +146,18 @@ export const Footer: FC<FooterProps> = ({
 
 // Type guard for LinkItem
 function isLinkItem(item: FooterItem): item is LinkItem {
+  /*
+   * `"href" in item` is not enough: an item whose href resolves to undefined
+   * (a typo in a routes path, say) satisfies it and then throws inside
+   * <Link>, which takes down every page that renders the footer. Require a
+   * usable value so a bad entry is skipped instead.
+   */
   return (
     item !== null &&
     typeof item === "object" &&
+    "label" in item &&
     "href" in item &&
-    "label" in item
+    typeof (item as LinkItem).href === "string" &&
+    (item as LinkItem).href.length > 0
   );
 }
