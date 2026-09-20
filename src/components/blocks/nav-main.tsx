@@ -52,7 +52,6 @@ const data = [
     title: "Demos",
     icon: FileTerminalIcon,
     items: [
-      { title: "UI Demo", url: routes.examples.index },
       ...(env.NEXT_PUBLIC_FEATURE_BUILDER_ENABLED
         ? [{ title: "Builder.io", url: routes.demo.builderio }]
         : []),

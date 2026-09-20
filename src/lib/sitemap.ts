@@ -38,24 +38,11 @@ export async function generateSitemapEntries(): Promise<SitemapEntry[]> {
     priority: 0.5,
   }));
 
-  // Example routes
-  const exampleRoutes = Object.values(routes.examples)
-    .filter(
-      (route): route is string => typeof route === "string" && route !== routes.examples.index
-    )
-    .map((route) => ({
-      url: `${siteConfig.url}${route}`,
-      lastModified: new Date().toISOString(),
-      changeFrequency: "weekly" as const,
-      priority: 0.7,
-    }));
-
   // Add all entries
   entries.push(
     ...highPriorityRoutes,
     ...mediumPriorityRoutes,
-    ...lowPriorityRoutes,
-    ...exampleRoutes
+    ...lowPriorityRoutes
   );
 
   return entries;
