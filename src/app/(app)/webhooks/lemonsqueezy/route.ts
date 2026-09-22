@@ -1,6 +1,5 @@
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { eq } from "drizzle-orm";
-import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 // @see https://docs.lemonsqueezy.com/api/webhooks
 // @see https://raw.githubusercontent.com/lmsqueezy/nextjs-billing/refs/heads/main/src/app/api/webhook/route.ts
@@ -161,20 +160,27 @@ async function isEventProcessed(eventId: string, eventName: string): Promise<boo
 /**
  * Find or create user from webhook data using consistent userService method
  */
-async function findOrCreateUser(
+export async function findOrCreateUser(
   userEmail: string,
   userName?: string | null,
   customData?: any
 ): Promise<string> {
   try {
-    // First try to find user by custom data user_id
+    // Honor custom_data.user_id ONLY when the hinted user's email matches
+    // the verified webhook email. custom_data flows through from a fully
+    // attacker-controlled checkout query string; trusting it without an
+    // email check is an IDOR (see plan 002 / issue #223).
     if (customData?.user_id) {
       const existingUser = await db?.query.users.findFirst({
         where: eq(users.id, customData.user_id),
       });
-      if (existingUser) {
+      if (existingUser && existingUser.email?.toLowerCase() === userEmail.toLowerCase()) {
         return existingUser.id;
       }
+      logger.debug("Ignoring custom_data.user_id whose email does not match webhook email", {
+        suppliedUserId: customData.user_id,
+        matched: !!existingUser,
+      });
     }
 
     // Use the consistent userService method for finding or creating users
@@ -517,9 +523,9 @@ export async function POST(request: Request) {
   });
 
   try {
-    // Get headers
-    const headersList = await headers();
-    const signature = headersList.get("x-signature");
+    // Read the signature directly off the request so this handler is
+    // testable without a full Next request context.
+    const signature = request.headers.get("x-signature");
 
     if (!signature) {
       logger.warn("Missing X-Signature header", { requestId });
