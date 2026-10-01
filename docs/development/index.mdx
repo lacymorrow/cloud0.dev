@@ -1,6 +1,6 @@
 ---
-title: 'Development Guide'
-description: 'Get started developing with Shipkit'
+title: "Development Guide"
+description: "Get started developing with Shipkit"
 ---
 
 # Development Guide
@@ -12,17 +12,20 @@ Shipkit is built for developers who want to ship fast. Let's get you set up and 
 Get Shipkit running in 4 steps:
 
 1. **Clone the repo:**
+
    ```bash
    git clone https://github.com/your-repo/shipkit.git
    cd shipkit
    ```
 
 2. **Install dependencies:**
+
    ```bash
    bun install --frozen-lockfile
    ```
 
 3. **Set up environment:**
+
    ```bash
    cp .env.example .env.local
    # Edit .env.local with your values
@@ -38,6 +41,7 @@ That's it! You're ready to build.
 ## What You Need
 
 ### Required Tools
+
 - **Node.js** v18+ ([download](https://nodejs.org))
 - **Bun** v1.1+ ([install](https://bun.sh))
 - **PostgreSQL** v15+ (for database features)
@@ -73,22 +77,26 @@ src/
 ## Development Workflow
 
 ### Components
+
 - **Server components first** - Better performance, fewer bugs
 - **Client components only when needed** - For interactivity (forms, animations)
 - **Organize by purpose** - UI components in `ui/`, page blocks in `blocks/`
 
 ### API Routes
+
 - **Server actions** for forms and mutations
 - **API routes** for external integrations
 - **Zod validation** on all inputs
 - **Consistent error handling**
 
 ### Database
+
 - **Drizzle ORM** for type-safe queries
 - **Migrations** for schema changes
 - **Transactions** for data consistency
 
 ### Authentication
+
 - **Auth.js v5** for all auth needs
 - **Multiple providers** supported
 - **Server-side sessions** preferred
@@ -96,6 +104,7 @@ src/
 ## Common Tasks
 
 ### Add a New Page
+
 ```bash
 # Create app/(app)/my-page/page.tsx
 export default function MyPage() {
@@ -104,6 +113,7 @@ export default function MyPage() {
 ```
 
 ### Add a Component
+
 ```typescript
 // src/components/ui/my-component.tsx
 export function MyComponent() {
@@ -112,6 +122,7 @@ export function MyComponent() {
 ```
 
 ### Add Database Schema
+
 ```bash
 bun run db:generate
 # Edit the migration file
@@ -131,6 +142,46 @@ NEXT_PUBLIC_FEATURE_AUTH_GITHUB_ENABLED=true
 ```
 
 Features auto-enable when you add the required env vars.
+
+## Design-system lint (@shadcn/lint)
+
+`bun run lint:eslint` includes [`@shadcn/lint`](https://github.com/shadcn-ui/lint), an
+ESLint plugin that checks Tailwind v4 usage against Shipkit's own design system: it reads
+`components.json`, `src/styles/theme.css`, and each component's variants, and reports when a
+call site restyles a component or hardcodes an off-token value instead of using what the
+component already offers.
+
+Two rules are enabled, both in `eslint.config.mjs`:
+
+- **`shadcn/no-restyle`** flags `className` overrides on design-system components.
+  Contracts (also in `eslint.config.mjs`) set what each component accepts:
+  - `Button`: layout/margin/width only; padding, height, radius, and type come from `size`
+    (`src/components/ui/button.tsx`).
+  - `CardTitle` may resize text, not change font family or weight
+    (`src/components/ui/card.tsx`).
+  - `CardContent` may change spacing (padding/gap), not typography or color.
+  - Every other recognized `src/components/ui/**` component defaults to layout-only.
+- **`shadcn/no-arbitrary-values`** flags off-scale values like `p-[13px]` in favor of the
+  theme's spacing/radius/color scale (layout values such as `w-[320px]` are still allowed).
+
+Both rules are set to `warn`, not `error`, because existing code already has hundreds of
+findings and `error` would fail CI on unrelated, pre-existing code. Fix findings as you touch those files; promote a rule to `error` once it's
+clean.
+
+`src/components/ui/**` and `src/components/blocks/**` are excluded from ESLint entirely (see
+the ignores in `eslint.config.mjs`), so these rules only apply at call sites, not inside the
+components themselves.
+
+To add or loosen a contract, edit the `contracts` array under `shadcn/no-restyle` in
+`eslint.config.mjs`. See the [design-systems docs](https://github.com/shadcn-ui/lint/blob/main/docs/design-systems.md)
+for the contract and custom-message format. To silence a specific, reviewed exception:
+
+```tsx
+<Button
+  // eslint-disable-next-line shadcn/no-restyle -- reason
+  className="p-4"
+/>
+```
 
 ## Before Production
 

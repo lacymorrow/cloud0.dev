@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LockClosedIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/auth/use-session";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -53,7 +53,7 @@ export function CredentialsForm({ className }: CredentialsFormProps) {
         email: values.email,
         password: values.password,
         redirect: false,
-        redirectTo: nextUrl || routes.home,
+        redirectTo: nextUrl ?? routes.home,
       });
 
       // Check if the result is an error object from our server action
@@ -90,7 +90,7 @@ export function CredentialsForm({ className }: CredentialsFormProps) {
       await updateSession();
       toast.success("Signed in successfully");
       const resultUrl = new URL(
-        typeof result === "string" ? result : result?.url || nextUrl || routes.home
+        typeof result === "string" ? result : (result?.url ?? nextUrl ?? routes.home)
       );
       // If we are already on the page, same page, we need to do a full window.reload.
 

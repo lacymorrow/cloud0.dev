@@ -1,87 +1,206 @@
-import { MetadataRoute } from "next";
-import { siteConfig } from "@/config/site-config";
+import type { Buffer } from "node:buffer";
+import { readdir, stat } from "node:fs/promises";
+import { join } from "node:path";
+import type { MetadataRoute } from "next";
 import { routes } from "@/config/routes";
+import { siteConfig } from "@/config/site-config";
+import { changelogManifest } from "@/lib/generated/changelog-manifest";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = siteConfig.url;
+interface ContentFile {
+  slug: string;
+  path: string;
+}
 
-  // Helper to check if a route is external
-  const isExternalRoute = (route: string): boolean => {
-    return route.startsWith("http") || route.startsWith("mailto:");
-  };
+// Utility function to get content files
+async function getContentFiles(contentDir: string): Promise<ContentFile[]> {
+  try {
+    let fullPath: string;
 
-  // Helper to flatten nested route objects
-  const flattenRoutes = (obj: any, prefix = ""): string[] => {
-    let result: string[] = [];
-
-    for (const [key, value] of Object.entries(obj)) {
-      if (typeof value === "string" && !isExternalRoute(value)) {
-        result.push(value);
-      } else if (
-        typeof value === "object" &&
-        value !== null &&
-        !("params" in value)
-      ) {
-        // Recursively flatten nested objects (but skip route objects with params)
-        result = [...result, ...flattenRoutes(value)];
-      }
+    // Docs are in root docs/ directory, other content is in src/content/
+    if (contentDir === "docs") {
+      fullPath = join(process.cwd(), "docs");
+    } else {
+      fullPath = join(process.cwd(), "src/content", contentDir);
     }
 
-    return result;
-  };
+    const files = await readdir(fullPath, { recursive: true });
+    return files
+      .filter(
+        (file: string | Buffer): file is string =>
+          typeof file === "string" && (file.endsWith(".mdx") || file.endsWith(".md"))
+      )
+      .map((file: string) => ({
+        slug: file.replace(/\.(mdx|md)$/, ""),
+        path: join(fullPath, file),
+      }));
+  } catch (error) {
+    console.error(`Error reading ${contentDir} directory:`, error);
+    return [];
+  }
+}
 
-  // Get all internal routes
-  const allRoutes = flattenRoutes(routes);
+// This function will be called at build time and can also be called on-demand
+export async function generateSitemaps() {
+  // Count the number of blog posts and docs to determine sitemap splitting
+  const [_blogFiles, _docFiles] = await Promise.all([
+    getContentFiles("blog"),
+    getContentFiles("docs"),
+  ]);
 
-  // Define routes to exclude from sitemap
-  const excludedRoutes = [
-    "/api",
-    "/workers",
-    "/sign-out",
-    "/sign-in",
-    "/sign-up",
-    "/error",
-    "/admin",
-    "/dashboard",
-    "/settings",
-    "/api-keys",
-    "/forgot-password",
-    "/og",
-    "/trpc",
-    "/launch",
-  ];
+  const sitemaps = [{ id: 0 }]; // Static routes
 
-  // Filter routes
-  const includedRoutes = allRoutes.filter((route) => {
-    // Exclude API routes, worker routes, and other technical routes
-    return !excludedRoutes.some((excluded) => route.startsWith(excluded));
-  });
-
-  // Add root route if not present
-  if (!includedRoutes.includes("/")) {
-    includedRoutes.unshift("/");
+  // Only include blog sitemap if blog is enabled
+  if (process.env.NEXT_PUBLIC_HAS_BLOG === "true") {
+    sitemaps.push({ id: 1 }); // Blog posts
+    sitemaps.push({ id: 2 }); // Documentation
+  } else {
+    sitemaps.push({ id: 1 }); // Documentation (when blog is disabled)
   }
 
-  // Create sitemap entries
-  const sitemapEntries = includedRoutes.map((route) => ({
-    url: `${baseUrl}${route}`,
+  if (changelogManifest.length > 0) {
+    sitemaps.push({ id: sitemaps.length }); // Changelog entries
+  }
+
+  return sitemaps;
+}
+
+export default async function sitemap({ id }: { id: number }): Promise<MetadataRoute.Sitemap> {
+  // Marketing pages (highest priority)
+  const marketingRoutes = [
+    {
+      url: siteConfig.url,
+      lastModified: new Date(),
+      changeFrequency: "daily" as const,
+      priority: 1,
+    },
+    {
+      url: `${siteConfig.url}${routes.features}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.9,
+    },
+    {
+      url: `${siteConfig.url}${routes.pricing}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.9,
+    },
+  ];
+
+  // Documentation pages (high priority)
+  const docRoutes = [
+    {
+      url: `${siteConfig.url}${routes.docs}`,
+      lastModified: new Date(),
+      changeFrequency: "daily" as const,
+      priority: 0.8,
+    },
+  ];
+
+  // Changelog index
+  const changelogRoute = {
+    url: `${siteConfig.url}/changelog`,
     lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority:
-      route === "/"
-        ? 1
-        : route.includes("auth") || route.includes("sign")
-          ? 0.5
-          : 0.8,
-  }));
+    changeFrequency: "weekly" as const,
+    priority: 0.6,
+  };
 
-  // Sort by priority and then alphabetically
-  sitemapEntries.sort((a, b) => {
-    if (b.priority !== a.priority) {
-      return b.priority - a.priority;
+  // Support pages (lower priority)
+  const supportRoutes = [
+    {
+      url: `${siteConfig.url}${routes.faq}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    },
+    {
+      url: `${siteConfig.url}${routes.terms}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.4,
+    },
+    {
+      url: `${siteConfig.url}${routes.privacy}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.4,
+    },
+  ];
+
+  // When we have dynamic routes, we can split them into multiple sitemaps
+  // based on the id parameter
+  switch (id) {
+    case 0:
+      // Main sitemap with static routes
+      return [...marketingRoutes, ...docRoutes, changelogRoute, ...supportRoutes];
+    case 1: {
+      // Blog posts sitemap (only when blog is enabled)
+      if (process.env.NEXT_PUBLIC_HAS_BLOG !== "true") {
+        // When blog is disabled, case 1 is documentation
+        const docFiles = await getContentFiles("docs");
+        const docsRoutes = await Promise.all(
+          docFiles.map(async (file) => {
+            const stats = await stat(file.path);
+            return {
+              url: `${siteConfig.url}${routes.docs}/${file.slug}`,
+              lastModified: stats.mtime,
+              changeFrequency: "weekly" as const,
+              priority: 0.7,
+            };
+          })
+        );
+        return docsRoutes;
+      }
+      const blogFiles = await getContentFiles("blog");
+      const blogRoutes = await Promise.all(
+        blogFiles.map(async (file) => {
+          const stats = await stat(file.path);
+          return {
+            url: `${siteConfig.url}${routes.blog}/${file.slug}`,
+            lastModified: stats.mtime,
+            changeFrequency: "monthly" as const,
+            priority: 0.6,
+          };
+        })
+      );
+      return blogRoutes;
     }
-    return a.url.localeCompare(b.url);
-  });
-
-  return sitemapEntries;
+    case 2: {
+      // Documentation pages sitemap (only when blog is enabled)
+      if (process.env.NEXT_PUBLIC_HAS_BLOG !== "true") {
+        // When blog is disabled, case 2 should not be called
+        return [];
+      }
+      const docFiles = await getContentFiles("docs");
+      const docsRoutes = await Promise.all(
+        docFiles.map(async (file) => {
+          const stats = await stat(file.path);
+          return {
+            url: `${siteConfig.url}${routes.docs}/${file.slug}`,
+            lastModified: stats.mtime,
+            changeFrequency: "weekly" as const,
+            priority: 0.7,
+          };
+        })
+      );
+      return docsRoutes;
+    }
+    default: {
+      // Changelog sitemap (last segment, dynamic ID based on blog config)
+      if (changelogManifest.length > 0) {
+        const changelogId = process.env.NEXT_PUBLIC_HAS_BLOG === "true" ? 3 : 2;
+        if (id === changelogId) {
+          return changelogManifest.map((entry) => ({
+            url: `${siteConfig.url}/changelog/${(entry.frontmatter.slug as string | undefined) ?? entry.filename.replace(/\.(mdx?|md)$/, "")}`,
+            lastModified: entry.frontmatter.publishedAt
+              ? new Date(entry.frontmatter.publishedAt as string)
+              : new Date(),
+            changeFrequency: "monthly" as const,
+            priority: 0.5,
+          }));
+        }
+      }
+      return [];
+    }
+  }
 }

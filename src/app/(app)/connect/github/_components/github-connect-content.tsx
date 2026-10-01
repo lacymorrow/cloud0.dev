@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/auth/use-session";
 import { useEffect, useState } from "react";
 import { Icons } from "@/components/assets/icons";
 import { GitHubOAuthButton } from "@/components/buttons/github-oauth-button";
@@ -24,6 +24,7 @@ const ClientOnly = ({ children }: { children: React.ReactNode }) => {
   const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional client-only mount detection for SSR hydration
     setHasMounted(true);
   }, []);
 
@@ -34,7 +35,7 @@ const ClientOnly = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-export const GitHubConnectContent = () => {
+export function GitHubConnectContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { data: session, update: updateSession, status } = useSession();
@@ -84,12 +85,12 @@ export const GitHubConnectContent = () => {
   if (status === "loading") {
     return (
       <div className="container mx-auto flex min-h-screen max-w-xl flex-col items-center justify-center">
-        <Card className="w-full">
-          <CardHeader className="space-y-1">
+        <Card className="w-full gap-0 py-0">
+          <CardHeader className="gap-y-1 p-6">
             <CardTitle className="text-2xl">Connecting GitHub Account</CardTitle>
             <CardDescription>Please wait while we process your GitHub connection</CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col items-center justify-center space-y-4 py-8">
+          <CardContent className="flex flex-col items-center justify-center gap-4 p-6 py-8">
             <Icons.spinner className="h-8 w-8 animate-spin text-primary" />
           </CardContent>
         </Card>
@@ -100,8 +101,8 @@ export const GitHubConnectContent = () => {
   return (
     <ClientOnly>
       <div className="container mx-auto flex min-h-screen max-w-xl flex-col items-center justify-center">
-        <Card className="w-full">
-          <CardHeader className="space-y-1">
+        <Card className="w-full gap-0 py-0">
+          <CardHeader className="gap-y-1 p-6">
             <CardTitle className="text-2xl">GitHub Connection</CardTitle>
             <CardDescription>
               {isSuccess
@@ -111,14 +112,14 @@ export const GitHubConnectContent = () => {
                   : "Connect your GitHub account to access repository features"}
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col items-center justify-center space-y-4 py-8">
+          <CardContent className="flex flex-col items-center justify-center gap-4 p-6 py-8">
             {error ? (
               <div className="rounded-lg bg-destructive/10 p-4 text-destructive">
                 <p>{error}</p>
               </div>
             ) : isSuccess ? (
-              <div className="flex flex-col items-center justify-center space-y-4">
-                <div className="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center text-green-500">
+              <div className="flex flex-col items-center justify-center gap-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-500">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -143,7 +144,7 @@ export const GitHubConnectContent = () => {
                 </p>
               </div>
             ) : isConnected ? (
-              <div className="flex flex-col items-center justify-center space-y-4">
+              <div className="flex flex-col items-center justify-center gap-4">
                 <Icons.github className="h-16 w-16" />
                 <p className="text-center">
                   Your account is connected to GitHub as{" "}
@@ -151,7 +152,7 @@ export const GitHubConnectContent = () => {
                 </p>
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center space-y-4">
+              <div className="flex flex-col items-center justify-center gap-4">
                 <Icons.github className="h-16 w-16" />
                 <p className="text-center">Connect your GitHub account to get started</p>
                 <GitHubOAuthButton
@@ -162,7 +163,7 @@ export const GitHubConnectContent = () => {
               </div>
             )}
           </CardContent>
-          <CardFooter className="flex justify-center">
+          <CardFooter className="flex justify-center p-6 pt-0">
             <Link
               href={routes.settings.profile}
               className={cn(buttonVariants({ variant: "outline" }))}
@@ -174,4 +175,4 @@ export const GitHubConnectContent = () => {
       </div>
     </ClientOnly>
   );
-};
+}

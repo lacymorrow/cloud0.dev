@@ -1,6 +1,5 @@
 "use client";
 
-import type { DialogProps } from "@radix-ui/react-dialog";
 import {
   FileIcon,
   LaptopIcon,
@@ -10,6 +9,7 @@ import {
 } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
+import type { Dialog as DialogPrimitive } from "radix-ui";
 import * as React from "react";
 import { docsConfig } from "@/components/modules/search/example";
 import { ShortcutDisplay } from "@/components/primitives/shortcut-display";
@@ -29,7 +29,7 @@ import { ShortcutAction } from "@/config/keyboard-shortcuts";
 import { siteConfig } from "@/config/site-config";
 import { cn } from "@/lib/utils";
 
-export interface SearchMenuProps extends DialogProps {
+export interface SearchMenuProps extends DialogPrimitive.DialogProps {
   /**
    * The title to display in the search menu dialog
    * @default "Search Documentation"
@@ -124,7 +124,9 @@ export function SearchMenu({
         variant={buttonVariant}
         className={cn(
           "relative bg-muted/50 text-sm font-normal text-muted-foreground shadow-none",
-          collapsible ? "justify-center lg:justify-start lg:pr-12" : "justify-start sm:pr-12",
+          collapsible
+            ? "justify-center lg:justify-start lg:pr-12 lg:has-[>svg]:pr-12"
+            : "justify-start sm:pr-12 sm:has-[>svg]:pr-12",
           buttonClassName
         )}
         size="sm"
@@ -133,7 +135,7 @@ export function SearchMenu({
       >
         {collapsible && <MagnifyingGlassIcon className="h-4 w-4 shrink-0 lg:mr-2" />}
         <span
-          className={cn("text-xs truncate", collapsible ? "hidden lg:inline-flex" : "inline-flex")}
+          className={cn("truncate text-xs", collapsible ? "hidden lg:inline-flex" : "inline-flex")}
         >
           {buttonText}
         </span>
@@ -141,7 +143,7 @@ export function SearchMenu({
           <ShortcutDisplay
             action={ShortcutAction.OPEN_SEARCH}
             className={cn(
-              "pointer-events-none absolute right-[0.3rem] top-[0.3rem] text-xs",
+              "pointer-events-none absolute top-[0.3rem] right-[0.3rem] text-xs",
               "transition-opacity duration-300",
               collapsible ? "hidden xl:flex" : "hidden lg:flex",
               isClient ? "opacity-100" : "opacity-0"

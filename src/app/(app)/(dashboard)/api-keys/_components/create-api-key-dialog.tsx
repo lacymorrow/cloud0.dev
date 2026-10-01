@@ -2,6 +2,7 @@
 
 import { PlusIcon } from "@radix-ui/react-icons";
 import * as React from "react";
+import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/copy-button";
@@ -24,7 +25,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
 
 interface CreateApiKeyDialogProps {
   onSubmit: (data: {
@@ -44,7 +44,6 @@ export function CreateApiKeyDialog({ onSubmit, userId }: CreateApiKeyDialogProps
   const [isLoading, setIsLoading] = React.useState(false);
   const [createdKey, setCreatedKey] = React.useState<string | null>(null);
   const [showKeyDialog, setShowKeyDialog] = React.useState(false);
-  const { toast } = useToast();
 
   const resetForm = () => {
     setName("");
@@ -68,8 +67,7 @@ export function CreateApiKeyDialog({ onSubmit, userId }: CreateApiKeyDialogProps
       if (result.key) {
         // Copy to clipboard
         await navigator.clipboard.writeText(result.key);
-        toast({
-          title: "API key created",
+        toast.success("API key created", {
           description: "The API key has been copied to your clipboard.",
         });
 
@@ -77,11 +75,9 @@ export function CreateApiKeyDialog({ onSubmit, userId }: CreateApiKeyDialogProps
         setCreatedKey(result.key);
         setShowKeyDialog(true);
       }
-    } catch (error) {
-      toast({
-        title: "Error",
+    } catch (_error) {
+      toast.error("Error", {
         description: "Failed to create API key. Please try again.",
-        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -182,13 +178,13 @@ export function CreateApiKeyDialog({ onSubmit, userId }: CreateApiKeyDialogProps
           <div className="py-4">
             <Alert className="mb-4">
               <AlertDescription>
-                Make sure to copy your API key now. You won't be able to see it again.
+                Make sure to copy your API key now. You won&apos;t be able to see it again.
               </AlertDescription>
             </Alert>
 
-            <div className="flex items-center space-x-2 bg-muted p-3 rounded-md">
+            <div className="flex items-center gap-x-2 rounded-md bg-muted p-3">
               <code className="flex-1 font-mono text-sm break-all">{createdKey}</code>
-              <CopyButton value={createdKey || ""} />
+              <CopyButton value={createdKey ?? ""} />
             </div>
           </div>
 

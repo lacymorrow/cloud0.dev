@@ -8,15 +8,15 @@ import type { HTMLAttributes } from "react";
 import { fontSans, fontSerif } from "@/config/fonts";
 import { cn } from "@/lib/utils";
 
-interface FontProviderProps extends HTMLAttributes<HTMLDivElement> {}
+type FontProviderProps = HTMLAttributes<HTMLDivElement>;
 
 export function FontProvider({ children, className, ...props }: FontProviderProps) {
   return (
     <div
       className={cn(
-        "block w-full mx-auto",
+        "mx-auto block w-full",
         "antialiased",
-        "font-sans font-normal leading-relaxed",
+        "font-sans leading-relaxed font-normal",
         fontSans.variable,
         fontSerif.variable,
         className

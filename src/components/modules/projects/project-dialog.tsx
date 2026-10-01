@@ -6,6 +6,7 @@ import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { useTeam } from "@/components/providers/team-provider";
 import { Button } from "@/components/ui/button";
@@ -35,7 +36,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { routes } from "@/config/routes";
-import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { createProject, updateProject } from "@/server/actions/projects";
 import { createTeam } from "@/server/actions/teams";
@@ -107,7 +107,6 @@ export function ProjectDialog({
   className,
   project,
 }: ProjectDialogProps) {
-  const { toast } = useToast();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -127,7 +126,7 @@ export function ProjectDialog({
     defaultValues: {
       name: isEditMode && project ? project.name : "",
       teamId:
-        isEditMode && project?.teamId ? project.teamId : selectedTeamId || defaultTeamId || "",
+        isEditMode && project?.teamId ? project.teamId : (selectedTeamId ?? defaultTeamId ?? ""),
     },
   });
 
@@ -156,15 +155,13 @@ export function ProjectDialog({
           // Set form value if not already set and in create mode
           if (!isEditMode && !form.getValues("teamId")) {
             // Prioritize selectedTeamId from context if available
-            form.setValue("teamId", selectedTeamId || firstTeamId);
+            form.setValue("teamId", selectedTeamId ?? firstTeamId);
           }
         }
       } catch (error) {
         console.error("Failed to load teams:", error);
-        toast({
-          title: "Error",
+        toast.error("Error", {
           description: "Failed to load teams. Please try again.",
-          variant: "destructive",
         });
       }
     };
@@ -172,7 +169,7 @@ export function ProjectDialog({
     if (isOpen) {
       loadTeams();
     }
-  }, [isOpen, selectedTeamId, form, toast, isEditMode]);
+  }, [isOpen, selectedTeamId, form, isEditMode]);
 
   // Handle team creation (only for createWithTeam variant)
   const handleCreateTeam = async () => {
@@ -183,7 +180,7 @@ export function ProjectDialog({
       if (!team) {
         throw new Error("Failed to create team");
       }
-      form.setValue("teamId", team.id || "");
+      form.setValue("teamId", team.id ?? "");
       setShowNewTeamInput(false);
       setNewTeamName("");
 
@@ -191,16 +188,13 @@ export function ProjectDialog({
       const userTeams = await fetchUserTeams();
       setTeams(userTeams);
 
-      toast({
-        title: "Success",
+      toast.success("Success", {
         description: `Team "${newTeamName}" has been created.`,
       });
     } catch (error) {
       console.error("Failed to create team:", error);
-      toast({
-        title: "Error",
+      toast.error("Error", {
         description: "Failed to create team. Please try again.",
-        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -213,14 +207,12 @@ export function ProjectDialog({
     try {
       if (!isEditMode) {
         await createProject(values.name, values.teamId, userId);
-        toast({
-          title: "Success",
+        toast.success("Success", {
           description: `Project "${values.name}" has been created.`,
         });
       } else if (project) {
         await updateProject(project.id, values.name);
-        toast({
-          title: "Success",
+        toast.success("Success", {
           description: `Project "${values.name}" has been updated.`,
         });
       }
@@ -229,10 +221,8 @@ export function ProjectDialog({
       router.refresh();
     } catch (error) {
       console.error(`Failed to ${isEditMode ? "update" : "create"} project:`, error);
-      toast({
-        title: "Error",
+      toast.error("Error", {
         description: `Failed to ${isEditMode ? "update" : "create"} project. Please try again.`,
-        variant: "destructive",
       });
     } finally {
       setIsLoading(false);

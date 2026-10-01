@@ -2,6 +2,7 @@
 
 import { FolderSyncIcon, Loader2, RotateCcw, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,7 +13,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAsyncAction } from "@/hooks/use-async-state";
-import { useToast } from "@/hooks/use-toast";
 import { deleteAllPayments, importPayments, refreshAllPayments } from "@/server/actions/payments";
 
 type PaymentProvider = "lemonsqueezy" | "polar" | "stripe" | "all";
@@ -50,7 +50,14 @@ const formatImportMessage = (provider: PaymentProvider, result: unknown): string
         );
       } else if (stats && typeof stats === "object" && "error" in stats) {
         const providerName = providerId.charAt(0).toUpperCase() + providerId.slice(1);
-        messages.push(`${providerName}: Error - ${stats.error || "Unknown error"}`);
+        const errorValue = (stats as { error: unknown }).error;
+        const errorMessage =
+          errorValue instanceof Error
+            ? errorValue.message
+            : typeof errorValue === "string"
+              ? errorValue
+              : "Unknown error";
+        messages.push(`${providerName}: Error - ${errorMessage}`);
       }
     }
 
@@ -68,7 +75,6 @@ const formatImportMessage = (provider: PaymentProvider, result: unknown): string
  * Component to import users and payments from payment providers
  */
 export function ImportPayments() {
-  const { toast } = useToast();
   const [currentProvider, setCurrentProvider] = useState<PaymentProvider | null>(null);
   const [currentAction, setCurrentAction] = useState<ActionType | null>(null);
   const [progress, setProgress] = useState<string>("");
@@ -83,10 +89,8 @@ export function ImportPayments() {
         setProgress("Connecting to payment provider...");
 
         // Show initial progress
-        toast({
-          title: `Starting ${provider === "all" ? "multi-provider" : provider} import`,
+        toast(`Starting ${provider === "all" ? "multi-provider" : provider} import`, {
           description: "This may take several minutes. Please do not close this page.",
-          variant: "default",
         });
 
         try {
@@ -94,10 +98,8 @@ export function ImportPayments() {
           const result = await importPayments(provider);
 
           // Show success toast
-          toast({
-            title: `${provider === "all" ? "All payments" : provider} import complete`,
+          toast.success(`${provider === "all" ? "All payments" : provider} import complete`, {
             description: formatImportMessage(provider, result),
-            variant: "default",
           });
 
           setProgress("Import completed successfully");
@@ -108,20 +110,16 @@ export function ImportPayments() {
       } else if (action === "delete") {
         setProgress("Deleting all payments...");
 
-        toast({
-          title: "Deleting all payments",
+        toast.error("Deleting all payments", {
           description: "This operation cannot be undone.",
-          variant: "destructive",
         });
 
         try {
           const result = await deleteAllPayments();
 
           // Show success toast
-          toast({
-            title: "All payments deleted",
-            description: result.message || `Successfully deleted ${result.deletedCount} payments`,
-            variant: "default",
+          toast.success("All payments deleted", {
+            description: result.message ?? `Successfully deleted ${result.deletedCount} payments`,
           });
 
           setProgress("Deletion completed");
@@ -132,23 +130,19 @@ export function ImportPayments() {
       } else if (action === "refresh") {
         setProgress("Refreshing all payments...");
 
-        toast({
-          title: "Refreshing all payments",
+        toast("Refreshing all payments", {
           description:
             "Deleting existing data and importing fresh data. This may take several minutes.",
-          variant: "default",
         });
 
         try {
           const result = await refreshAllPayments();
 
           // Show success toast
-          toast({
-            title: "All payments refreshed",
+          toast.success("All payments refreshed", {
             description:
-              result.message ||
+              result.message ??
               `Successfully refreshed payments: deleted ${result.deletedCount} old payments and imported fresh data`,
-            variant: "default",
           });
 
           setProgress("Refresh completed");
@@ -186,13 +180,14 @@ export function ImportPayments() {
         errorMessage = "Database connection error. Please try again in a few minutes.";
       }
 
-      toast({
-        title: `${currentAction === "import" ? "Import" : currentAction === "delete" ? "Delete" : "Refresh"} failed`,
-        description: errorMessage,
-        variant: "destructive",
-      });
+      toast.error(
+        `${currentAction === "import" ? "Import" : currentAction === "delete" ? "Delete" : "Refresh"} failed`,
+        {
+          description: errorMessage,
+        }
+      );
     }
-  }, [error, currentAction, toast]);
+  }, [error, currentAction]);
 
   /**
    * Handles the import process for a specific provider
@@ -257,7 +252,7 @@ export function ImportPayments() {
   /**
    * Gets the loading icon based on current action
    */
-  const getLoadingIcon = () => {
+  const _getLoadingIcon = () => {
     if (currentAction === "import") {
       return <FolderSyncIcon className="mr-2 h-4 w-4" />;
     }

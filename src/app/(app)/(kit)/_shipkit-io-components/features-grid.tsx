@@ -42,15 +42,16 @@ const features = [
     background: (
       <Marquee
         pauseOnHover
-        className="absolute top-10 [--duration:20s] [mask-image:linear-gradient(to_top,transparent_40%,#000_100%)]"
+        className="absolute top-10 mask-[linear-gradient(to_top,transparent_40%,#000_100%)] [--duration:20s]"
       >
         {files.map((f, idx) => (
           <figure
+            // biome-ignore lint/suspicious/noArrayIndexKey: decorative/static array, key is stable index
             key={idx}
             className={cn(
               "relative w-32 cursor-pointer overflow-hidden rounded-xl border p-4",
-              "border-gray-950/[.1] bg-gray-950/[.01] hover:bg-gray-950/[.05]",
-              "dark:border-gray-50/[.1] dark:bg-gray-50/[.10] dark:hover:bg-gray-50/[.15]",
+              "border-gray-950/10 bg-gray-950/1 hover:bg-gray-950/5",
+              "dark:border-gray-50/10 dark:bg-gray-50/10 dark:hover:bg-gray-50/15",
               "transform-gpu blur-[1px] transition-all duration-300 ease-out hover:blur-none"
             )}
           >
@@ -73,7 +74,7 @@ const features = [
     cta: "Learn more",
     className: "col-span-3 lg:col-span-2",
     background: (
-      <AnimatedListDemo className="absolute right-2 top-4 h-[300px] w-full border-none transition-all duration-300 ease-out [mask-image:linear-gradient(to_top,transparent_10%,#000_100%)] group-hover:scale-105" />
+      <AnimatedListDemo className="absolute top-4 right-2 h-[300px] w-full border-none mask-[linear-gradient(to_top,transparent_10%,#000_100%)] transition-all duration-300 ease-out group-hover:scale-105" />
     ),
   },
   {
@@ -84,7 +85,7 @@ const features = [
     cta: "Learn more",
     className: "col-span-3 lg:col-span-2",
     background: (
-      <AnimatedBeamMultipleOutputDemo className="absolute right-2 top-4 h-[300px] border-none transition-all duration-300 ease-out [mask-image:linear-gradient(to_top,transparent_10%,#000_100%)] group-hover:scale-105" />
+      <AnimatedBeamMultipleOutputDemo className="absolute top-4 right-2 h-[300px] border-none mask-[linear-gradient(to_top,transparent_10%,#000_100%)] transition-all duration-300 ease-out group-hover:scale-105" />
     ),
   },
   {
@@ -98,7 +99,7 @@ const features = [
       <Calendar
         mode="single"
         selected={new Date(2022, 4, 11, 0, 0, 0)}
-        className="absolute right-0 top-10 origin-top rounded-md border transition-all duration-300 ease-out [mask-image:linear-gradient(to_top,transparent_40%,#000_100%)] group-hover:scale-105"
+        className="absolute top-10 right-0 origin-top rounded-md border mask-[linear-gradient(to_top,transparent_40%,#000_100%)] transition-all duration-300 ease-out group-hover:scale-105"
       />
     ),
   },
@@ -108,6 +109,7 @@ export const FeaturesGrid = () => {
   return (
     <BentoGrid className="">
       {features.map((feature, idx) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: decorative/static array, key is stable index
         <BentoCard key={idx} {...feature} />
       ))}
     </BentoGrid>

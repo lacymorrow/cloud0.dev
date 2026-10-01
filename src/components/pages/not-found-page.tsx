@@ -1,7 +1,6 @@
 // This must be a server component
 
 import { RocketIcon } from "lucide-react";
-import type { ThemeProvider as NextThemesProvider } from "next-themes";
 import { AppRouterLayout } from "@/components/layouts/app-router-layout";
 import { Link } from "@/components/primitives/link";
 // import { PageHeader, PageHeaderDescription, PageHeaderHeading } from "@/components/primitives/page-header";
@@ -16,27 +15,23 @@ interface NotFoundPageProps {
   statusCode?: number;
 }
 
-const NoOpProvider = ({ children, ...props }: React.ComponentProps<typeof NextThemesProvider>) => (
-  <>{children}</>
-);
-
 export const NotFoundPage = ({
   containerClassName,
   descriptionClassName,
   statusCode = 404,
 }: NotFoundPageProps) => {
   return (
-    <AppRouterLayout themeProvider={NoOpProvider}>
+    <AppRouterLayout>
       <div className="relative h-screen w-screen">
         {/* Animated background (client-only) */}
         <div className="absolute inset-0 z-0">
           <NotFoundTerminalBackground />
         </div>
 
-        <div className="container relative z-10 flex h-full w-full flex-col items-center justify-center px-4 sm:px-6">
+        <div className="relative z-10 container flex h-full w-full flex-col items-center justify-center px-4 sm:px-6">
           <Card
             className={cn(
-              "mx-auto w-full max-w-md bg-background/80 backdrop-blur-sm",
+              "mx-auto w-full max-w-md bg-background/80 backdrop-blur-xs",
               containerClassName
             )}
           >
@@ -61,7 +56,7 @@ export const NotFoundPage = ({
                 )}
               >
                 <span className="relative z-10">Take me home</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/50 to-primary opacity-50 blur-xl transition-all duration-500 hover:opacity-75" />
+                <div className="absolute inset-0 bg-linear-to-r from-primary/50 to-primary opacity-50 blur-xl transition-all duration-500 hover:opacity-75" />
               </Link>
               <p className="text-center text-sm text-muted-foreground">
                 We can&apos;t find the page you&apos;re looking for.

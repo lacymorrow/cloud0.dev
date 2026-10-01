@@ -1,7 +1,8 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import type { NextConfig } from "next";
-import { NEXTJS_PLUGINS_DIR_RELATIVE } from "./constants";
+import { PLUGINS_DIR_URL } from "./nextjs";
 
 /**
  * Applies configuration plugins found in a specified directory to a Next.js config object.
@@ -10,18 +11,21 @@ import { NEXTJS_PLUGINS_DIR_RELATIVE } from "./constants";
  * @param pluginsRelativeDir The directory path relative to the project root where plugins are located.
  * @returns The modified Next.js configuration object with plugins applied.
  */
-export function withPlugins(
-  initialConfig: NextConfig,
-  pluginsRelativeDir = NEXTJS_PLUGINS_DIR_RELATIVE,
-): NextConfig {
+export function withPlugins(initialConfig: NextConfig, pluginsRelativeDir?: string): NextConfig {
   let config = { ...initialConfig };
-  const pluginsDir = path.join(process.cwd(), pluginsRelativeDir);
+  const pluginsDir = pluginsRelativeDir
+    ? path.join(process.cwd(), pluginsRelativeDir)
+    : fileURLToPath(PLUGINS_DIR_URL);
 
   try {
     if (fs.existsSync(pluginsDir)) {
       const pluginFiles = fs
         .readdirSync(pluginsDir)
-        .filter((file) => /\.(t|j|mj|mt)s$/.test(file))
+        .filter(
+          (file) =>
+            /\.(t|j|mj|mt)s$/.test(file) &&
+            !["index.ts", "index.js", "index.mts", "index.mjs", "index.cjs"].includes(file)
+        )
         .sort(); // Apply plugins in alphabetical order
 
       // Logging moved to instrumentation.ts
@@ -29,14 +33,13 @@ export function withPlugins(
       for (const file of pluginFiles) {
         const pluginPath = path.join(pluginsDir, file);
         try {
-          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          // eslint-disable-next-line @typescript-eslint/no-require-imports -- dynamic plugin loading requires CommonJS require
           const pluginModule = require(pluginPath);
           // Find the exported function (prefer default export, fallback to the first named export function)
           let pluginFunction = pluginModule.default;
           if (typeof pluginFunction !== "function") {
             pluginFunction = Object.values(pluginModule).find(
-              (exp): exp is (config: NextConfig) => NextConfig =>
-                typeof exp === "function",
+              (exp): exp is (config: NextConfig) => NextConfig => typeof exp === "function"
             );
           }
 
@@ -45,15 +48,10 @@ export function withPlugins(
             config = pluginFunction(config);
           } else {
             throw new Error(
-              `[Next.js Config] Skipping ${file}: No exported function found or the export is not a function.`,
+              `[Next.js Config] Skipping ${file}: No exported function found or the export is not a function.`
             );
           }
-        } catch (error) {
-          console.debug(
-            `[Next.js Config] Error loading or applying plugin ${file}:`,
-            error,
-          );
-        }
+        } catch (_error) {}
       }
     } else {
       // This condition is logged in instrumentation.ts now

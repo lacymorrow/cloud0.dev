@@ -6,7 +6,7 @@ import { GitHubConnectContent } from "./_components/github-connect-content";
  * boundary to prerender. The root loading.tsx used to supply one implicitly
  * (and caused soft 404s site-wide); this page owns its own.
  */
-export default function Page() {
+export default function GitHubConnectPage() {
   return (
     <Suspense fallback={null}>
       <GitHubConnectContent />

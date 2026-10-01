@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import { AlertCircle } from "lucide-react";
 import type { Metadata } from "next";
 import { Suspense } from "react";
@@ -14,7 +12,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { constructMetadata } from "@/config/metadata";
 import { siteConfig } from "@/config/site-config";
 import { safeDbExecute } from "@/server/db";
-import { users } from "@/server/db/schema";
 import { getCollaboratorDetails } from "@/server/services/github/github-service";
 import { AddCollaboratorForm } from "./_components/add-collaborator-form";
 import { columns, type GitHubUserData } from "./_components/columns";
@@ -119,7 +116,7 @@ export default function GitHubUsersPage() {
 
       {/* Repository Metrics */}
       <div className="mb-10">
-        <h2 className="text-xl font-semibold tracking-tight mb-4">Repository Metrics</h2>
+        <h2 className="mb-4 text-xl font-semibold tracking-tight">Repository Metrics</h2>
         <Suspense fallback={<RepoMetricsSkeleton />}>
           <RepoMetrics />
         </Suspense>

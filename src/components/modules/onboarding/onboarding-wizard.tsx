@@ -2,6 +2,7 @@
 
 import { CheckIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { GitHubOAuthButton } from "@/components/buttons/github-oauth-button";
 import { VercelConnectButton } from "@/components/buttons/vercel-connect-button";
 import { DashboardVercelDeploy } from "@/components/modules/deploy/dashboard-vercel-deploy";
@@ -10,7 +11,6 @@ import { IntroDisclosure } from "@/components/ui/intro-disclosure";
 import { siteConfig } from "@/config/site-config";
 import { env } from "@/env";
 import { useLocalStorage } from "@/hooks/use-local-storage";
-import { useToast } from "@/hooks/use-toast";
 import type { User } from "@/types/user";
 
 interface OnboardingWizardProps {
@@ -28,8 +28,6 @@ export const OnboardingWizard = ({
   githubUsername,
   onComplete,
 }: OnboardingWizardProps) => {
-  const { toast } = useToast();
-
   const hasVercelConnectionAttempt = !!user?.vercelConnectionAttemptedAt || hasVercelConnection;
 
   const initialStep = hasGitHubConnection ? (hasVercelConnectionAttempt ? 2 : 1) : 0;
@@ -59,6 +57,7 @@ export const OnboardingWizard = ({
   const [open, setOpen] = useState(!safeOnboardingState.completed);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- syncs with external localStorage onboardingState
     setOpen(!safeOnboardingState.completed);
   }, [safeOnboardingState.completed]);
 
@@ -154,7 +153,7 @@ export const OnboardingWizard = ({
             </div>
             <div className="rounded-lg bg-primary/10 p-3 text-center">
               <h3 className="font-semibold">Almost there!</h3>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Once deployed, your site will be available at your custom domain or a
                 Vercel-provided URL.
               </p>
@@ -168,8 +167,7 @@ export const OnboardingWizard = ({
 
   const handleComplete = () => {
     setOnboardingState((prev) => ({ ...(prev ?? defaultOnboardingState), completed: true }));
-    toast({
-      title: "Onboarding completed!",
+    toast.success("Onboarding completed!", {
       description: `You're all set to start building with ${siteConfig.title}.`,
     });
     onComplete?.();
@@ -208,7 +206,7 @@ export const OnboardingWizard = ({
             currentStep: index,
             steps: {
               ...safePrev.steps,
-              [stepIds[Math.max(0, Math.min(stepIds.length - 1, index))] || ""]: true,
+              [stepIds[Math.max(0, Math.min(stepIds.length - 1, index))] ?? ""]: true,
             },
           };
         })

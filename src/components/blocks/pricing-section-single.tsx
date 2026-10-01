@@ -28,11 +28,11 @@ export function PricingSectionSingle({ plans, plan, children }: PricingSectionSi
     <div className="relative w-full text-white">
       {/* Background gradient effect */}
       <div className="container mx-auto p-4">
-        <Card className="relative mx-auto max-w-3xl overflow-hidden border-purple-500/50 backdrop-blur-sm transition-shadow duration-300 hover:shadow-xl hover:shadow-purple-500/10">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-transparent" />
-          <div className="absolute -right-32 -top-32 h-64 w-64 rounded-full bg-purple-500/10 blur-[100px]" />
+        <Card className="relative mx-auto max-w-3xl gap-0 overflow-hidden border-purple-500/50 py-0 backdrop-blur-xs transition-shadow duration-300 hover:shadow-xl hover:shadow-purple-500/10">
+          <div className="absolute inset-0 bg-linear-to-br from-purple-500/10 via-transparent to-transparent" />
+          <div className="absolute -top-32 -right-32 h-64 w-64 rounded-full bg-purple-500/10 blur-[100px]" />
 
-          <CardHeader className="relative space-y-4 p-8 text-center sm:p-12">
+          <CardHeader className="relative gap-y-4 p-8 text-center sm:p-12">
             <div className="flex items-center justify-center gap-2">
               <h2 className="text-3xl font-bold sm:text-4xl">{selectedPlan.title}</h2>
               {selectedPlan.isBestValue && <Sparkles className="h-6 w-6 text-purple-400" />}
@@ -74,7 +74,7 @@ export function PricingSectionSingle({ plans, plan, children }: PricingSectionSi
                   href={selectedPlan.href}
                   className={cn(
                     buttonVariants({ variant: "default" }),
-                    "w-full bg-purple-500 text-lg text-white transition-all duration-200 hover:bg-purple-600 hover:scale-[1.02] active:scale-[0.98]"
+                    "w-full bg-purple-500 text-lg text-white transition-all duration-200 hover:scale-[1.02] hover:bg-purple-600 active:scale-[0.98]"
                   )}
                 >
                   Get {selectedPlan.title} Now

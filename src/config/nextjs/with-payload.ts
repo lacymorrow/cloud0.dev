@@ -1,3 +1,4 @@
+import withPayload from "@payloadcms/next/withPayload";
 import type { NextConfig } from "next";
 import { buildTimeFeatures } from "../features-config";
 /**
@@ -7,12 +8,7 @@ import { buildTimeFeatures } from "../features-config";
  */
 export default function withPayloadConfig(nextConfig: NextConfig): NextConfig {
   if (buildTimeFeatures.PAYLOAD_ENABLED) {
-    try {
-      const { default: withPayload } = require("@payloadcms/next/withPayload");
-      return withPayload(nextConfig);
-    } catch {
-      console.warn("@payloadcms/next not installed, skipping Payload plugin");
-    }
+    return withPayload(nextConfig);
   }
   return nextConfig;
 }

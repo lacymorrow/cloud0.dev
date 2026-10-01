@@ -1,11 +1,10 @@
 "use client";
 
-import { CheckCircle, Database, ExternalLink, Loader2, Terminal, XCircle } from "lucide-react";
+import { CheckCircle, Database, ExternalLink, Loader2, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getCMSStatusAction, seedCMSAction } from "@/app/(app)/(admin)/admin/integrations/actions";
 import { Link } from "@/components/primitives/link";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { routes } from "@/config/routes";
@@ -103,7 +102,7 @@ export default function CMSPage() {
   };
 
   return (
-    <div className="container mx-auto max-w-3xl py-10 space-y-8">
+    <div className="container mx-auto max-w-3xl space-y-8 py-10">
       <h1 className="text-3xl font-bold tracking-tight">CMS Management</h1>
 
       <Card>
@@ -122,7 +121,7 @@ export default function CMSPage() {
           <CardDescription>Manage your Payload CMS instance.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6 sm:grid-cols-2">
-          <div className="flex flex-col space-y-2">
+          <div className="flex flex-col gap-2">
             <h3 className="font-semibold">Payload Admin</h3>
             <p className="text-sm text-muted-foreground">
               Access the full Payload CMS admin interface.
@@ -138,7 +137,7 @@ export default function CMSPage() {
             </Link>
           </div>
 
-          <div className="flex flex-col space-y-2">
+          <div className="flex flex-col gap-2">
             <h3 className="font-semibold">Seed CMS Data</h3>
             <p className="text-sm text-muted-foreground">
               Populate the CMS with initial data. Clears existing data first. (Requires admin

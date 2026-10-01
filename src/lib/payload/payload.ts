@@ -1,26 +1,42 @@
-// Payload client with lazy dynamic imports so builds succeed without @payloadcms installed.
+// Todo: if payload is accessed when there is no database setup, the whole app crashes.
 
+import type { Payload } from "payload";
 import { env } from "@/env";
 
-// Initialize Payload
-export const getPayloadClient = async () => {
+// Memoized client promise so repeated calls share one initialization.
+let payloadClientPromise: Promise<Payload | null> | null = null;
+
+/**
+ * Get the Payload client.
+ *
+ * Returns null when Payload is disabled, before `@payload-config` or `payload`
+ * are imported, so importers of this module do not statically pull Payload CMS
+ * into their bundle. The client is memoized in a module-level promise so
+ * repeated calls do not re-initialize Payload.
+ */
+export const getPayloadClient = async (): Promise<Payload | null> => {
   if (!env?.NEXT_PUBLIC_FEATURE_PAYLOAD_ENABLED) {
+    // logger.debug("Payload not initialized: DATABASE_URL is missing or Payload is not enabled");
     return null;
   }
 
-  try {
-    const [{ getPayload }, { default: payloadConfig }] = await Promise.all([
-      import("payload"),
-      import("@payload-config"),
-    ]);
+  if (!payloadClientPromise) {
+    payloadClientPromise = (async () => {
+      try {
+        const [{ default: payloadConfig }, { getPayload }] = await Promise.all([
+          import("@payload-config"),
+          import("payload"),
+        ]);
 
-    const payload = await getPayload({ config: payloadConfig });
-    return payload;
-  } catch (error) {
-    console.warn("Payload failed to initialize", error);
-    return null;
+        return await getPayload({ config: payloadConfig });
+      } catch (error) {
+        console.warn("Payload failed to initialize", error);
+        // Drop the memoized promise so a later call can retry.
+        payloadClientPromise = null;
+        return null;
+      }
+    })();
   }
+
+  return payloadClientPromise;
 };
-
-// Export a singleton instance
-export const payload = await getPayloadClient();

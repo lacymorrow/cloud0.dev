@@ -69,7 +69,7 @@ function PriceCard({
   ctaText = "Get Started",
 }: PriceCardProps) {
   return (
-    <Card className={`relative p-6 ${highlighted ? "border-primary shadow-lg" : ""}`}>
+    <Card className={`relative gap-0 p-6 ${highlighted ? "border-primary shadow-lg" : ""}`}>
       {highlighted && (
         <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-sm text-primary-foreground">
           Most Popular
@@ -118,7 +118,7 @@ export default function PricingPage() {
 
           {/* Pricing Cards */}
           <div className="mx-auto grid max-w-5xl grid-cols-1 gap-8 md:grid-cols-3">
-            {plans.map((plan, index) => (
+            {plans.map((plan, _index) => (
               <PriceCard key={uuidv4()} {...plan} />
             ))}
           </div>

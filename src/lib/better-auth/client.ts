@@ -1,6 +1,5 @@
 import { createAuthClient } from "better-auth/react";
 import { BASE_URL } from "@/config/base-url";
-import { env } from "@/env";
 
 /**
  * Better Auth client for frontend use
@@ -11,6 +10,8 @@ import { env } from "@/env";
  */
 export const authClient = createAuthClient({
   baseURL: BASE_URL,
+  // Must match `basePath` in src/server/better-auth/config.ts; Auth.js owns /api/auth.
+  basePath: "/api/better-auth",
   fetchOptions: {
     onError(e) {
       if (e.error.status === 429) {

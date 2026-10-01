@@ -21,7 +21,7 @@ export default function AppearancePage() {
   const [isPending, startTransition] = React.useTransition();
   const { theme, setTheme } = useTheme();
 
-  async function handleThemeChange(newTheme: Theme) {
+  function handleThemeChange(newTheme: Theme) {
     if (isPending) return;
 
     startTransition(async () => {
@@ -75,7 +75,7 @@ export default function AppearancePage() {
                 />
                 <Label
                   htmlFor={theme.value}
-                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 peer-data-[state=checked]:border-primary hover:bg-accent hover:text-accent-foreground has-data-[state=checked]:border-primary"
                 >
                   <span>{theme.label}</span>
                 </Label>

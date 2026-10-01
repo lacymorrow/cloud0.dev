@@ -1,18 +1,15 @@
+import { Inter as FontSans, Noto_Serif as FontSerif } from "next/font/google";
+import Head from "next/head";
+import { SessionProvider } from "next-auth/react";
+import { ThemeProvider } from "next-themes";
+import { ViewTransitions } from "next-view-transitions";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+import type { ReactNode } from "react";
 import { Analytics } from "@/components/primitives/analytics";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { TRPCReactProvider } from "@/lib/trpc/react";
 import { cn } from "@/lib/utils";
-import { SessionProvider } from "next-auth/react";
-import { ThemeProvider } from "next-themes";
-import { ViewTransitions } from "next-view-transitions";
-import {
-  Space_Grotesk as FontSans,
-  Noto_Serif as FontSerif,
-} from "next/font/google";
-import Head from "next/head";
-import { NuqsAdapter } from "nuqs/adapters/next/app";
-import type { ReactNode } from "react";
 
 import "@/styles/globals.css";
 
@@ -40,7 +37,7 @@ export function RootLayout({ children }: { children: ReactNode }) {
         <body
           className={cn(
             "min-h-screen antialiased",
-            "font-sans font-normal leading-relaxed",
+            "font-sans font-normal",
             fontSans.variable,
             fontSerif.variable
           )}

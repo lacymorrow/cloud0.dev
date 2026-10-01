@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertCircle, CheckCircle, ExternalLink } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/auth/use-session";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Icons } from "@/components/assets/icons";
@@ -99,7 +99,7 @@ export function PolarProductStatus({
 
         setIsPurchased(result.purchased);
       } else {
-        setError(result.message || "Failed to check purchase status");
+        setError(result.message ?? "Failed to check purchase status");
       }
     } catch (err) {
       setError("An error occurred while checking purchase status");
@@ -136,7 +136,7 @@ export function PolarProductStatus({
       if (result.success && result.url) {
         window.location.href = result.url;
       } else {
-        toast.error(result.message || "Failed to create checkout URL");
+        toast.error(result.message ?? "Failed to create checkout URL");
       }
     } catch (error) {
       console.error("Error creating checkout:", error);
@@ -148,7 +148,7 @@ export function PolarProductStatus({
 
   if (isLoading) {
     return (
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center gap-x-2">
         <Icons.spinner className="h-4 w-4 animate-spin" />
         <span className="text-sm text-muted-foreground">{loadingText}</span>
       </div>
@@ -166,7 +166,7 @@ export function PolarProductStatus({
 
   if (isPurchased) {
     return (
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center gap-x-2">
         <CheckCircle className="h-4 w-4 text-green-500" />
         <span className="text-sm font-medium">{successText}</span>
       </div>
@@ -182,7 +182,9 @@ export function PolarProductStatus({
       <CardContent>
         <div className="space-y-2">
           {productPrice && <p className="font-semibold">{productPrice}</p>}
-          <p className="text-sm text-muted-foreground">You haven't purchased this product yet.</p>
+          <p className="text-sm text-muted-foreground">
+            You haven&apos;t purchased this product yet.
+          </p>
         </div>
       </CardContent>
       <CardFooter>

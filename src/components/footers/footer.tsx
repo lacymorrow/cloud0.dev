@@ -1,11 +1,19 @@
+import { cva, type VariantProps } from "class-variance-authority";
+import React, { type FC, type HTMLAttributes, type ReactNode } from "react";
+import { v4 as uuid } from "uuid";
+import { Link } from "@/components/primitives/link";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { buttonVariants } from "@/components/ui/button";
+import { GithubVersionBadge } from "@/components/ui/github-version-badge";
+import { SocialLinks } from "@/components/ui/social-links";
 import { routes } from "@/config/routes";
 import { siteConfig } from "@/config/site-config";
 import { cn } from "@/lib/utils";
-import { type VariantProps, cva } from "class-variance-authority";
-import Link from "next/link";
-import type { FC, HTMLAttributes, ReactNode } from "react";
-import { v4 as uuid } from "uuid";
 
 interface LinkItem {
   label: string;
@@ -22,9 +30,7 @@ interface FooterGroup {
   items: FooterItem[];
 }
 
-type FooterElement =
-  | { type: "group"; content: FooterGroup }
-  | { type: "node"; content: ReactNode };
+type FooterElement = { type: "group"; content: FooterGroup } | { type: "node"; content: ReactNode };
 
 const defaultGroups: FooterElement[] = [
   {
@@ -33,10 +39,9 @@ const defaultGroups: FooterElement[] = [
       header: { label: "Product" },
       items: [
         { href: routes.home, label: "Home" },
-        // { href: routes.features, label: "Features" },
-        // { href: routes.pricing, label: "Pricing" },
-        { href: routes.external.bones, label: "Shipkit Bones" },
-        { href: routes.external.bones, label: "Shipkit" },
+        { href: routes.features, label: "Features" },
+        { href: routes.pricing, label: "Pricing" },
+        { href: routes.external.bones, label: "Bones" },
       ],
     },
   },
@@ -45,10 +50,13 @@ const defaultGroups: FooterElement[] = [
     content: {
       header: { label: "Resources" },
       items: [
-        // { href: routes.docs, label: "Documentation" },
-        // { href: routes.blog, label: "Blog" }, // TODO: Add blog
+        { href: routes.docs, label: "Documentation" },
+        // Only include blog link when blog is enabled
+        ...(process.env.NEXT_PUBLIC_HAS_BLOG === "true"
+          ? [{ href: routes.blog, label: "Blog" }]
+          : []),
+        { href: routes.contact, label: "Support" },
         { href: routes.auth.signIn, label: "Sign in" },
-        { href: routes.support, label: "Support" },
       ],
     },
   },
@@ -91,7 +99,7 @@ export const Footer: FC<FooterProps> = ({
     if (element.type === "group") {
       const group = element.content;
       return (
-        <div key={uuid()} className="mb-8 md:mb-0">
+        <div key={uuid()} className="flex flex-col gap-4">
           {group.header.href ? (
             <Link href={group.header.href} className="mb-2 block font-semibold">
               {group.header.label}
@@ -125,18 +133,65 @@ export const Footer: FC<FooterProps> = ({
 
   return (
     <footer className={cn(footerStyles({ variant }), className)} {...rest}>
-      <div className="container relative flex w-full flex-col items-stretch gap-2xl py-2xl md:min-h-80">
+      <div className="relative container flex w-full flex-col items-stretch gap-2xl py-2xl md:min-h-80">
         <div className="flex flex-col justify-between gap-2xl lg:flex-row">
-          <div className="flex flex-col gap-2xl">
-            <Link
-              href={routes.home}
-              className="text-4xl font-bold hover:text-primary/80 transition-colors"
-            >
-              <h1>{siteConfig.name}</h1>
+          <div className="flex flex-col gap-4">
+            <Link href={routes.home}>
+              <h1 className="text-4xl font-bold">{siteConfig.title}</h1>
             </Link>
+            <GithubVersionBadge owner="lacymorrow" repo="shipkit" />
+            <SocialLinks labelled className="" />
           </div>
-          <div className="flex flex-col flex-wrap md:flex-row lg:gap-20">
+          {/* Desktop Layout */}
+          <div className="hidden w-full items-start justify-items-start gap-xl md:grid md:grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] xl:gap-2xl">
             {groupElements}
+          </div>
+          {/* Mobile Layout */}
+          <div className="flex w-full flex-col gap-md md:hidden">
+            <Accordion type="multiple" className="w-full">
+              {groups
+                .filter((el) => el.type === "group")
+                .map((element) => {
+                  const group = element.content;
+                  return (
+                    <AccordionItem value={group.header.label} key={uuid()}>
+                      <AccordionTrigger className="font-semibold">
+                        {group.header.href ? (
+                          <Link href={group.header.href}>{group.header.label}</Link>
+                        ) : (
+                          group.header.label
+                        )}
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <ul className="space-y-2 pt-2">
+                          {group.items.map((item) => {
+                            const key = uuid();
+                            if (isLinkItem(item)) {
+                              return (
+                                <li key={key}>
+                                  <Link
+                                    className={cn(
+                                      buttonVariants({ variant: "link" }),
+                                      "h-auto p-0"
+                                    )}
+                                    href={item.href}
+                                  >
+                                    {item.label}
+                                  </Link>
+                                </li>
+                              );
+                            }
+                            // Render custom ReactNode items directly
+                            return React.isValidElement(item)
+                              ? React.cloneElement(item, { key: key })
+                              : null;
+                          })}
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+                  );
+                })}
+            </Accordion>
           </div>
         </div>
       </div>
@@ -146,18 +201,5 @@ export const Footer: FC<FooterProps> = ({
 
 // Type guard for LinkItem
 function isLinkItem(item: FooterItem): item is LinkItem {
-  /*
-   * `"href" in item` is not enough: an item whose href resolves to undefined
-   * (a typo in a routes path, say) satisfies it and then throws inside
-   * <Link>, which takes down every page that renders the footer. Require a
-   * usable value so a bad entry is skipped instead.
-   */
-  return (
-    item !== null &&
-    typeof item === "object" &&
-    "label" in item &&
-    "href" in item &&
-    typeof (item as LinkItem).href === "string" &&
-    (item as LinkItem).href.length > 0
-  );
+  return item !== null && typeof item === "object" && "href" in item && "label" in item;
 }

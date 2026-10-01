@@ -14,34 +14,34 @@ export async function WaitlistAdmin() {
     <div className="space-y-8">
       {/* Statistics Cards */}
       <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Card className="gap-0 py-0">
+          <CardHeader className="flex flex-row items-center justify-between gap-y-0 p-6 pb-2">
             <CardTitle className="text-sm font-medium">Total Signups</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-6 pt-0">
             <div className="text-2xl font-bold">{stats.total.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">People on the waitlist</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Card className="gap-0 py-0">
+          <CardHeader className="flex flex-row items-center justify-between gap-y-0 p-6 pb-2">
             <CardTitle className="text-sm font-medium">Notified</CardTitle>
             <Mail className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-6 pt-0">
             <div className="text-2xl font-bold">{stats.notified.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">Users already notified</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Card className="gap-0 py-0">
+          <CardHeader className="flex flex-row items-center justify-between gap-y-0 p-6 pb-2">
             <CardTitle className="text-sm font-medium">Pending</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-6 pt-0">
             <div className="text-2xl font-bold">{stats.pending.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">Awaiting notification</p>
           </CardContent>
@@ -60,12 +60,12 @@ export async function WaitlistAdmin() {
         <CardContent>
           <div className="space-y-4">
             {entries.length === 0 ? (
-              <p className="text-center text-muted-foreground py-8">No waitlist entries yet</p>
+              <p className="py-8 text-center text-muted-foreground">No waitlist entries yet</p>
             ) : (
               entries.map((entry) => (
                 <div
                   key={entry.id}
-                  className="flex items-center justify-between p-4 border rounded-lg"
+                  className="flex items-center justify-between rounded-lg border p-4"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
@@ -84,7 +84,7 @@ export async function WaitlistAdmin() {
                       {entry.timeline && <span>⏰ {entry.timeline}</span>}
                     </div>
                     {entry.interests && (
-                      <p className="text-sm text-muted-foreground max-w-2xl">
+                      <p className="max-w-2xl text-sm text-muted-foreground">
                         💭 {entry.interests}
                       </p>
                     )}
