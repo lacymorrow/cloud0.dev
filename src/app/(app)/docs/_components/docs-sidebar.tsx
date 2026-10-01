@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import * as React from "react";
 import {
   Accordion,
   AccordionContent,
@@ -33,7 +32,7 @@ export function DocsSidebar({ className, navigation }: DocsSidebarProps) {
               <span className="font-medium text-foreground/70">{section.title}</span>
             </AccordionTrigger>
             {section.items?.length && (
-              <AccordionContent className="pb-1 pt-0">
+              <AccordionContent className="pt-0 pb-1">
                 <div className="ml-3 flex flex-col gap-1">
                   {section.items.map((item) => (
                     <Link
@@ -43,7 +42,7 @@ export function DocsSidebar({ className, navigation }: DocsSidebarProps) {
                         "flex w-full items-center rounded-md px-2 py-1.5 text-sm transition-colors",
                         "hover:bg-accent hover:text-accent-foreground",
                         pathname === item.href
-                          ? "font-medium text-foreground bg-accent"
+                          ? "bg-accent font-medium text-foreground"
                           : "text-foreground/60"
                       )}
                     >

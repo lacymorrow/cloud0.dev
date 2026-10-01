@@ -1,6 +1,6 @@
 "use client";
 
-import { signOut } from "next-auth/react";
+import { signOut } from "@/lib/auth/use-session";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import {
@@ -29,7 +29,7 @@ export const DeleteAccountCard = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  const handleDeleteAccount = async () => {
+  const handleDeleteAccount = () => {
     if (isPending) return;
 
     startTransition(async () => {

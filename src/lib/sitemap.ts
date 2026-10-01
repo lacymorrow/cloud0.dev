@@ -9,6 +9,8 @@ interface SitemapEntry {
   priority?: number;
 }
 
+// Async signature kept stable for callers that await this API.
+// eslint-disable-next-line @typescript-eslint/require-await
 export async function generateSitemapEntries(): Promise<SitemapEntry[]> {
   const entries: SitemapEntry[] = [];
 
@@ -38,11 +40,24 @@ export async function generateSitemapEntries(): Promise<SitemapEntry[]> {
     priority: 0.5,
   }));
 
+  // Example routes
+  const exampleRoutes = Object.values(routes.examples)
+    .filter(
+      (route): route is string => typeof route === "string" && route !== routes.examples.index
+    )
+    .map((route) => ({
+      url: `${siteConfig.url}${route}`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    }));
+
   // Add all entries
   entries.push(
     ...highPriorityRoutes,
     ...mediumPriorityRoutes,
-    ...lowPriorityRoutes
+    ...lowPriorityRoutes,
+    ...exampleRoutes
   );
 
   return entries;

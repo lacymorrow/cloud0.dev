@@ -2,6 +2,7 @@
 
 import { ArrowRight, CheckCircle, Coffee, Gift, Heart, Sparkles } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,7 +16,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
 import { addToWaitlist, type WaitlistFormData } from "@/server/actions/waitlist-actions";
 
 export function WaitlistForm() {
@@ -29,7 +29,6 @@ export function WaitlistForm() {
     interests: "",
   });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const { toast } = useToast();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -49,26 +48,21 @@ export function WaitlistForm() {
           timeline: "",
           interests: "",
         });
-        toast({
-          title: "You're officially on the list! 🎉",
+        toast.success("You're officially on the list! 🎉", {
           description: "We'll send you updates and early access when it's ready.",
         });
       } else {
         console.error("Error adding to waitlist:", result.error);
         setStatus("error");
-        toast({
-          title: "Something went wrong",
-          description: result.error || "Please try again or contact support.",
-          variant: "destructive",
+        toast.error("Something went wrong", {
+          description: result.error ?? "Please try again or contact support.",
         });
       }
     } catch (error) {
       console.error("Error submitting form:", error);
       setStatus("error");
-      toast({
-        title: "Something went wrong",
+      toast.error("Something went wrong", {
         description: "Please try again or contact support if the issue persists.",
-        variant: "destructive",
       });
     }
   };
@@ -79,12 +73,12 @@ export function WaitlistForm() {
 
   if (status === "success") {
     return (
-      <div className="py-24 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20">
+      <div className="bg-linear-to-br from-green-50 to-emerald-50 py-24 dark:from-green-950/20 dark:to-emerald-950/20">
         <div className="container px-4 md:px-6">
           <div className="mx-auto max-w-2xl text-center">
             <div className="relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl blur opacity-25" />
-              <Card className="relative border-green-200 dark:border-green-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm">
+              <div className="absolute -inset-1 rounded-2xl bg-linear-to-r from-green-600 to-emerald-600 opacity-25 blur-sm" />
+              <Card className="relative gap-0 border-green-200 bg-white/90 py-0 backdrop-blur-xs dark:border-green-800 dark:bg-slate-900/90">
                 <CardContent className="p-12">
                   <div className="mb-6 flex justify-center">
                     <div className="flex h-20 w-20 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/20">
@@ -94,13 +88,13 @@ export function WaitlistForm() {
                   <h3 className="mb-4 text-3xl font-bold text-green-900 dark:text-green-100">
                     Welcome to the club! 🚀
                   </h3>
-                  <p className="mb-8 text-green-700 dark:text-green-300 text-lg">
-                    You're now part of an exclusive group of developers who are tired of building
-                    the same things over and over. We'll keep you updated on our progress and give
-                    you first access when we launch.
+                  <p className="mb-8 text-lg text-green-700 dark:text-green-300">
+                    You&apos;re now part of an exclusive group of developers who are tired of
+                    building the same things over and over. We&apos;ll keep you updated on our
+                    progress and give you first access when we launch.
                   </p>
                   <div className="grid gap-6 sm:grid-cols-2">
-                    <div className="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-900/10 rounded-lg">
+                    <div className="flex items-center gap-3 rounded-lg bg-green-50 p-4 dark:bg-green-900/10">
                       <Gift className="h-6 w-6 text-green-600 dark:text-green-400" />
                       <div>
                         <div className="font-semibold text-green-900 dark:text-green-100">
@@ -111,7 +105,7 @@ export function WaitlistForm() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-900/10 rounded-lg">
+                    <div className="flex items-center gap-3 rounded-lg bg-green-50 p-4 dark:bg-green-900/10">
                       <Sparkles className="h-6 w-6 text-green-600 dark:text-green-400" />
                       <div>
                         <div className="font-semibold text-green-900 dark:text-green-100">
@@ -123,10 +117,10 @@ export function WaitlistForm() {
                       </div>
                     </div>
                   </div>
-                  <div className="mt-8 pt-6 border-t border-green-200 dark:border-green-800">
-                    <p className="text-sm text-green-600 dark:text-green-400 flex items-center justify-center gap-2">
+                  <div className="mt-8 border-t border-green-200 pt-6 dark:border-green-800">
+                    <p className="flex items-center justify-center gap-2 text-sm text-green-600 dark:text-green-400">
                       <Heart className="h-4 w-4" />
-                      Thanks for believing in what we're building
+                      Thanks for believing in what we&apos;re building
                       <Coffee className="h-4 w-4" />
                     </p>
                   </div>
@@ -140,25 +134,25 @@ export function WaitlistForm() {
   }
 
   return (
-    <div className="py-24 bg-white dark:bg-slate-950">
+    <div className="bg-white py-24 dark:bg-slate-950">
       <div className="container px-4 md:px-6">
         <div className="mx-auto max-w-2xl">
-          <div className="text-center mb-12">
+          <div className="mb-12 text-center">
             <Badge
               variant="outline"
               className="mb-4 border-violet-200 text-violet-700 dark:border-violet-800 dark:text-violet-300"
             >
               Join the Movement
             </Badge>
-            <h2 className="mb-6 text-3xl md:text-4xl font-bold tracking-tight">Get Early Access</h2>
+            <h2 className="mb-6 text-3xl font-bold tracking-tight md:text-4xl">Get Early Access</h2>
             <p className="text-lg text-slate-600 dark:text-slate-300">
               Help us build something developers actually want. Your input shapes what we ship.
             </p>
           </div>
 
           <div className="relative">
-            <div className="absolute -inset-1 bg-gradient-to-r from-violet-600 to-purple-600 rounded-2xl blur opacity-20" />
-            <Card className="relative border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm">
+            <div className="absolute -inset-1 rounded-2xl bg-linear-to-r from-violet-600 to-purple-600 opacity-20 blur-sm" />
+            <Card className="relative border-slate-200 bg-white/90 backdrop-blur-xs dark:border-slate-800 dark:bg-slate-900/90">
               <CardHeader className="text-center">
                 <CardTitle className="flex items-center justify-center gap-2">
                   <Sparkles className="h-5 w-5 text-violet-600 dark:text-violet-400" />
@@ -294,11 +288,11 @@ export function WaitlistForm() {
                     type="submit"
                     size="lg"
                     disabled={status === "loading"}
-                    className="w-full h-14 text-base bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700"
+                    className="h-14 w-full bg-linear-to-r from-violet-600 to-purple-600 text-base hover:from-violet-700 hover:to-purple-700"
                   >
                     {status === "loading" ? (
                       <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
                         <span>Joining the waitlist...</span>
                       </div>
                     ) : (
@@ -310,8 +304,8 @@ export function WaitlistForm() {
                   </Button>
 
                   <p className="text-center text-xs text-slate-500 dark:text-slate-400">
-                    We'll only email you about Shipkit updates. No spam, no selling your data, no
-                    BS.
+                    We&apos;ll only email you about Shipkit updates. No spam, no selling your data,
+                    no BS.
                   </p>
                 </form>
               </CardContent>

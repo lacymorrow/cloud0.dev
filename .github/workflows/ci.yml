@@ -1,0 +1,219 @@
+# CI gate. See plans/MASTER-TEST-PLAN.md (Phase 6) for the rationale.
+#
+# Minutes policy (Actions minutes are billed on this private repo):
+#   - Cheap jobs (typecheck, lint, unit) run on every PR.
+#   - Expensive jobs (integration, build, e2e, docs-links) run on pushes to main
+#     and on PRs labeled "ci:full". Add the label when a change touches auth,
+#     payments, the build pipeline, or docs routing.
+#   - Locally verified work (upstream syncs, agent PRs) runs `bun run verify`,
+#     pastes the summary in the PR, and commits with "[skip ci]".
+#
+# Job summary:
+#   typecheck       — `bun run typecheck` (cheap, fast feedback)
+#   lint            — biome + eslint + prettier
+#   test-unit       — vitest unit suite (no DB)
+#   test-integration— vitest integration suite (real Postgres service)
+#   test-e2e        — Playwright against a production build (`next start`, real Postgres service)
+#   build           — production build (catches client-bundle / SSR regressions)
+#   docs-links      — Holocron build; link-checks docs/ (fumadocs does not)
+
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Cancel in-flight PR runs when new commits arrive; never cancel main pushes.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+env:
+  BUN_VERSION: "latest"
+  # tsc and eslint both exceed node's default ~2GB heap on this codebase
+  # (CI OOM: SIGABRT / exit 134). Keep in sync with the build job's needs.
+  NODE_OPTIONS: "--max-old-space-size=8192"
+
+jobs:
+  typecheck:
+    name: TypeScript
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
+
+  lint:
+    name: Lint (biome + eslint + prettier)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - run: bun install --frozen-lockfile
+      - run: bun run lint
+
+  test-unit:
+    name: Unit tests (mocked db)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      AUTH_SECRET: ci-only-secret-do-not-use-in-prod
+      SKIP_ENV_VALIDATION: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - run: bun install --frozen-lockfile
+      - run: bun run test
+
+  test-integration:
+    name: Integration tests (real Postgres)
+    if: ${{ github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'ci:full') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: shipkit_integration
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      USE_EXTERNAL_DB: "1"
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/shipkit_integration
+      AUTH_SECRET: ci-only-secret-do-not-use-in-prod
+      SKIP_ENV_VALIDATION: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - run: bun install --frozen-lockfile
+      - run: bun run test:integration
+
+  build:
+    name: Production build
+    if: ${{ github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'ci:full') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: [typecheck, lint]
+    env:
+      AUTH_SECRET: ci-only-secret-do-not-use-in-prod
+      SKIP_ENV_VALIDATION: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+
+  test-e2e:
+    name: E2E (Playwright)
+    if: ${{ github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'ci:full') }}
+    runs-on: ubuntu-latest
+    # Includes a production build (~15-25 min) before the Playwright run —
+    # keep this above the build job's timeout plus test time.
+    timeout-minutes: 50
+    needs: [test-unit, test-integration]
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: shipkit_e2e
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      E2E_SKIP_DB_SETUP: "0"
+      USE_EXTERNAL_DB: "1"
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/shipkit_e2e
+      AUTH_SECRET: ci-only-secret-do-not-use-in-prod
+      SKIP_ENV_VALIDATION: "1"
+      CI: "true"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - run: bun install --frozen-lockfile
+      # playwright.config.ts runs `bun run start` under CI (LAC-2687), which
+      # needs a production build in .next. Jobs run on separate runners, so
+      # the build job's output is not available here — build in-job (LAC-3399).
+      - name: Build production bundle for `next start`
+        run: bun run build
+      - name: Install Playwright browsers
+        run: bunx playwright install --with-deps chromium
+      - run: bun run test:e2e
+      - if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7
+
+  # The Holocron docs build is the only thing that link-checks docs/.
+  # The default fumadocs provider renders broken links without complaint, so
+  # this job is the gate that keeps them out — it caught 15 pre-existing 404s
+  # when the provider was introduced. See docs-site/README.md.
+  docs-links:
+    name: Docs link check (Holocron build)
+    if: ${{ github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'ci:full') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+      - name: Install docs-site dependencies
+        working-directory: docs-site
+        run: npm ci
+      - name: Build docs-site
+        working-directory: docs-site
+        run: npm run build
+
+  # Aggregate "everything must pass" job — wire this as the
+  # required check in branch protection rules rather than wiring each
+  # job individually. Lets us add/rename jobs without re-configuring
+  # protection.
+  ci-pass:
+    name: CI pass
+    runs-on: ubuntu-latest
+    needs: [typecheck, lint, test-unit, test-integration, build, test-e2e, docs-links]
+    if: always()
+    steps:
+      # Skipped jobs (expensive suite not requested) are fine; failures and
+      # cancellations are not.
+      - name: Fail if any required job failed
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: exit 1
+      - run: echo "All CI jobs that ran passed."

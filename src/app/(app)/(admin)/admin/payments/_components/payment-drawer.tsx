@@ -55,19 +55,19 @@ export const PaymentDrawer = ({ payment, open, onClose }: PaymentDrawerProps) =>
 
   return (
     <Drawer open={open} onOpenChange={onClose}>
-      <DrawerContent className="max-h-[90vh] flex flex-col">
+      <DrawerContent className="flex max-h-[90vh] flex-col">
         <DrawerHeader>
           <DrawerTitle>Payment Details</DrawerTitle>
           <DrawerDescription>Order ID: {payment.orderId}</DrawerDescription>
         </DrawerHeader>
 
-        <ScrollArea className="flex-grow overflow-y-auto">
+        <ScrollArea className="grow overflow-y-auto">
           <div className="mx-auto w-full max-w-2xl p-6">
             <div className="space-y-6">
               <section>
                 <h3 className="text-lg font-semibold">Payment Information</h3>
                 <div className="mt-4 grid gap-4">
-                  <Card className="overflow-hidden">
+                  <Card className="gap-0 overflow-hidden py-0">
                     <div className="bg-muted/40 p-6">
                       <div className="flex items-center gap-4">
                         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
@@ -106,7 +106,7 @@ export const PaymentDrawer = ({ payment, open, onClose }: PaymentDrawerProps) =>
                       </div>
                     </div>
                     <CardContent className="p-0">
-                      <div className="grid grid-cols-1 divide-y sm:grid-cols-3 sm:divide-y-0 sm:divide-x">
+                      <div className="grid grid-cols-1 divide-y sm:grid-cols-3 sm:divide-x sm:divide-y-0">
                         <div className="p-4">
                           <div className="flex items-center gap-3">
                             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
@@ -160,14 +160,14 @@ export const PaymentDrawer = ({ payment, open, onClose }: PaymentDrawerProps) =>
                 <section>
                   <h3 className="text-lg font-semibold">Customer Information</h3>
                   <div className="mt-4">
-                    <Card>
+                    <Card className="gap-0 py-0">
                       <CardContent className="p-4">
                         <div className="flex items-center gap-3">
                           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
                             <User className="h-5 w-5 text-primary" />
                           </div>
                           <div>
-                            <p className="font-medium">{payment.userName || "Unknown"}</p>
+                            <p className="font-medium">{payment.userName ?? "Unknown"}</p>
                             {payment.userEmail && (
                               <div className="flex items-center gap-1 text-sm text-muted-foreground">
                                 <Mail className="h-3 w-3" />
@@ -195,12 +195,12 @@ export const PaymentDrawer = ({ payment, open, onClose }: PaymentDrawerProps) =>
                       >
                         {isJsonOpen ? (
                           <>
-                            <ChevronUp className="h-3 w-3 mr-1" />
+                            <ChevronUp className="mr-1 h-3 w-3" />
                             <span>Raw JSON</span>
                           </>
                         ) : (
                           <>
-                            <ChevronDown className="h-3 w-3 mr-1" />
+                            <ChevronDown className="mr-1 h-3 w-3" />
                             <span>Raw JSON</span>
                           </>
                         )}
@@ -216,7 +216,7 @@ export const PaymentDrawer = ({ payment, open, onClose }: PaymentDrawerProps) =>
           </div>
         </ScrollArea>
 
-        <DrawerFooter className="mt-auto pt-4 border-t">
+        <DrawerFooter className="mt-auto border-t pt-4">
           <DrawerClose asChild>
             <Button variant="outline">Close</Button>
           </DrawerClose>

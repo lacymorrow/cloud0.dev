@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.4.0/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.13/schema.json",
   "files": {
     "ignoreUnknown": false,
     "includes": [
@@ -10,11 +10,13 @@
       "!**/node_modules",
       "!**/.next",
       "!**/.vercel",
-      "!**/cli/dist",
+      "!**/.claude",
       "!**/public/workers",
       "!**/public/**/*.js",
       "!**/public/**/*.mjs",
-      "!**/*.css"
+      "!**/*.css",
+      "!docs-site",
+      "!.source"
     ]
   },
   "formatter": {
@@ -48,7 +50,9 @@
         "noShadowRestrictedNames": "off",
         "noConsole": {
           "level": "warn",
-          "options": { "allow": ["log", "warn", "error", "info"] }
+          "options": {
+            "allow": ["log", "warn", "error", "info"]
+          }
         }
       },
       "style": {
@@ -71,8 +75,30 @@
       }
     }
   },
-  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
   "overrides": [
+    {
+      "includes": ["src/components/ui/**/*"],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "useSemanticElements": "off",
+            "useKeyWithClickEvents": "off",
+            "noRedundantRoles": "off"
+          },
+          "suspicious": {
+            "noArrayIndexKey": "off",
+            "noDoubleEquals": "off"
+          }
+        }
+      }
+    },
     {
       "includes": ["**/scripts/**/*", "playwright.config.ts", "vitest.config*.ts"],
       "linter": {

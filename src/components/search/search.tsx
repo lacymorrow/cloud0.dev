@@ -1,15 +1,9 @@
 "use client";
 
 import type { DialogProps } from "@radix-ui/react-dialog";
-import {
-  CircleIcon,
-  FileIcon,
-  LaptopIcon,
-  MoonIcon,
-  SunIcon,
-} from "@radix-ui/react-icons";
-import { useTheme } from "next-themes";
+import { CircleIcon, FileIcon, LaptopIcon, MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 import * as React from "react";
 
 import { docsConfig } from "@/components/search/example";
@@ -63,14 +57,14 @@ export function Search({ ...props }: DialogProps) {
       <Button
         variant="outline"
         className={cn(
-          "relative h-8 w-full justify-start bg-muted/50 text-sm font-normal text-muted-foreground shadow-none sm:pr-12 md:max-w-40 lg:max-w-64",
+          "relative h-8 w-full justify-start bg-muted/50 text-sm font-normal text-muted-foreground shadow-none sm:pr-12 md:max-w-40 lg:max-w-64"
         )}
         onClick={() => setOpen(true)}
         {...props}
       >
         <span className="hidden lg:inline-flex">Search...</span>
         <span className="inline-flex lg:hidden">Search...</span>
-        <kbd className="pointer-events-none absolute right-[0.3rem] top-[0.3rem] hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+        <kbd className="pointer-events-none absolute top-[0.3rem] right-[0.3rem] hidden h-5 items-center gap-1 rounded-lg border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 select-none sm:flex">
           <span className="text-xs">⌘</span>K
         </kbd>
       </Button>
@@ -100,9 +94,7 @@ export function Search({ ...props }: DialogProps) {
                 <FileIcon className="mr-2 h-4 w-4" />
                 {navItem.title}
                 {navItem.external && (
-                  <span className="ml-auto text-xs text-muted-foreground">
-                    ↗
-                  </span>
+                  <span className="ml-auto text-xs text-muted-foreground">↗</span>
                 )}
               </CommandItem>
             ))}
@@ -131,9 +123,7 @@ export function Search({ ...props }: DialogProps) {
                   </div>
                   {navItem.title}
                   {navItem.label && (
-                    <span className="ml-auto text-xs text-muted-foreground">
-                      {navItem.label}
-                    </span>
+                    <span className="ml-auto text-xs text-muted-foreground">{navItem.label}</span>
                   )}
                 </CommandItem>
               ))}

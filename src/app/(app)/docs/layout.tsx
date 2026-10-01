@@ -10,8 +10,8 @@ interface DocsLayoutProps {
   children: ReactNode;
 }
 
-export default async function DocsLayout({ children }: DocsLayoutProps) {
-  const navigation = await getDocsNavigation();
+export default function DocsLayout({ children }: DocsLayoutProps) {
+  const navigation = getDocsNavigation();
   const navLinks = [
     { href: routes.docs, label: "Docs" },
     { href: routes.features, label: "Features" },
@@ -25,14 +25,14 @@ export default async function DocsLayout({ children }: DocsLayoutProps) {
         {/* Sidebar */}
         <aside className="fixed top-14 z-30 -ml-2 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 overflow-y-auto border-r md:sticky md:block">
           <ScrollArea className="h-full py-6">
-            <div className="pl-8 pr-6 lg:pl-10">
+            <div className="pr-6 pl-8 lg:pl-10">
               <DocsSidebar navigation={navigation} />
             </div>
           </ScrollArea>
         </aside>
 
         {/* Main content */}
-        <main className="relative py-6 lg:py-8 container mx-auto w-full min-w-0">
+        <main className="relative container mx-auto w-full min-w-0 py-6 lg:py-8">
           {/* Content */}
           {children}
         </main>

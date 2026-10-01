@@ -224,7 +224,7 @@ export default function Dashboard() {
             </BreadcrumbList>
           </Breadcrumb>
           <div className="relative ml-auto flex-1 md:grow-0">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search..."
@@ -260,7 +260,7 @@ export default function Dashboard() {
                 <ChevronLeft className="h-4 w-4" />
                 <span className="sr-only">Back</span>
               </Button>
-              <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
+              <h1 className="flex-1 shrink-0 text-xl font-semibold tracking-tight whitespace-nowrap sm:grow-0">
                 Pro Controller
               </h1>
               <Badge variant="outline" className="ml-auto sm:ml-0">
@@ -304,14 +304,17 @@ export default function Dashboard() {
                     </div>
                   </CardContent>
                 </Card>
-                <Card x-chunk="A card with a form to edit the product stock and variants">
-                  <CardHeader>
+                <Card
+                  className="gap-0 py-0"
+                  x-chunk="A card with a form to edit the product stock and variants"
+                >
+                  <CardHeader className="p-6">
                     <CardTitle>Stock</CardTitle>
                     <CardDescription>
                       Lipsum dolor sit amet, consectetur adipiscing elit
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="p-6 pt-0">
                     <Table>
                       <TableHeader>
                         <TableRow>
@@ -477,7 +480,7 @@ export default function Dashboard() {
                         width="300"
                       />
                       <div className="grid grid-cols-3 gap-2">
-                        <button>
+                        <button type="button">
                           <Image
                             alt="Product image"
                             className="aspect-square w-full rounded-md object-cover"
@@ -486,7 +489,7 @@ export default function Dashboard() {
                             width="84"
                           />
                         </button>
-                        <button>
+                        <button type="button">
                           <Image
                             alt="Product image"
                             className="aspect-square w-full rounded-md object-cover"
@@ -495,7 +498,10 @@ export default function Dashboard() {
                             width="84"
                           />
                         </button>
-                        <button className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed">
+                        <button
+                          type="button"
+                          className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed"
+                        >
                           <Upload className="h-4 w-4 text-muted-foreground" />
                           <span className="sr-only">Upload</span>
                         </button>

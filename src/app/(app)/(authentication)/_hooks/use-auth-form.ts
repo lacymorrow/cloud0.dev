@@ -10,7 +10,7 @@ export function useAuthForm(mode: "sign-in" | "sign-up", title?: string, descrip
     return typeof title === "string"
       ? title
       : isSignIn
-        ? `Welcome to ${siteConfig.title}`
+        ? `Welcome to ${siteConfig.name}`
         : "Create an account";
   }, [title, isSignIn]);
 

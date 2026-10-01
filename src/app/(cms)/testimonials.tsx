@@ -19,8 +19,8 @@ export const Testimonials = ({ block, className }: TestimonialsProps) => {
   const { heading, testimonials, layout = "grid", background = "none" } = block;
 
   const renderTestimonial = (testimonial: any) => (
-    <Card className="h-full">
-      <CardContent className="pt-6">
+    <Card className="h-full gap-0 py-0">
+      <CardContent className="p-6">
         <div className="mb-4 flex items-center gap-4">
           <Avatar>
             {testimonial.image ? (
@@ -68,7 +68,7 @@ export const Testimonials = ({ block, className }: TestimonialsProps) => {
         )}
 
         {layout === "slider" && (
-          <Carousel className="w-full max-w-5xl mx-auto">
+          <Carousel className="mx-auto w-full max-w-5xl">
             <CarouselContent>
               {testimonials.map((testimonial) => (
                 <CarouselItem key={testimonial.id} className="md:basis-1/2">
@@ -82,7 +82,7 @@ export const Testimonials = ({ block, className }: TestimonialsProps) => {
         )}
 
         {layout === "single" && (
-          <div className="max-w-3xl mx-auto">
+          <div className="mx-auto max-w-3xl">
             {testimonials.slice(0, 1).map((testimonial) => (
               <div key={testimonial.id}>{renderTestimonial(testimonial)}</div>
             ))}

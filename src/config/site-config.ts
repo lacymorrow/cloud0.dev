@@ -1,9 +1,41 @@
+import type { Metadata } from "next";
+import type { Manifest } from "next/dist/lib/metadata/types/manifest-types";
+
+// import { routes } from "@/config/routes"; // Import if needed for startUrl
+
 /**
  * Site Configuration
  *
  * Central configuration for site-wide settings, branding, and metadata.
  * Used throughout the application for consistent branding and functionality.
  */
+
+interface ManifestConfig {
+  startUrl: string;
+  display: Manifest["display"];
+  displayOverride?: Manifest["display_override"];
+  orientation: Manifest["orientation"];
+  categories: Manifest["categories"];
+  dir: Manifest["dir"];
+  lang: Manifest["lang"];
+  preferRelatedApplications: Manifest["prefer_related_applications"];
+  scope: Manifest["scope"];
+  launchHandler?: Manifest["launch_handler"];
+  icons: {
+    favicon: string;
+    appIcon192: string;
+    appIcon512: string;
+  };
+  relatedApplications?: Manifest["related_applications"];
+}
+
+interface PayloadConfig {
+  adminTitleSuffix: string;
+  adminIconPath: string;
+  adminLogoPath: string;
+  dbSchemaName: string;
+  emailFromName: string;
+}
 
 interface SiteConfig {
   // Core site information
@@ -12,7 +44,7 @@ interface SiteConfig {
   url: string;
   ogImage: string;
   description: string;
-
+  tagline: string;
   // UI behavior settings
   behavior: {
     pageTransitions: boolean;
@@ -23,8 +55,8 @@ interface SiteConfig {
     projectName: string;
     projectSlug: string;
     productNames: {
+      // TODO: Remove these once we have a proper product name
       bones: string;
-      muscles: string;
       brains: string;
       main: string;
     };
@@ -43,6 +75,25 @@ interface SiteConfig {
     x: string;
     x_follow: string;
     github: string;
+  };
+
+  // Social profiles (single source of truth for top networks)
+  /**
+   * Centralized social links for the project/org. Empty strings mean "disabled".
+   * Use helper utilities to get an enabled list for rendering.
+   */
+  social: {
+    github?: string;
+    twitter?: string;
+    x?: string;
+    linkedin?: string;
+    instagram?: string;
+    facebook?: string;
+    youtube?: string;
+    tiktok?: string;
+    discord?: string;
+    dribbble?: string;
+    threads?: string;
   };
 
   // Repository information
@@ -84,23 +135,8 @@ interface SiteConfig {
 
   // E-commerce store configuration
   store: {
-    domain: string;
-    products: {
-      bones: string;
-      muscles: string;
-      brains: string;
-      shipkit: string;
-    };
-    format: {
-      buyUrl: (product: keyof SiteConfig["store"]["products"]) => string;
-    };
-  };
-
-  // Admin access control
-  admin: {
-    emails: string[];
-    domains: string[];
-    isAdmin: (email: string) => boolean;
+    id: string;
+    products: Record<string, string>;
   };
 
   // SEO and metadata
@@ -110,18 +146,41 @@ interface SiteConfig {
       light: string;
       dark: string;
     };
+    locale: string;
+    generator: string;
+    referrer: Metadata["referrer"];
+    category: string;
+    classification: string;
     openGraph: {
       imageWidth: number;
       imageHeight: number;
     };
+    twitter: {
+      card: "summary" | "summary_large_image" | "app" | "player";
+    };
+    robots: Metadata["robots"];
+    formatDetection: Metadata["formatDetection"];
+    alternates: Metadata["alternates"];
+    appleWebApp: Metadata["appleWebApp"];
+    appLinks: Metadata["appLinks"];
+    assetsPath: string;
+    bookmarksPath: string;
+    blogPath?: string;
   };
 
   // Application settings
   app: {
     apiKeyPrefix: string;
   };
+
+  // PWA Manifest settings
+  manifest: ManifestConfig;
+
+  // Payload CMS settings
+  payload: PayloadConfig;
 }
 
+// Use 'let' to allow modification after definition
 export const siteConfig: SiteConfig = {
   behavior: {
     pageTransitions: true,
@@ -129,6 +188,7 @@ export const siteConfig: SiteConfig = {
 
   name: "cloud0",
   title: "Launch your app today",
+  tagline: "Launch your app at light speed.",
   url: "https://cloud0.dev",
   ogImage: "https://cloud0.dev/og",
   description:
@@ -139,7 +199,6 @@ export const siteConfig: SiteConfig = {
     projectSlug: "cloud0",
     productNames: {
       bones: "Core",
-      muscles: "Pro",
       brains: "Enterprise",
       main: "cloud0",
     },
@@ -159,13 +218,28 @@ export const siteConfig: SiteConfig = {
     github: "https://github.com/lacymorrow/shipkit",
   },
 
+  // Configure social profiles here. Leave any you don't use as empty strings.
+  social: {
+    github: "",
+    x: "",
+    linkedin: "",
+    instagram: "",
+    facebook: "",
+    youtube: "",
+    tiktok: "",
+    discord: "",
+    dribbble: "",
+    threads: "",
+  },
+
   repo: {
     owner: "cloud0-org",
     name: "cloud0",
     url: "https://github.com/cloud0-org/cloud0",
     format: {
-      clone: () => "https://github.com/cloud0-org/cloud0.git",
-      ssh: () => "git@github.com:cloud0-org/cloud0.git",
+      // Placeholder format functions - assigned below
+      clone: () => "",
+      ssh: () => "",
     },
   },
 
@@ -176,7 +250,8 @@ export const siteConfig: SiteConfig = {
     domain: "cloud0.dev",
     legal: "legal@cloud0.dev",
     privacy: "privacy@cloud0.dev",
-    format: (type) => siteConfig.email[type],
+    // Placeholder format function - assigned below
+    format: (_type) => "",
   },
 
   creator: {
@@ -194,25 +269,15 @@ export const siteConfig: SiteConfig = {
   },
 
   store: {
-    domain: "shipkit.lemonsqueezy.com",
+    id: "shipkit",
     products: {
-      bones: "eb159dba-96a3-40f2-a97b-7b9117e635a1",
-      muscles: "4d259175-0a79-486a-b0f8-b77404ee68df",
-      brains: "7935a386-7cd0-47fe-83c8-cab101323591",
-      shipkit: "20b5b59e-b4c4-43b0-9979-545f90c76f28",
+      // LemonSqueezy Checkout URLs use Variant IDs (not Product IDs)
+      // Format: variant UUID from LemonSqueezy dashboard
+      shipkit: "411883",
+      // Examples:
+      bones: "411883",
+      brains: "411883",
     },
-    format: {
-      buyUrl: (product) =>
-        `https://shipkit.lemonsqueezy.com/checkout/buy/${siteConfig.store.products[product]}`,
-    },
-  },
-
-  admin: {
-    emails: ["lacymorrow0@gmail.com", "gojukebox@gmail.com"],
-    domains: ["lacymorrow.com"],
-    isAdmin: (email) =>
-      siteConfig.admin.emails.includes(email) ||
-      siteConfig.admin.domains.some((domain) => email?.endsWith(`@${domain}`)),
   },
 
   metadata: {
@@ -229,13 +294,131 @@ export const siteConfig: SiteConfig = {
       light: "white",
       dark: "black",
     },
+    locale: "en-US",
+    generator: "Next.js, shipkit.io",
+    referrer: "origin-when-cross-origin",
+    category: "technology", // Use technology as category
+    classification: "Business Software",
     openGraph: {
       imageWidth: 1200,
       imageHeight: 630,
     },
+    twitter: {
+      card: "summary_large_image",
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
+    formatDetection: {
+      email: false,
+      address: false,
+      telephone: false,
+    },
+    alternates: {},
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: "default",
+      startupImage: [
+        {
+          url: "/apple-touch-icon.png",
+          media: "(device-width: 768px) and (device-height: 1024px)",
+        },
+      ],
+    },
+    appLinks: {},
+    assetsPath: "/assets",
+    bookmarksPath: "/",
+    // blogPath is now conditionally added below
+  },
+
+  manifest: {
+    startUrl: "/", // Use literal for now, update below if needed
+    display: "standalone",
+    displayOverride: ["window-controls-overlay"],
+    orientation: "portrait-primary",
+    categories: ["development", "productivity", "utilities"],
+    dir: "ltr",
+    lang: "en-US",
+    preferRelatedApplications: false,
+    scope: "/",
+    launchHandler: { client_mode: ["navigate-existing", "auto"] },
+    icons: {
+      favicon: "/favicon.ico",
+      appIcon192: "/app/web-app-manifest-192x192.png",
+      appIcon512: "/app/web-app-manifest-512x512.png",
+    },
+    relatedApplications: [],
+  },
+
+  payload: {
+    adminTitleSuffix: " CMS", // Updated below
+    adminIconPath: "./lib/payload/components/payload-icon",
+    adminLogoPath: "./lib/payload/components/payload-logo",
+    dbSchemaName: "payload",
+    emailFromName: "Payload CMS",
   },
 
   app: {
     apiKeyPrefix: "sk",
   },
 };
+
+// Assign dynamic values AFTER the main object is defined
+siteConfig.repo.format = {
+  clone: () => `https://github.com/${siteConfig.repo.owner}/${siteConfig.repo.name}.git`,
+  ssh: () => `git@github.com:${siteConfig.repo.owner}/${siteConfig.repo.name}.git`,
+};
+
+siteConfig.email.format = (type: Exclude<keyof SiteConfig["email"], "format">) =>
+  siteConfig.email[type];
+
+siteConfig.payload.adminTitleSuffix = ` - ${siteConfig.title} CMS`;
+
+// siteConfig.manifest.startUrl = routes.home; // Uncomment and import routes if needed
+
+// Make sure alternates exists before assigning canonical
+siteConfig.metadata.alternates ??= {};
+siteConfig.metadata.alternates.canonical = "./";
+// Advertise RSS feed for SEO and feed discovery (only when blog is enabled)
+if (process.env.NEXT_PUBLIC_HAS_BLOG === "true") {
+  siteConfig.metadata.alternates.types = {
+    ...(siteConfig.metadata.alternates?.types ?? {}),
+    "application/rss+xml": `${siteConfig.url}/rss.xml`,
+  };
+}
+
+// Check appleWebApp is an object before assigning title
+if (siteConfig.metadata.appleWebApp && typeof siteConfig.metadata.appleWebApp === "object") {
+  siteConfig.metadata.appleWebApp.title = siteConfig.title;
+}
+
+// Ensure appLinks and appLinks.web are objects before assigning url
+siteConfig.metadata.appLinks ??= {};
+siteConfig.metadata.appLinks.web ??= { url: "", should_fallback: false }; // Initialize web if needed
+// Check type again after potential initialization
+if (
+  siteConfig.metadata.appLinks?.web &&
+  typeof siteConfig.metadata.appLinks.web === "object" &&
+  !Array.isArray(siteConfig.metadata.appLinks.web) // Ensure it's not an array
+) {
+  siteConfig.metadata.appLinks.web.url = siteConfig.url;
+}
+
+// Update paths to be absolute URLs based on siteConfig.url
+siteConfig.metadata.assetsPath = `${siteConfig.url}/assets`;
+siteConfig.metadata.bookmarksPath = `${siteConfig.url}/`;
+
+if (process.env.NEXT_PUBLIC_HAS_BLOG === "true") {
+  siteConfig.metadata.blogPath = `${siteConfig.url}/blog`;
+}
+
+// Freeze the object to prevent accidental modifications later (optional)
+// Object.freeze(siteConfig);

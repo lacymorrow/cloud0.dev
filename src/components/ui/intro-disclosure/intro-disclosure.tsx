@@ -2,7 +2,6 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ExternalLinkIcon } from "lucide-react";
-import Image from "next/image";
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -68,10 +67,6 @@ export function IntroDisclosure({
     }
   }, [initialCompletedSteps]);
 
-  if (!isVisible || !open) {
-    return null;
-  }
-
   const handleNext = () => {
     setDirection(1);
     setCompletedSteps((prev) => (prev.includes(currentStep) ? prev : [...prev, currentStep]));
@@ -132,21 +127,25 @@ export function IntroDisclosure({
 
   const { handleDragEnd } = useSwipe(handleSwipe);
 
+  if (!isVisible || !open) {
+    return null;
+  }
+
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-5xl p-0 gap-0 overflow-hidden " onKeyDown={handleKeyDown}>
-          <DialogHeader className="p-6 space-y-2 bg-muted border-b border-border">
+        <DialogContent className="max-w-5xl gap-0 overflow-hidden p-0" onKeyDown={handleKeyDown}>
+          <DialogHeader className="space-y-2 border-b border-border bg-muted p-6">
             <DialogTitle>Feature Tour</DialogTitle>
             {showProgressBar && (
-              <div className="flex mt-2 w-full justify-center  ">
-                <Progress value={((currentStep + 1) / steps.length) * 100} className="  h-1 " />
+              <div className="mt-2 flex w-full justify-center">
+                <Progress value={((currentStep + 1) / steps.length) * 100} className="h-1" />
               </div>
             )}
           </DialogHeader>
 
-          <div className="grid grid-cols-2 h-full">
-            <div className="p-2 pr-[18px] ">
+          <div className="grid h-full grid-cols-2">
+            <div className="p-2 pr-[18px]">
               <StepContent
                 steps={steps}
                 currentStep={currentStep}
@@ -174,15 +173,15 @@ export function IntroDisclosure({
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerContent className="h-[95vh] max-h-[95vh] ">
+      <DrawerContent className="h-[95vh] max-h-[95vh]">
         <motion.div
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
           onDragEnd={handleDragEnd}
           onKeyDown={handleKeyDown}
-          className="h-full flex flex-col max-w-3xl mx-auto"
+          className="mx-auto flex h-full max-w-3xl flex-col"
         >
-          <DrawerHeader className="text-left  pb-4 space-y-4">
+          <DrawerHeader className="space-y-4 pb-4 text-left">
             {showProgressBar && (
               <Progress value={((currentStep + 1) / steps.length) * 100} className="mb-4" />
             )}
@@ -190,10 +189,11 @@ export function IntroDisclosure({
           </DrawerHeader>
 
           <div className="flex-1 overflow-y-auto">
-            <div className="p-4 space-y-4 pb-32">
-              <div className="grid grid-cols-2 gap-2 mb-6">
+            <div className="space-y-4 p-4 pb-32">
+              <div className="mb-6 grid grid-cols-2 gap-2">
                 {steps.map((step, index) => (
                   <StepTab
+                    // biome-ignore lint/suspicious/noArrayIndexKey: decorative/static array, key is stable index
                     key={index}
                     step={step}
                     isActive={currentStep === index}
@@ -202,13 +202,13 @@ export function IntroDisclosure({
                   />
                 ))}
               </div>
-              <div className="relative aspect-[16/9] ring-2 ring-border ring-offset-8 ring-offset-background rounded-lg overflow-hidden">
+              <div className="relative aspect-video overflow-hidden rounded-lg ring-2 ring-border ring-offset-8 ring-offset-background">
                 {steps[currentStep] && (
                   <StepPreview step={steps[currentStep]} direction={direction} />
                 )}
               </div>
 
-              <div className="space-y-4 border border-border p-3 rounded-lg">
+              <div className="space-y-4 rounded-lg border border-border p-3">
                 <p className="text-muted-foreground">{steps[currentStep]?.short_description}</p>
                 {steps[currentStep]?.action && (
                   <Button
@@ -227,7 +227,7 @@ export function IntroDisclosure({
                         <ExternalLinkIcon className="h-4 w-4" />
                       </a>
                     ) : (
-                      <button onClick={steps[currentStep]?.action?.onClick}>
+                      <button type="button" onClick={steps[currentStep]?.action?.onClick}>
                         {steps[currentStep]?.action?.label}
                       </button>
                     )}
@@ -237,13 +237,13 @@ export function IntroDisclosure({
             </div>
           </div>
 
-          <div className="absolute bottom-0 left-0 right-0 border-t bg-background">
+          <div className="absolute right-0 bottom-0 left-0 border-t bg-background">
             <div className="p-4">
-              <div className="flex items-center justify-between mb-4">
+              <div className="mb-4 flex items-center justify-between">
                 <Button
                   variant="ghost"
                   onClick={onSkip}
-                  className="text-muted-foreground hover:bg-card rounded-full"
+                  className="rounded-full text-muted-foreground hover:bg-card"
                 >
                   Skip all
                 </Button>

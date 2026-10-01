@@ -59,7 +59,7 @@ export const BackgroundBeams = React.memo(({ className }: { className?: string }
   return (
     <div
       className={cn(
-        "absolute inset-0 flex h-full w-full items-center justify-center [mask-repeat:no-repeat] [mask-size:40px]",
+        "absolute inset-0 flex h-full w-full items-center justify-center mask-size-[40px] mask-no-repeat",
         className
       )}
     >
@@ -80,7 +80,8 @@ export const BackgroundBeams = React.memo(({ className }: { className?: string }
 
         {paths.map((path, index) => (
           <motion.path
-            key={"path-" + index}
+            // biome-ignore lint/suspicious/noArrayIndexKey: decorative/static array, key is stable index
+            key={`path-${index}`}
             d={path}
             stroke={`url(#linearGradient-${index})`}
             strokeOpacity="0.4"
@@ -88,9 +89,10 @@ export const BackgroundBeams = React.memo(({ className }: { className?: string }
           />
         ))}
         <defs>
-          {paths.map((path, index) => (
+          {paths.map((_path, index) => (
             <motion.linearGradient
               id={`linearGradient-${index}`}
+              // biome-ignore lint/suspicious/noArrayIndexKey: decorative/static array, key is stable index
               key={`gradient-${index}`}
               initial={{
                 x1: "0%",
@@ -126,8 +128,8 @@ export const BackgroundBeams = React.memo(({ className }: { className?: string }
             gradientUnits="userSpaceOnUse"
             gradientTransform="translate(352 34) rotate(90) scale(555 1560.62)"
           >
-            <stop offset="0.0666667" stopColor="var(--neutral-300)" />
-            <stop offset="0.243243" stopColor="var(--neutral-300)" />
+            <stop offset="0.0666667" stopColor="var(--color-neutral-300)" />
+            <stop offset="0.243243" stopColor="var(--color-neutral-300)" />
             <stop offset="0.43594" stopColor="white" stopOpacity="0" />
           </radialGradient>
         </defs>

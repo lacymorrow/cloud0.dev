@@ -1,11 +1,11 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
 import { ChevronDownIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 import { File, Folder } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 
 interface FileTreeProps {
   files: {
@@ -40,15 +40,13 @@ function buildTree(files: FileTreeProps["files"]): TreeNode {
 
     for (const part of parts) {
       const path = parts.slice(0, parts.indexOf(part) + 1).join("/");
-      if (!current.children[part]) {
-        current.children[part] = {
-          name: part,
-          path,
-          type: part === parts[parts.length - 1] ? "file" : "directory",
-          content: part === parts[parts.length - 1] ? file.content : undefined,
-          children: {},
-        };
-      }
+      current.children[part] ??= {
+        name: part,
+        path,
+        type: part === parts[parts.length - 1] ? "file" : "directory",
+        content: part === parts[parts.length - 1] ? file.content : undefined,
+        children: {},
+      };
       current = current.children[part];
     }
   }
@@ -112,14 +110,14 @@ function TreeNode({
           {node.type === "directory" ? (
             <>
               {isExpanded ? (
-                <ChevronDownIcon className="h-4 w-4 shrink-0 mr-1 text-muted-foreground" />
+                <ChevronDownIcon className="mr-1 h-4 w-4 shrink-0 text-muted-foreground" />
               ) : (
-                <ChevronRightIcon className="h-4 w-4 shrink-0 mr-1 text-muted-foreground" />
+                <ChevronRightIcon className="mr-1 h-4 w-4 shrink-0 text-muted-foreground" />
               )}
-              <Folder className="h-4 w-4 shrink-0 mr-1 text-muted-foreground" />
+              <Folder className="mr-1 h-4 w-4 shrink-0 text-muted-foreground" />
             </>
           ) : (
-            <File className="h-4 w-4 shrink-0 mr-1 text-muted-foreground" />
+            <File className="mr-1 h-4 w-4 shrink-0 text-muted-foreground" />
           )}
           <span className="truncate">{node.name}</span>
         </div>
@@ -142,12 +140,7 @@ function TreeNode({
   );
 }
 
-export function FileTree({
-  files,
-  onFileSelect,
-  selectedFile,
-  currentStyle,
-}: FileTreeProps) {
+export function FileTree({ files, onFileSelect, selectedFile, currentStyle }: FileTreeProps) {
   const tree = buildTree(files);
 
   return (

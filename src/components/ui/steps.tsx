@@ -32,7 +32,7 @@ export const Steps = ({ children, className }: StepsProps) => {
         return (
           <div key={stepNumber} className="flex gap-6">
             <div className="flex flex-col items-center">
-              <div className="flex size-8 flex-none select-none items-center justify-center rounded-full border border-neutral-400/20 bg-neutral-100 text-sm font-medium text-neutral-700 dark:border-neutral-400/10 dark:bg-neutral-800 dark:text-neutral-50">
+              <div className="flex size-8 flex-none items-center justify-center rounded-full border border-neutral-400/20 bg-neutral-100 text-sm font-medium text-neutral-700 select-none dark:border-neutral-400/10 dark:bg-neutral-800 dark:text-neutral-50">
                 {stepNumber}
               </div>
               {!isLast && (
@@ -43,7 +43,7 @@ export const Steps = ({ children, className }: StepsProps) => {
               <h6 className="mb-2 ml-1 text-lg font-medium tracking-tight text-neutral-700 dark:text-neutral-50">
                 {props.title}
               </h6>
-              <div className="ml-1 text-sm text-muted-foreground [&>pre]:my-2 [&>p]:my-1">
+              <div className="ml-1 text-sm text-muted-foreground [&>p]:my-1 [&>pre]:my-2">
                 {props.children}
               </div>
             </div>

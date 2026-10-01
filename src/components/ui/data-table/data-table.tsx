@@ -255,7 +255,7 @@ export function DataTable<TData, TValue>({
                           )}
                           {rowActions?.map((action) => (
                             <DropdownMenuItem key={action.label} asChild>
-                              <div className="flex items-center w-full">
+                              <div className="flex w-full items-center">
                                 <action.component item={row.original as TData} />
                               </div>
                             </DropdownMenuItem>
@@ -303,7 +303,7 @@ export function DataTable<TData, TValue>({
               onChange={(e) => {
                 table.setPageSize(Number(e.target.value));
               }}
-              className="h-8 w-[70px] rounded-md border border-input bg-transparent px-2 py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="h-8 w-[70px] rounded-md border border-input bg-transparent px-2 py-1 text-sm ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-hidden"
             >
               {[10, 20, 30, 40, 50].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
