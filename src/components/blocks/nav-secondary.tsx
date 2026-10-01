@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  BookOpen,
   type LucideIcon,
   PanelLeftClose,
   PanelLeftOpen,
@@ -24,12 +23,6 @@ const data = [
     iconName: "send",
     href: "#feedback",
     component: FeedbackDialog,
-  },
-  {
-    title: "Documentation",
-    Icon: BookOpen,
-    iconName: "book",
-    href: routes.docs,
   },
   {
     title: "Settings",

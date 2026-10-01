@@ -2,9 +2,7 @@ import { Link } from "@/components/primitives/link";
 import { routes } from "@/config/routes";
 
 const links = [
-  { label: "Docs", href: routes.docs },
   { label: "Support", href: routes.contact },
-  { label: "Changelog", href: "/changelog" },
   { label: "Privacy", href: routes.privacy },
 ];
 

@@ -387,13 +387,6 @@ siteConfig.payload.adminTitleSuffix = ` - ${siteConfig.title} CMS`;
 // Make sure alternates exists before assigning canonical
 siteConfig.metadata.alternates ??= {};
 siteConfig.metadata.alternates.canonical = "./";
-// Advertise RSS feed for SEO and feed discovery (only when blog is enabled)
-if (process.env.NEXT_PUBLIC_HAS_BLOG === "true") {
-  siteConfig.metadata.alternates.types = {
-    ...(siteConfig.metadata.alternates?.types ?? {}),
-    "application/rss+xml": `${siteConfig.url}/rss.xml`,
-  };
-}
 
 // Check appleWebApp is an object before assigning title
 if (siteConfig.metadata.appleWebApp && typeof siteConfig.metadata.appleWebApp === "object") {

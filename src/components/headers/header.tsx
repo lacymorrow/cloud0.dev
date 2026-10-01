@@ -101,11 +101,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   // Minimal variant: logo + a few text links + theme toggle
   if (variant === "minimal") {
-    const minimalLinks: NavLink[] = [
-      { href: routes.blog, label: "Blog" },
-      { href: "/changelog", label: "Changelog" },
-      { href: routes.docs, label: "Docs" },
-    ];
+    const minimalLinks: NavLink[] = [];
 
     return (
       <header className={cn(headerVariants({ variant: "minimal" }), className)}>

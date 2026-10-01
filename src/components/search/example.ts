@@ -14,10 +14,6 @@ export const docsConfig: DocsConfig = {
       href: routes.home,
     },
     {
-      title: "Features",
-      href: routes.features,
-    },
-    {
       title: "Sign In",
       href: routes.auth.signIn,
     },

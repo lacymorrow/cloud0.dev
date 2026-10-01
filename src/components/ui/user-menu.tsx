@@ -180,9 +180,6 @@ export const UserMenu: React.FC<UserMenuProps> = ({ size = "default", className 
               <ShortcutDisplay action={ShortcutAction.GOTO_SETTINGS} as={DropdownMenuShortcut} />
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href={routes.app.apiKeys}>API Keys</Link>
-          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuSub>
