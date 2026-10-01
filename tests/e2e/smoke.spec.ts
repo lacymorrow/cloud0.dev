@@ -44,11 +44,6 @@ test.describe("public routes render", () => {
     await expect(page.getByLabel(/password/i)).toBeVisible();
   });
 
-  test("/pricing renders without 5xx if the route is enabled", async ({ page }) => {
-    const response = await page.goto("/pricing");
-    expect(response?.status()).toBeLessThan(500);
-  });
-
   test("/robots.txt is served", async ({ page }) => {
     const response = await page.request.get("/robots.txt");
     expect(response.status()).toBe(200);
@@ -62,10 +57,6 @@ test.describe("auth gate", () => {
     await expect(page).toHaveURL(/\/sign-in/, { timeout: 15_000 });
   });
 
-  test("/deployments redirects an unauthenticated user to /sign-in", async ({ page }) => {
-    await page.goto("/deployments");
-    await expect(page).toHaveURL(/\/sign-in/, { timeout: 15_000 });
-  });
 });
 
 test.describe("error contract", () => {

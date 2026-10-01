@@ -130,13 +130,9 @@ export function DashboardTabs({ hasGitHubConnection }: { hasGitHubConnection: bo
               )}
 
               <p className="mt-4 text-sm text-muted-foreground">
-                Need help? Check out our{" "}
-                <Link href={routes.docs} className="underline">
-                  documentation
-                </Link>{" "}
-                or{" "}
+                Need help?{" "}
                 <Link href={routes.contact} className="underline">
-                  contact support
+                  Contact support
                 </Link>
                 .
               </p>

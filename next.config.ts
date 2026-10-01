@@ -141,20 +141,6 @@ const nextConfig: NextConfig = {
 
   async headers() {
     return Promise.resolve([
-      // /install
-      {
-        source: "/install",
-        headers: [
-          {
-            key: "Cross-Origin-Opener-Policy",
-            value: "same-origin",
-          },
-          {
-            key: "Cross-Origin-Embedder-Policy",
-            value: "require-corp",
-          },
-        ],
-      },
       /*
        * Enhanced Security Headers
        * Adds Content Security Policy for better security
