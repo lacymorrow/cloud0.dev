@@ -15,6 +15,11 @@ import { getDerivedSecrets } from "@/config/secrets";
 import { withPlugins } from "@/config/with-plugins";
 import { POSTHOG_RELAY_SLUG } from "@/lib/posthog/posthog-config";
 
+// cloud0 has always shipped dark-only (the home page art is dark). The old config never
+// injected the light/dark flags into the client, so the theme provider forced dark.
+// Keep that behavior now that next.config injects the feature flags.
+process.env.DISABLE_LIGHT_MODE ??= "true";
+
 // Start React Grab agent server in development when enabled
 if (process.env.NODE_ENV === "development" && reactGrabConfig.enabled && reactGrabConfig.provider) {
   const providerId = reactGrabConfig.provider.id;

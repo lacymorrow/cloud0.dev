@@ -137,7 +137,7 @@ export const Footer: FC<FooterProps> = ({
         <div className="flex flex-col justify-between gap-2xl lg:flex-row">
           <div className="flex flex-col gap-4">
             <Link href={routes.home}>
-              <h1 className="text-4xl font-bold">{siteConfig.title}</h1>
+              <h1 className="text-4xl font-bold">{siteConfig.name}</h1>
             </Link>
             <GithubVersionBadge owner="lacymorrow" repo="shipkit" />
             <SocialLinks labelled className="" />

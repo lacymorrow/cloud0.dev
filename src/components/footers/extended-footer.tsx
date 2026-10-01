@@ -146,7 +146,7 @@ export const Footer: React.FC<FooterProps> = ({
               <SparklesText
                 duration={2}
                 sparklesCount={6}
-                text={siteConfig.title}
+                text={siteConfig.name}
                 colors={{ first: "#76676e", second: "#FA00FF" }}
               />
             </Link>
@@ -209,7 +209,7 @@ export const Footer: React.FC<FooterProps> = ({
           </div>
         </div>
         <div className="hidden overflow-hidden md:block">
-          <TextHoverEffect text={siteConfig.title} />
+          <TextHoverEffect text={siteConfig.name} />
         </div>
       </div>
       <RetroGrid className={"hidden mask-[linear-gradient(to_top,white,transparent)] md:block"} />

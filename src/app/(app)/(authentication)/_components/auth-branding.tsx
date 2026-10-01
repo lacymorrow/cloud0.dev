@@ -20,7 +20,7 @@ export const AuthBranding = () => {
         <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
           <Icon />
         </div>
-        {siteConfig.title}
+        {siteConfig.name}
       </Link>
       {/* Empty div to balance the layout */}
       <div className="w-8" />

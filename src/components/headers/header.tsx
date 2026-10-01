@@ -79,10 +79,10 @@ const headerVariants = cva("translate-z-0 z-50 p-md", {
 export const Header: React.FC<HeaderProps> = ({
   logoHref = routes.home,
   logoIcon = <Icon />,
-  logoText = siteConfig.title,
+  logoText = siteConfig.name,
   navLinks = navigationDefaultNavLinks,
   variant = "default",
-  searchPlaceholder = `Search ${siteConfig.title}...`,
+  searchPlaceholder = `Search ${siteConfig.name}...`,
   searchVariant = "menu",
   animatedCTAOnScroll,
   opaqueOnScroll,
@@ -210,7 +210,7 @@ export const Header: React.FC<HeaderProps> = ({
                           "w-full justify-center"
                         )}
                       >
-                        {`Get ${siteConfig.title}`}
+                        {`Get ${siteConfig.name}`}
                       </Link>
                       <Link
                         href={signInRedirectUrl}

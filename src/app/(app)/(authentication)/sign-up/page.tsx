@@ -37,7 +37,7 @@ export default function SignUpPage() {
           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
             <Icon />
           </div>
-          {siteConfig.title}
+          {siteConfig.name}
         </div>
         <div className="flex items-center justify-center gap-2 text-center text-xs text-muted-foreground">
           <span aria-hidden="true">&gt;</span>
