@@ -48,7 +48,6 @@ const defaultGroups: FooterElement[] = [
     content: {
       header: { label: "Resources" },
       items: [
-        { href: routes.contact, label: "Support" },
         { href: routes.auth.signIn, label: "Sign in" },
       ],
     },
