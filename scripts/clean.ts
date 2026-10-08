@@ -98,7 +98,6 @@ const filesToRemove = [
   // Components and UI
   "src/components/modules/builder",
   "src/components/footers/extended-footer.tsx",
-  "src/components/forms/contact-form.tsx",
   "src/components/forms/feedback-popover.tsx",
   "src/components/forms/subscribe-form.tsx",
   "src/components/headers/extended-header.tsx",
