@@ -60,17 +60,11 @@ export default function Layout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "SoftwareApplication",
+              "@type": "WebApplication",
               name: siteConfig.title,
               description: siteConfig.description,
               url: siteConfig.url,
-              applicationCategory: "DeveloperApplication",
               operatingSystem: "Any",
-              offers: {
-                "@type": "Offer",
-                price: "0",
-                priceCurrency: "USD",
-              },
               author: {
                 "@type": "Person",
                 name: siteConfig.creator.name,

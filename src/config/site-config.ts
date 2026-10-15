@@ -187,12 +187,13 @@ export const siteConfig: SiteConfig = {
   },
 
   name: "cloud0",
-  title: "Launch your app today",
-  tagline: "Launch your app at light speed.",
-  url: "https://cloud0.dev",
-  ogImage: "https://cloud0.dev/og",
+  title: "Cloud0: an AI chat assistant (early alpha)",
+  tagline: "An AI chat assistant, in early alpha.",
+  // cloud0.dev redirects to www, so www is the canonical host.
+  url: "https://www.cloud0.dev",
+  ogImage: "https://www.cloud0.dev/og",
   description:
-    "Launch your app at light speed. Fast, flexible, and feature-packed for the modern web.",
+    "Cloud0 is an early alpha AI chat assistant. Ask a question, give it a task, and keep the conversation going.",
 
   branding: {
     projectName: "cloud0",
@@ -233,9 +234,9 @@ export const siteConfig: SiteConfig = {
   },
 
   repo: {
-    owner: "cloud0-org",
-    name: "cloud0",
-    url: "https://github.com/cloud0-org/cloud0",
+    owner: "lacymorrow",
+    name: "cloud0.dev",
+    url: "https://github.com/lacymorrow/cloud0.dev",
     format: {
       // Placeholder format functions - assigned below
       clone: () => "",
@@ -255,13 +256,13 @@ export const siteConfig: SiteConfig = {
   },
 
   creator: {
-    name: "cloud0",
+    name: "Lacy Morrow",
     email: "hello@cloud0.dev",
-    url: "https://cloud0.dev",
-    twitter: "@cloud0",
-    twitter_handle: "cloud0",
-    domain: "cloud0.dev",
-    fullName: "cloud0 Team",
+    url: "https://lacymorrow.com",
+    twitter: "@lacybuilds",
+    twitter_handle: "lacybuilds",
+    domain: "lacymorrow.com",
+    fullName: "Lacy Morrow",
     role: "Developer",
     avatar: "https://avatars.githubusercontent.com/u/1311301?v=4",
     location: "San Francisco, CA",
@@ -282,13 +283,9 @@ export const siteConfig: SiteConfig = {
 
   metadata: {
     keywords: [
-      "Next.js",
-      "React",
-      "Tailwind CSS",
-      "Server Components",
       "cloud0",
-      "Shadcn",
-      "UI Components",
+      "AI chat",
+      "AI assistant",
     ],
     themeColor: {
       light: "white",

@@ -60,12 +60,12 @@ export default function Home() {
               </div>
 
               <div className="pt-8 pb-4 text-center text-foreground/60 text-sm">
-                Cloud0 is in early alpha.{" "}
+                Cloud0 is in early alpha, by{" "}
                 <Link
-                  href="https://lacy.sh"
+                  href="https://lacymorrow.com"
                   className="transition-colors text-foreground/60 hover:text-foreground p-0 h-auto font-normal text-sm"
                 >
-                  Learn more here
+                  Lacy Morrow
                 </Link>
                 .
               </div>
