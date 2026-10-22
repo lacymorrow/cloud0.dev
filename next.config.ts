@@ -257,7 +257,9 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: FILE_UPLOAD_MAX_SIZE,
     },
-    webVitalsAttribution: ["CLS", "LCP", "TTFB", "FCP", "FID"],
+    // "FID" left the accepted metric list in next 16.4. "INP" is its successor;
+    // First Input Delay was retired from web-vitals upstream.
+    webVitalsAttribution: ["CLS", "LCP", "TTFB", "FCP", "INP"],
 
     // Optimized prefetching
     optimisticClientCache: true,
