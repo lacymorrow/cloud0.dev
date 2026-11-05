@@ -46,10 +46,47 @@ describe("isAdmin", () => {
     expect(await isAdmin({ email: 12345 as never })).toBe(false);
   });
 
-  it("returns true when email matches the static admin email list (config check)", async () => {
+  it("returns true when the static admin list matches an account with a verified email", async () => {
     const spy = vi.spyOn(adminConfig, "isAdminByEmailConfig").mockReturnValue(true);
     try {
-      expect(await isAdmin({ email: "anything@example.com" })).toBe(true);
+      const db = getTestDb();
+      await db.insert(users).values({
+        id: "config-admin-verified",
+        email: "config-admin@db.shipkit.test",
+        role: "user",
+        emailVerified: new Date(),
+      });
+
+      expect(await isAdmin({ email: "config-admin@db.shipkit.test" })).toBe(true);
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
+  it("returns false when the static admin list matches an email with no account", async () => {
+    // The config check is deliberately not sufficient on its own: before the
+    // hardening, presenting a listed address was enough to be admin whether or
+    // not you had ever proved you owned it. Keep that hole closed.
+    const spy = vi.spyOn(adminConfig, "isAdminByEmailConfig").mockReturnValue(true);
+    try {
+      expect(await isAdmin({ email: "anything@example.com" })).toBe(false);
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
+  it("returns false when the static admin list matches an unverified account", async () => {
+    const spy = vi.spyOn(adminConfig, "isAdminByEmailConfig").mockReturnValue(true);
+    try {
+      const db = getTestDb();
+      await db.insert(users).values({
+        id: "config-admin-unverified",
+        email: "config-admin-unverified@db.shipkit.test",
+        role: "user",
+        emailVerified: null,
+      });
+
+      expect(await isAdmin({ email: "config-admin-unverified@db.shipkit.test" })).toBe(false);
     } finally {
       spy.mockRestore();
     }
