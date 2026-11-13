@@ -32,16 +32,16 @@ export default function SettingsPage() {
     bio: "",
   });
 
-  // Set initial form data from session
-  React.useEffect(() => {
-    if (session?.user) {
-      const initialData = {
-        name: session.user.name ?? "",
-        bio: session.user.bio ?? "",
-      };
-      setFormData(initialData);
-    }
-  }, [session?.user]);
+  // Set initial form data from session. Adjusted during render when the session user
+  // changes (React's "adjust state when a prop changes" pattern), not in an effect.
+  const [syncedUser, setSyncedUser] = React.useState<unknown>(null);
+  if (session?.user && session.user !== syncedUser) {
+    setSyncedUser(session.user);
+    setFormData({
+      name: session.user.name ?? "",
+      bio: session.user.bio ?? "",
+    });
+  }
 
   // Handle form input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

@@ -13,16 +13,9 @@ export function isWebGPUAvailable(): boolean {
   return !!window.navigator?.gpu?.requestAdapter;
 }
 
+const subscribe = () => () => undefined;
+
+// `false` on the server and during hydration, then the real capability check on the client.
 export function useWebGPUAvailability(): boolean {
-  const [isAvailable, setIsAvailable] = React.useState<boolean>(false);
-  const [hasChecked, setHasChecked] = React.useState<boolean>(false);
-
-  React.useEffect(() => {
-    if (!hasChecked) {
-      setIsAvailable(isWebGPUAvailable());
-      setHasChecked(true);
-    }
-  }, [hasChecked]);
-
-  return isAvailable;
+  return React.useSyncExternalStore(subscribe, isWebGPUAvailable, () => false);
 }

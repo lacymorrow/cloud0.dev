@@ -60,10 +60,13 @@ export function Modal({
   const hasHandledInitialRoute = React.useRef(false);
   const previousPathname = React.useRef(pathname);
 
-  // Sync isOpen state with open prop when it changes
-  useEffect(() => {
+  // Sync isOpen state with open prop when it changes. Adjusted during render
+  // (React's "adjust state when a prop changes" pattern) rather than in an effect.
+  const [prevOpenProp, setPrevOpenProp] = React.useState(open);
+  if (prevOpenProp !== open) {
+    setPrevOpenProp(open);
     setIsOpen(open);
-  }, [open]);
+  }
 
   // Don't immediately close the modal, we need to wait for the modal to animate closed before we should navigate
   // @see https://nextjs.org/docs/app/building-your-application/routing/parallel-routes#modals
