@@ -8,9 +8,7 @@ import { useTheme } from "next-themes";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 
-export default function CommandInput({
-  onFirstSubmit,
-}: { onFirstSubmit?: () => void } = {}) {
+export default function CommandInput({ onFirstSubmit }: { onFirstSubmit?: () => void } = {}) {
   const [inputValue, setInputValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -52,9 +50,7 @@ export default function CommandInput({
         setIsFirstSubmit(false);
       }
     } else {
-      console.error(
-        "append function is not available on threadRuntime or threadRuntime is null"
-      );
+      console.error("append function is not available on threadRuntime or threadRuntime is null");
     }
     setInputValue("");
   };
@@ -68,10 +64,7 @@ export default function CommandInput({
 
   return (
     <div
-      className={`
-        relative w-full rounded-2xl transition-all duration-300 overflow-hidden
-        glass-morphism ${isFocused ? "focused" : ""}
-      `}
+      className={`glass-morphism relative w-full overflow-hidden rounded-2xl transition-all duration-300 ${isFocused ? "focused" : ""} `}
       style={{
         isolation: "isolate",
       }}
@@ -87,12 +80,12 @@ export default function CommandInput({
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             placeholder="Ask Cloud0 anything..."
-            className="flex-1 bg-transparent border-0 outline-none resize-none text-foreground placeholder:text-foreground/60 min-h-[28px] max-h-[200px] py-1 text-lg"
+            className="max-h-[200px] min-h-[28px] flex-1 resize-none border-0 bg-transparent py-1 text-lg text-foreground outline-none placeholder:text-foreground/60"
             rows={1}
           />
         </div>
 
-        <div className="flex items-center justify-between px-5 pb-5 relative z-10">
+        <div className="relative z-10 flex items-center justify-between px-5 pb-5">
           {/* <div className="flex items-center gap-2">
             <Button
               variant="ghost"
@@ -130,7 +123,7 @@ export default function CommandInput({
         {/* Animated bottom border */}
         {isFocused && (
           <motion.div
-            className="absolute left-0 right-0 bottom-0 h-0.5 bg-gradient-to-r from-primary to-pink-500 z-20"
+            className="absolute right-0 bottom-0 left-0 z-20 h-0.5 bg-gradient-to-r from-primary to-pink-500"
             initial={{ scaleX: 0, opacity: 0 }}
             animate={{
               scaleX: 1,
@@ -143,7 +136,7 @@ export default function CommandInput({
       </div>
 
       {/* Invisible border to create mask shape */}
-      <div className="absolute inset-0 rounded-2xl border border-transparent z-0"></div>
+      <div className="absolute inset-0 z-0 rounded-2xl border border-transparent" />
     </div>
   );
 }

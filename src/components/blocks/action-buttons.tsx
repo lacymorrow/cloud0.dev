@@ -100,7 +100,7 @@ export default function ActionButtons() {
         return (
           <motion.button
             key={button.label}
-            className="relative flex items-center gap-2 px-4 py-2.5 rounded-xl bg-background/20 backdrop-blur-sm border border-border/10 text-foreground transition-all duration-300 overflow-hidden group"
+            className="group relative flex items-center gap-2 overflow-hidden rounded-xl border border-border/10 bg-background/20 px-4 py-2.5 text-foreground backdrop-blur-sm transition-all duration-300"
             onMouseEnter={() => setHoveredIndex(index)}
             onMouseLeave={() => setHoveredIndex(null)}
             initial={{ y: 0 }}
@@ -163,15 +163,16 @@ export default function ActionButtons() {
             {/* Particle effect on hover */}
             {hoveredIndex === index && (
               <motion.div
-                className="absolute inset-0 pointer-events-none"
+                className="pointer-events-none absolute inset-0"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
                 {[...Array(6)].map((_, i) => (
                   <motion.div
+                    // biome-ignore lint/suspicious/noArrayIndexKey: fixed-length decorative particles
                     key={i}
-                    className={`absolute w-1 h-1 rounded-full bg-gradient-to-r ${colors.hoverColor}`}
+                    className={`absolute h-1 w-1 rounded-full bg-gradient-to-r ${colors.hoverColor}`}
                     initial={{
                       x: "50%",
                       y: "50%",

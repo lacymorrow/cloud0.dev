@@ -19,10 +19,10 @@ export default function ThemeToggle() {
       <Button
         variant="ghost"
         size="icon"
-        className="rounded-full w-10 h-10 bg-background/10 backdrop-blur-md border border-border/20"
+        className="h-10 w-10 rounded-full border border-border/20 bg-background/10 backdrop-blur-md"
       >
         <span className="sr-only">Toggle theme</span>
-        <SunIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
+        <SunIcon className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all" />
       </Button>
     );
   }
@@ -34,10 +34,10 @@ export default function ThemeToggle() {
       variant="ghost"
       size="icon"
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="rounded-full w-10 h-10 bg-background/10 backdrop-blur-md border border-border/20 relative overflow-hidden"
+      className="relative h-10 w-10 overflow-hidden rounded-full border border-border/20 bg-background/10 backdrop-blur-md"
     >
       <span className="sr-only">Toggle theme</span>
-      <div className="relative z-10 w-10 h-10 flex items-center justify-center">
+      <div className="relative z-10 flex h-10 w-10 items-center justify-center">
         <motion.div
           initial={{ rotate: 0 }}
           animate={{
@@ -47,7 +47,7 @@ export default function ThemeToggle() {
           transition={{ duration: 0.5, type: "spring" }}
           className="absolute"
         >
-          <SunIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
+          <SunIcon className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all" />
         </motion.div>
         <motion.div
           initial={{ rotate: 0 }}
@@ -58,7 +58,7 @@ export default function ThemeToggle() {
           transition={{ duration: 0.5, type: "spring" }}
           className="absolute"
         >
-          <MoonIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
+          <MoonIcon className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all" />
         </motion.div>
       </div>
 

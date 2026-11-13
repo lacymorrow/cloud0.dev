@@ -1,26 +1,24 @@
 import { openai } from "@ai-sdk/openai";
-import { jsonSchema, streamText } from "ai";
+import { frontendTools } from "@assistant-ui/react-ai-sdk";
+import { convertToModelMessages, streamText, type UIMessage } from "ai";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  const { messages, system, tools } = await req.json();
+  const { messages, system, tools } = (await req.json()) as {
+    messages: UIMessage[];
+    system?: string;
+    tools?: Parameters<typeof frontendTools>[0];
+  };
 
   const result = streamText({
     model: openai("gpt-4o"),
-    messages,
+    messages: convertToModelMessages(messages),
     // forward system prompt and tools from the frontend
     system,
-    tools: Object.fromEntries(
-      Object.entries<{ parameters: unknown }>(tools).map(([name, tool]) => [
-        name,
-        {
-          parameters: jsonSchema(tool.parameters!),
-        },
-      ]),
-    ),
+    tools: frontendTools(tools ?? {}),
   });
 
-  return result.toDataStreamResponse();
+  return result.toUIMessageStreamResponse();
 }
