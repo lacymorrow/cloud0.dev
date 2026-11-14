@@ -35,24 +35,24 @@ function Tab({ file, isActive, onClick }: TabProps) {
   };
 
   return (
-    // biome-ignore lint/a11y/useSemanticElements: contains a nested close button, so it cannot be a <button>
     <div
-      className={`flex max-w-[200px] min-w-[120px] cursor-pointer items-center border-r border-[#1e1e1e] px-3 py-1 ${
+      className={`flex max-w-[200px] min-w-[120px] items-center border-r border-[#1e1e1e] ${
         isActive ? "bg-[#1e1e1e]" : "bg-[#2d2d2d] hover:bg-[#2a2a2a]"
       }`}
-      role="button"
-      tabIndex={0}
-      onClick={onClick}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onClick();
-        }
-      }}
     >
-      {getFileIcon(file.name)}
-      <span className="flex-1 truncate text-sm">{file.name}</span>
-      <button type="button" className="ml-2 opacity-50 hover:opacity-100">
+      <button
+        type="button"
+        className="flex min-w-0 flex-1 cursor-pointer items-center py-1 pl-3 text-left"
+        onClick={onClick}
+      >
+        {getFileIcon(file.name)}
+        <span className="flex-1 truncate text-sm">{file.name}</span>
+      </button>
+      <button
+        type="button"
+        aria-label={`Close ${file.name}`}
+        className="mr-3 ml-2 opacity-50 hover:opacity-100"
+      >
         <Cross2Icon className="h-3.5 w-3.5" />
       </button>
     </div>
