@@ -46,12 +46,16 @@ export const GitHubConnectButton = ({ className }: { className?: string }) => {
   const isConnected = !!githubUsername;
   const isAuthenticated = status === "authenticated";
 
-  // Prefill input with current username when opening dialog
-  useEffect(() => {
-    if (dialogOpen) {
-      setUsernameInput(githubUsername ?? "");
+  // Prefill input with current username when opening dialog (or when the username changes
+  // while it is open). Adjusted during render rather than in an effect.
+  const [prefillKey, setPrefillKey] = useState<string | null>(null);
+  const nextPrefillKey = dialogOpen ? (githubUsername ?? "") : null;
+  if (prefillKey !== nextPrefillKey) {
+    setPrefillKey(nextPrefillKey);
+    if (nextPrefillKey !== null) {
+      setUsernameInput(nextPrefillKey);
     }
-  }, [dialogOpen, githubUsername]);
+  }
 
   const handleConnect = async () => {
     if (!user?.id || !usernameInput.trim()) return;

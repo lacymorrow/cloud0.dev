@@ -1,11 +1,12 @@
 import * as React from "react";
 
+const subscribe = () => () => undefined;
+
+// `false` on the server and during hydration, `true` once mounted on the client.
 export function useMounted() {
-  const [mounted, setMounted] = React.useState(false);
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  return mounted;
+  return React.useSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false
+  );
 }

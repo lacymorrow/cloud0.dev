@@ -44,7 +44,7 @@ interface UseDocsSearchReturn {
 export function useDocsSearch(options: UseDocsSearchOptions = {}): UseDocsSearchReturn {
   const { debounceDelay = 300, minQueryLength = 2, limit = 10 } = options;
 
-  const [query, setQuery] = useState("");
+  const [query, setQueryState] = useState("");
   const [results, setResults] = useState<DocSearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -54,6 +54,22 @@ export function useDocsSearch(options: UseDocsSearchOptions = {}): UseDocsSearch
   const cacheRef = useRef(new Map<string, DocSearchResult[]>());
   const abortControllerRef = useRef<AbortController | null>(null);
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  /**
+   * Update the query. Results are reset here, in the event handler, when the new query is
+   * too short to search, rather than in an effect (react-hooks/set-state-in-effect).
+   */
+  const setQuery = useCallback(
+    (nextQuery: string) => {
+      setQueryState(nextQuery);
+      if (!(nextQuery.trim() && nextQuery.length >= minQueryLength)) {
+        setResults([]);
+        setError(null);
+        setHasSearched(false);
+      }
+    },
+    [minQueryLength]
+  );
 
   /**
    * Perform search API call
@@ -161,7 +177,7 @@ export function useDocsSearch(options: UseDocsSearchOptions = {}): UseDocsSearch
    * Clear search results and reset state
    */
   const clearResults = useCallback(() => {
-    setQuery("");
+    setQueryState("");
     setResults([]);
     setError(null);
     setHasSearched(false);
@@ -189,10 +205,6 @@ export function useDocsSearch(options: UseDocsSearchOptions = {}): UseDocsSearch
       debounceTimeoutRef.current = setTimeout(() => {
         void search(query);
       }, debounceDelay);
-    } else {
-      setResults([]);
-      setError(null);
-      setHasSearched(false);
     }
 
     return () => {
