@@ -15,9 +15,9 @@ interface ProgressProps {
 export default function Progress({ text, percentage = 0, total }: ProgressProps) {
   const showTotal = total !== undefined && !Number.isNaN(total);
   return (
-    <div className="w-full bg-gray-100 dark:bg-gray-700 text-left rounded-lg overflow-hidden mb-0.5">
+    <div className="mb-0.5 w-full overflow-hidden rounded-lg bg-gray-100 text-left dark:bg-gray-700">
       <div
-        className="bg-blue-400 whitespace-nowrap px-1 text-sm"
+        className="bg-blue-400 px-1 text-sm whitespace-nowrap"
         style={{ width: `${percentage}%` }}
       >
         {text} ({percentage.toFixed(2)}%{showTotal ? ` of ${formatBytes(total)}` : ""})

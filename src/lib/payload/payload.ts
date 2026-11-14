@@ -20,23 +20,21 @@ export const getPayloadClient = async (): Promise<Payload | null> => {
     return null;
   }
 
-  if (!payloadClientPromise) {
-    payloadClientPromise = (async () => {
-      try {
-        const [{ default: payloadConfig }, { getPayload }] = await Promise.all([
-          import("@payload-config"),
-          import("payload"),
-        ]);
+  payloadClientPromise ??= (async () => {
+    try {
+      const [{ default: payloadConfig }, { getPayload }] = await Promise.all([
+        import("@payload-config"),
+        import("payload"),
+      ]);
 
-        return await getPayload({ config: payloadConfig });
-      } catch (error) {
-        console.warn("Payload failed to initialize", error);
-        // Drop the memoized promise so a later call can retry.
-        payloadClientPromise = null;
-        return null;
-      }
-    })();
-  }
+      return await getPayload({ config: payloadConfig });
+    } catch (error) {
+      console.warn("Payload failed to initialize", error);
+      // Drop the memoized promise so a later call can retry.
+      payloadClientPromise = null;
+      return null;
+    }
+  })();
 
   return payloadClientPromise;
 };
