@@ -37,6 +37,9 @@ env:
   # tsc and eslint both exceed node's default ~2GB heap on this codebase
   # (CI OOM: SIGABRT / exit 134). Keep in sync with the build job's needs.
   NODE_OPTIONS: "--max-old-space-size=8192"
+  # onnxruntime-node 1.21 postinstall fetches a CUDA build on linux-x64 and the
+  # release asset 404s. CI has no GPU; skip it (LAC-8593).
+  ONNXRUNTIME_NODE_INSTALL_CUDA: "skip"
 
 jobs:
   typecheck:
