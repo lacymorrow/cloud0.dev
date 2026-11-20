@@ -40,37 +40,26 @@ print("Sorted array:", sorted_array)`,
     },
   ];
 
-  const activeFileContent =
-    files.find((file) => file.id === activeFile)?.content || "";
+  const activeFileContent = files.find((file) => file.id === activeFile)?.content || "";
 
   return (
-    <div className="flex flex-col h-screen bg-[#1e1e1e] text-white overflow-hidden">
+    <div className="flex h-screen flex-col overflow-hidden bg-[#1e1e1e] text-white">
       <Titlebar />
 
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
 
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <EditorTabs
-            files={files}
-            activeFile={activeFile}
-            onSelectFile={setActiveFile}
-          />
+        <div className="flex flex-1 flex-col overflow-hidden">
+          <EditorTabs files={files} activeFile={activeFile} onSelectFile={setActiveFile} />
 
-          <div className="flex-1 flex overflow-hidden">
+          <div className="flex flex-1 overflow-hidden">
             <CodePanel
               content={activeFileContent}
-              language={
-                files.find((file) => file.id === activeFile)?.language ||
-                "python"
-              }
+              language={files.find((file) => file.id === activeFile)?.language || "python"}
               fileName={activeFile}
             />
 
-            <ExplanationPanel
-              fileName={activeFile}
-              content={activeFileContent}
-            />
+            <ExplanationPanel fileName={activeFile} content={activeFileContent} />
           </div>
         </div>
       </div>

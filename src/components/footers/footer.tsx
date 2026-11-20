@@ -47,9 +47,7 @@ const defaultGroups: FooterElement[] = [
     type: "group",
     content: {
       header: { label: "Resources" },
-      items: [
-        { href: routes.auth.signIn, label: "Sign in" },
-      ],
+      items: [{ href: routes.auth.signIn, label: "Sign in" }],
     },
   },
   {

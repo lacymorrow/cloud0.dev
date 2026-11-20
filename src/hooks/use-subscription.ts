@@ -42,18 +42,20 @@ export function useSubscription(provider?: SubscriptionProvider) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const userId = session?.user?.id;
+
   // Memoize the check function to prevent unnecessary re-renders
   const checkSubscription = useCallback(async () => {
     if (status === "loading") return;
 
-    if (!session?.user?.id) {
+    if (!userId) {
       setHasActiveSubscription(false);
       setIsLoading(false);
       return;
     }
 
     // Check cache first
-    const cacheKey = `${session.user.id}-${provider ?? "all"}`;
+    const cacheKey = `${userId}-${provider ?? "all"}`;
     const cached = subscriptionCache.get(cacheKey);
     const now = Date.now();
 
@@ -99,19 +101,20 @@ export function useSubscription(provider?: SubscriptionProvider) {
       pendingSubscriptionChecks.delete(cacheKey);
       setIsLoading(false);
     }
-  }, [session?.user?.id, status, provider]); // Only depend on stable values
+  }, [userId, status, provider]); // Only depend on stable values
 
   useEffect(() => {
     // Only run if we have a stable user ID and status is not loading
-    if (status !== "loading" && session?.user?.id) {
-      checkSubscription();
-    } else if (status === "unauthenticated") {
-      // Clear state when user is not authenticated
-      setHasActiveSubscription(false);
-      setIsLoading(false);
-      setError(null);
+    if (status !== "loading" && userId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch-on-change effect: a fresh cache hit is applied synchronously on purpose so the menu does not flash a loading state
+      void checkSubscription();
     }
-  }, [session?.user?.id, status, provider, checkSubscription]);
+  }, [userId, status, checkSubscription]);
+
+  // Unauthenticated: derive the cleared state instead of setting it in an effect.
+  if (status === "unauthenticated") {
+    return { hasActiveSubscription: false, isLoading: false, error: null };
+  }
 
   return {
     hasActiveSubscription,

@@ -42,10 +42,14 @@ export function useLocalStorage<T>(
     [key]
   );
 
-  useEffect(() => {
+  // Re-read storage when `key` changes. Done during render (React's "adjust state when a
+  // prop changes" pattern) instead of in an effect, so the persist effect below never
+  // writes the previous key's value under the new key.
+  const [prevKey, setPrevKey] = useState(key);
+  if (prevKey !== key) {
+    setPrevKey(key);
     setStoredValue(readValue());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key]);
+  }
 
   useEffect(() => {
     const handleStorageChange = (event: StorageEvent) => {

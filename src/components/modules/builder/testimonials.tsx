@@ -41,6 +41,7 @@ export const Testimonials = ({ title, subtitle, testimonials }: TestimonialsProp
   React.useEffect(() => {
     if (!emblaApi) return;
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- syncs React state from the embla instance once it attaches; embla is an external system and has no earlier hook for the initial values
     onSelect(emblaApi);
     emblaApi.on("select", onSelect);
     emblaApi.on("reInit", onSelect);

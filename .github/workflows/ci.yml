@@ -121,6 +121,11 @@ jobs:
       SKIP_ENV_VALIDATION: "1"
     steps:
       - uses: actions/checkout@v7
+      - name: Generate throwaway APP_SECRET (per run, never a real secret)
+        run: |
+          secret="$(openssl rand -hex 32)"
+          echo "::add-mask::$secret"
+          echo "APP_SECRET=$secret" >> "$GITHUB_ENV"
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: ${{ env.BUN_VERSION }}
@@ -158,6 +163,11 @@ jobs:
       CI: "true"
     steps:
       - uses: actions/checkout@v7
+      - name: Generate throwaway APP_SECRET (per run, never a real secret)
+        run: |
+          secret="$(openssl rand -hex 32)"
+          echo "::add-mask::$secret"
+          echo "APP_SECRET=$secret" >> "$GITHUB_ENV"
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: ${{ env.BUN_VERSION }}

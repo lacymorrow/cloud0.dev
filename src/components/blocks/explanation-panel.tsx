@@ -1,20 +1,17 @@
 import { Clock, MessageCircle } from "lucide-react";
 import type { ExplanationPanelProps } from "./types";
 
-export default function ExplanationPanel({
-  fileName,
-  content,
-}: ExplanationPanelProps) {
+export default function ExplanationPanel({ fileName, content }: ExplanationPanelProps) {
   // Only show explanation for bubble-sort.py
   if (fileName !== "bubble-sort.py") {
     return null;
   }
 
   return (
-    <div className="w-[400px] bg-[#1e1e1e] border-l border-[#333333] overflow-y-auto">
+    <div className="w-[400px] overflow-y-auto border-l border-[#333333] bg-[#1e1e1e]">
       <div className="p-4">
-        <div className="flex items-center mb-4">
-          <div className="w-6 h-6 rounded-full bg-[#333] flex items-center justify-center mr-2">
+        <div className="mb-4 flex items-center">
+          <div className="mr-2 flex h-6 w-6 items-center justify-center rounded-full bg-[#333]">
             <svg
               viewBox="0 0 24 24"
               width="16"
@@ -32,40 +29,38 @@ export default function ExplanationPanel({
           <span className="ml-auto text-xs text-gray-400">32:55</span>
         </div>
 
-        <div className="bg-[#252526] rounded-lg p-4 mb-4">
-          <div className="font-mono text-sm mb-4">
+        <div className="mb-4 rounded-lg bg-[#252526] p-4">
+          <div className="mb-4 font-mono text-sm">
             <SyntaxHighlightedSnippet />
           </div>
 
-          <div className="text-sm text-gray-300">
-            why does this code not return a sorted list?
-          </div>
+          <div className="text-sm text-gray-300">why does this code not return a sorted list?</div>
         </div>
 
-        <div className="bg-[#252526] rounded-lg p-4 mb-4">
-          <div className="flex items-start mb-2">
-            <div className="w-6 h-6 rounded-full bg-[#333] flex items-center justify-center mr-2 mt-0.5">
-              <MessageCircle className="w-3.5 h-3.5 text-gray-300" />
+        <div className="mb-4 rounded-lg bg-[#252526] p-4">
+          <div className="mb-2 flex items-start">
+            <div className="mt-0.5 mr-2 flex h-6 w-6 items-center justify-center rounded-full bg-[#333]">
+              <MessageCircle className="h-3.5 w-3.5 text-gray-300" />
             </div>
             <div className="flex-1">
-              <p className="text-sm text-gray-300 leading-relaxed">
-                The code modifies the input list in-place but does not
-                explicitly return the sorted list.
+              <p className="text-sm leading-relaxed text-gray-300">
+                The code modifies the input list in-place but does not explicitly return the sorted
+                list.
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-[#252526] rounded-lg p-4 mb-4">
-          <div className="flex items-center justify-between mb-2">
+        <div className="mb-4 rounded-lg bg-[#252526] p-4">
+          <div className="mb-2 flex items-center justify-between">
             <div className="flex items-center">
-              <Clock className="w-4 h-4 text-gray-400 mr-2" />
+              <Clock className="mr-2 h-4 w-4 text-gray-400" />
               <span className="text-sm text-gray-300">See it in action</span>
             </div>
             <span className="text-xs text-gray-400">1 min 33 sec</span>
           </div>
-          <div className="bg-black rounded h-16 flex items-center justify-center">
-            <div className="w-8 h-8 rounded-full bg-[#333] flex items-center justify-center">
+          <div className="flex h-16 items-center justify-center rounded bg-black">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#333]">
               <svg
                 viewBox="0 0 24 24"
                 width="16"
@@ -79,15 +74,15 @@ export default function ExplanationPanel({
           </div>
         </div>
 
-        <div className="flex items-center justify-between mt-6">
-          <button className="text-sm text-blue-400 hover:underline">
+        <div className="mt-6 flex items-center justify-between">
+          <button type="button" className="text-sm text-blue-400 hover:underline">
             Add a follow-up
           </button>
           <div className="flex items-center space-x-2">
-            <button className="text-xs text-gray-400 hover:text-gray-300">
+            <button type="button" className="text-xs text-gray-400 hover:text-gray-300">
               Add context
             </button>
-            <button className="text-xs text-gray-400 hover:text-gray-300">
+            <button type="button" className="text-xs text-gray-400 hover:text-gray-300">
               Share
             </button>
           </div>
@@ -101,7 +96,7 @@ function SyntaxHighlightedSnippet() {
   return (
     <div>
       <div className="flex">
-        <div className="text-right pr-2 text-gray-500 select-none">
+        <div className="pr-2 text-right text-gray-500 select-none">
           <div>1</div>
           <div>2</div>
           <div>3</div>
@@ -118,27 +113,23 @@ function SyntaxHighlightedSnippet() {
             <span className="text-[#9CDCFE]">arr</span>):
           </div>
           <div>
-            &nbsp;&nbsp;&nbsp;&nbsp;n ={" "}
-            <span className="text-[#DCDCAA]">len</span>(
+            &nbsp;&nbsp;&nbsp;&nbsp;n = <span className="text-[#DCDCAA]">len</span>(
             <span className="text-[#9CDCFE]">arr</span>)
           </div>
           <div>&nbsp;&nbsp;&nbsp;&nbsp;</div>
           <div>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-[#C586C0]">for</span>{" "}
-            i <span className="text-[#C586C0]">in</span>{" "}
-            <span className="text-[#DCDCAA]">range</span>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-[#C586C0]">for</span> i{" "}
+            <span className="text-[#C586C0]">in</span> <span className="text-[#DCDCAA]">range</span>
             (n - 1):
           </div>
           <div>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <span className="text-[#C586C0]">for</span> j{" "}
-            <span className="text-[#C586C0]">in</span>{" "}
+            <span className="text-[#C586C0]">for</span> j <span className="text-[#C586C0]">in</span>{" "}
             <span className="text-[#DCDCAA]">range</span>(n - i - 1):
           </div>
           <div>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <span className="text-[#C586C0]">if</span>{" "}
-            <span className="text-[#9CDCFE]">arr</span>
+            <span className="text-[#C586C0]">if</span> <span className="text-[#9CDCFE]">arr</span>
             [j] &gt; <span className="text-[#9CDCFE]">arr</span>[j + 1]:
           </div>
           <div>

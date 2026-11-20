@@ -282,11 +282,7 @@ export const siteConfig: SiteConfig = {
   },
 
   metadata: {
-    keywords: [
-      "cloud0",
-      "AI chat",
-      "AI assistant",
-    ],
+    keywords: ["cloud0", "AI chat", "AI assistant"],
     themeColor: {
       light: "white",
       dark: "black",

@@ -16,6 +16,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { type FontCategory, GOOGLE_FONTS } from "@/config/fonts";
 import { env } from "@/env";
+import { useMounted } from "@/hooks/use-mounted";
 import { cn } from "@/lib/utils";
 
 interface FontWithCategory {
@@ -68,7 +69,7 @@ export function FontSelector() {
   const [browseError, setBrowseError] = React.useState<string | null>(null);
 
   const [isCuratedList, setIsCuratedList] = React.useState(false);
-  const [mounted, setMounted] = React.useState(false);
+  const mounted = useMounted();
 
   // Apply font globally: injects a <style> tag that forces font-family on all elements.
   // This bypasses next/font scoped class names, Tailwind utilities, and CSS variable
@@ -122,7 +123,6 @@ export function FontSelector() {
 
   // Fetch initial data
   React.useEffect(() => {
-    setMounted(true);
     const fetchInitialData = async () => {
       setInitialLoading(true);
       setInitialError(null);
@@ -164,11 +164,13 @@ export function FontSelector() {
       const fontParts = currentStyle.split(",");
       const firstFont = fontParts[0]?.trim().replace(/['"]/g, "");
       if (firstFont && fontCategories.has(firstFont)) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- one-shot seed (guarded by !selectedFont) from document.body, an external DOM source that is only readable after mount
         setSelectedFont(firstFont);
         return;
       }
     }
     const defaultFont = GOOGLE_FONTS.find((f) => f.family === "Inter")?.family ?? "";
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- same one-shot seed as above
     setSelectedFont(defaultFont);
   }, [mounted, initialLoading, fontCategories]);
 
@@ -201,7 +203,6 @@ export function FontSelector() {
   // Search effect
   React.useEffect(() => {
     if (!debouncedSearchQuery) {
-      setSearchResults([]);
       return;
     }
     const searchFonts = async () => {
@@ -239,6 +240,9 @@ export function FontSelector() {
 
   if (!fontSelectorEnabled) return null;
   if (!mounted) return null;
+
+  // An empty search query shows no search results (derived, not reset in an effect).
+  const visibleSearchResults = debouncedSearchQuery ? searchResults : [];
 
   const handleSelectFont = (currentValue: string) => {
     const newFont = currentValue === selectedFont ? "" : currentValue;
@@ -310,13 +314,13 @@ export function FontSelector() {
                       Error: {searchError}
                     </div>
                   )}
-                  {!searchLoading && !searchError && searchResults.length === 0 && (
+                  {!searchLoading && !searchError && visibleSearchResults.length === 0 && (
                     <CommandEmpty>No results for &quot;{searchQuery}&quot;.</CommandEmpty>
                   )}
                   {!searchLoading &&
                     !searchError &&
-                    searchResults.length > 0 &&
-                    searchResults.map((font) => (
+                    visibleSearchResults.length > 0 &&
+                    visibleSearchResults.map((font) => (
                       <CommandItem
                         key={`search-${font.family}`}
                         value={font.family}

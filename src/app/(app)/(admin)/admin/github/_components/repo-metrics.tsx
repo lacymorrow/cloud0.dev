@@ -36,39 +36,27 @@ export function RepoMetricsSkeleton() {
   );
 }
 
-export async function RepoMetricsContent() {
+type RepoMetricsResult =
+  | { status: "unavailable" }
+  | { status: "error"; message: string }
+  | {
+      status: "ok";
+      prCount: number;
+      commitCount: number;
+      branchCount: number;
+      daysSinceLastCommit: number;
+    };
+
+// Data fetching lives outside the component so JSX is never built inside try/catch
+// (react-hooks/error-boundaries). Errors are returned as data and rendered below.
+async function loadRepoMetrics(): Promise<RepoMetricsResult> {
   const repoOwner = siteConfig.repo.owner;
   const repoName = siteConfig.repo.name;
 
   try {
     // Check if octokit is available
     if (!octokit) {
-      return (
-        <div className="grid gap-4 md:grid-cols-1">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <AlertCircle className="h-5 w-5 text-amber-500" />
-                GitHub API Unavailable
-              </CardTitle>
-              <CardDescription>
-                GitHub API client is not configured. Repository metrics cannot be displayed.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">To enable GitHub repository metrics:</p>
-              <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-muted-foreground">
-                <li>
-                  Set <code>NEXT_PUBLIC_FEATURE_GITHUB_API_ENABLED=true</code>
-                </li>
-                <li>
-                  Configure <code>GITHUB_ACCESS_TOKEN</code> in your environment
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
-      );
+      return { status: "unavailable" };
     }
 
     // Get pull requests count
@@ -103,56 +91,53 @@ export async function RepoMetricsContent() {
       (Date.now() - lastCommitDate.getTime()) / (1000 * 60 * 60 * 24)
     );
 
-    const metrics: RepoMetric[] = [
-      {
-        id: "pull-requests",
-        title: "Pull Requests",
-        value: prCount,
-        icon: <GitPullRequest className="h-4 w-4 text-blue-500" />,
-        description: "Total pull requests",
-      },
-      {
-        id: "recent-commits",
-        title: "Recent Commits",
-        value: commits.length,
-        icon: <GitCommit className="h-4 w-4 text-green-500" />,
-        description: "Last 30 commits",
-      },
-      {
-        id: "branches",
-        title: "Branches",
-        value: branches.length,
-        icon: <GitMerge className="h-4 w-4 text-purple-500" />,
-        description: "Active branches",
-      },
-      {
-        id: "last-activity",
-        title: "Last Activity",
-        value: daysSinceLastCommit === 0 ? "Today" : `${daysSinceLastCommit} days ago`,
-        icon: <Clock className="h-4 w-4 text-amber-500" />,
-        description: "Since last commit",
-      },
-    ];
-
-    return (
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {metrics.map((metric) => (
-          <Card className="gap-0 py-0" key={metric.id}>
-            <CardHeader className="flex flex-row items-center justify-between gap-y-0 p-6 pb-2">
-              <CardTitle className="text-sm font-medium">{metric.title}</CardTitle>
-              {metric.icon}
-            </CardHeader>
-            <CardContent className="p-6 pt-0">
-              <div className="text-2xl font-bold">{metric.value}</div>
-              <p className="text-xs text-muted-foreground">{metric.description}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    );
+    return {
+      status: "ok",
+      prCount,
+      commitCount: commits.length,
+      branchCount: branches.length,
+      daysSinceLastCommit,
+    };
   } catch (error) {
     console.error("Error fetching repo metrics:", error);
-    const message = error instanceof Error ? error.message : String(error);
+    return { status: "error", message: error instanceof Error ? error.message : String(error) };
+  }
+}
+
+export async function RepoMetricsContent() {
+  const result = await loadRepoMetrics();
+
+  if (result.status === "unavailable") {
+    return (
+      <div className="grid gap-4 md:grid-cols-1">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-amber-500" />
+              GitHub API Unavailable
+            </CardTitle>
+            <CardDescription>
+              GitHub API client is not configured. Repository metrics cannot be displayed.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">To enable GitHub repository metrics:</p>
+            <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-muted-foreground">
+              <li>
+                Set <code>NEXT_PUBLIC_FEATURE_GITHUB_API_ENABLED=true</code>
+              </li>
+              <li>
+                Configure <code>GITHUB_ACCESS_TOKEN</code> in your environment
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (result.status === "error") {
+    const message = result.message;
     const isBadCredentials =
       message.toLowerCase().includes("bad credentials") || message.includes("401");
     return (
@@ -187,6 +172,55 @@ export async function RepoMetricsContent() {
       </div>
     );
   }
+
+  const { prCount, commitCount, branchCount, daysSinceLastCommit } = result;
+  const metrics: RepoMetric[] = [
+    {
+      id: "pull-requests",
+      title: "Pull Requests",
+      value: prCount,
+      icon: <GitPullRequest className="h-4 w-4 text-blue-500" />,
+      description: "Total pull requests",
+    },
+    {
+      id: "recent-commits",
+      title: "Recent Commits",
+      value: commitCount,
+      icon: <GitCommit className="h-4 w-4 text-green-500" />,
+      description: "Last 30 commits",
+    },
+    {
+      id: "branches",
+      title: "Branches",
+      value: branchCount,
+      icon: <GitMerge className="h-4 w-4 text-purple-500" />,
+      description: "Active branches",
+    },
+    {
+      id: "last-activity",
+      title: "Last Activity",
+      value: daysSinceLastCommit === 0 ? "Today" : `${daysSinceLastCommit} days ago`,
+      icon: <Clock className="h-4 w-4 text-amber-500" />,
+      description: "Since last commit",
+    },
+  ];
+
+  return (
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {metrics.map((metric) => (
+        <Card className="gap-0 py-0" key={metric.id}>
+          <CardHeader className="flex flex-row items-center justify-between gap-y-0 p-6 pb-2">
+            <CardTitle className="text-sm font-medium">{metric.title}</CardTitle>
+            {metric.icon}
+          </CardHeader>
+          <CardContent className="p-6 pt-0">
+            <div className="text-2xl font-bold">{metric.value}</div>
+            <p className="text-xs text-muted-foreground">{metric.description}</p>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
 }
 
 export default function RepoMetrics({ className }: RepoMetricsProps) {

@@ -19,7 +19,7 @@ export type AuthStrategy = "clerk" | "stack" | "authjs" | "better-auth" | "guest
 function configuredStrategy(): AuthStrategy | undefined {
   const isServer = typeof window === "undefined";
   const configured = env.NEXT_PUBLIC_AUTH_STRATEGY ?? (isServer ? env.AUTH_STRATEGY : undefined);
-  return configured as AuthStrategy | undefined;
+  return configured;
 }
 
 /**

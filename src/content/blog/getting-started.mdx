@@ -34,6 +34,7 @@ Start now, immediately, and add features as you need:
 ### Modern Technology Stack
 
 Shipkit is built with the latest tech:
+
 - **Next.js 15 App Router** - battle-tested with 10k+ pageviews/month
 - **Authentication with AuthJS v5** - Supports 92(!) authentication providers
 - **Content Management** (Payload & Builder) - Manage your content without code
@@ -48,11 +49,13 @@ Shipkit is built with the latest tech:
 ### Developer Experience
 
 #### Code Quality
+
 - TypeScript-first development
 - Comprehensive ESLint and Prettier configuration
 - Pre-commit hooks for code quality
 
 #### Testing & Deployment
+
 - Automated testing pipelines
 - One-click Vercel deployment
 - Environment management
@@ -64,11 +67,13 @@ Shipkit is built with the latest tech:
 While Shipkit is fast out of the box, we're continuously working on:
 
 #### Bundle Size
+
 - Tree-shaking improvements
 - Dynamic imports optimization
 - Asset optimization
 
 #### Runtime Performance
+
 - Server-side rendering enhancements
 - Client-side hydration optimization
 - Database query optimization
@@ -76,6 +81,7 @@ While Shipkit is fast out of the box, we're continuously working on:
 ### Feature Completeness
 
 #### Upcoming Features
+
 - Advanced analytics dashboard
 - Multi-tenant architecture
 - Advanced AI integrations
@@ -89,6 +95,7 @@ The frontend is built with modern React patterns and Next.js best practices.
 ![Component Architecture](https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&h=300&fit=crop&crop=center)
 
 #### Component Structure
+
 - Atomic design principles
 - Reusable component library
 - Consistent design system
@@ -96,11 +103,13 @@ The frontend is built with modern React patterns and Next.js best practices.
 ### Backend Services
 
 #### Authentication Flow
+
 - NextAuth.js integration
 - Multiple provider support
 - Session management
 
 #### Data Management
+
 - Type-safe database queries
 - Migration management
 - Backup strategies
@@ -110,6 +119,7 @@ The frontend is built with modern React patterns and Next.js best practices.
 Shipkit represents our commitment to developer productivity. While we're proud of what we've built, we're even more excited about what's coming next.
 
 ### Features Under Active Development:
+
 - Mobile responsiveness (currently at 85% Lighthouse score)
 - Documentation (contributions welcome!)
 - Analytics uses PostHog, Vercel Analytics, and Google Analytics
@@ -118,6 +128,7 @@ Shipkit represents our commitment to developer productivity. While we're proud o
 ## Hard-Earned Lessons
 
 ### 3 Things We Wish We Knew Sooner:
+
 1. Start with TypeScript strict mode (our migration took 3 painful weeks!)
 2. Use Drizzle ORM instead of raw SQL queries for optimization and type safety
 3. Implement error tracking early (we're building our own logging platform, Ship Log)
@@ -146,6 +157,7 @@ bun install --frozen-lockfile
 ## Join Our Journey
 
 We're building in public and would love your input:
+
 - Weekly progress updates
 - Open roadmap
 - Developer Q&A sessions
@@ -158,12 +170,12 @@ Here's our actual auth configuration (src/server/auth.config.ts):
 
 ```typescript
 export const authOptions: NextAuthConfig = {
-	debug: process.env.NODE_ENV !== "production",
-	providers,
-	pages: {
-		error: routes.auth.error,
-		signIn: routes.auth.signIn,
-		signOut: routes.auth.signOut,
-	},
-}
+  debug: process.env.NODE_ENV !== "production",
+  providers,
+  pages: {
+    error: routes.auth.error,
+    signIn: routes.auth.signIn,
+    signOut: routes.auth.signOut,
+  },
+};
 ```

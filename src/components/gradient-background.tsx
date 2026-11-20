@@ -125,7 +125,7 @@ export default function GradientBackground() {
       />
       <canvas
         ref={canvasRef}
-        className="fixed inset-0 w-full h-full -z-10"
+        className="fixed inset-0 -z-10 h-full w-full"
         style={{ opacity: 1 }}
       />
     </>

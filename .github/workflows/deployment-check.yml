@@ -16,6 +16,11 @@ name: Deployment Check
 on:
   deployment_status:
 
+# The "Report check result" step posts a commit status; the default
+# GITHUB_TOKEN in this repo is read-only, so grant it explicitly.
+permissions:
+  statuses: write
+
 jobs:
   smoke-test:
     # Only run when the deployment is ready (not pending/failed)

@@ -56,7 +56,6 @@ test.describe("auth gate", () => {
     await page.goto("/dashboard");
     await expect(page).toHaveURL(/\/sign-in/, { timeout: 15_000 });
   });
-
 });
 
 test.describe("error contract", () => {

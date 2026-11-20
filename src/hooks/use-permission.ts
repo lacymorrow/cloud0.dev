@@ -38,10 +38,11 @@ export const usePermission = ({ resource, action, context }: UsePermissionOption
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
+  const userId = session?.user?.id;
+
   const checkPermission = useCallback(async () => {
-    if (!session?.user?.id) {
-      setHasPermission(false);
-      setIsLoading(false);
+    // No session: nothing to check. Values are derived below instead of set here.
+    if (!userId) {
       return;
     }
 
@@ -69,19 +70,21 @@ export const usePermission = ({ resource, action, context }: UsePermissionOption
     } finally {
       setIsLoading(false);
     }
-  }, [session?.user?.id, resource, action, context]);
+  }, [userId, resource, action, context]);
 
   useEffect(() => {
     if (status === "loading") {
       return;
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch-on-change effect: checkPermission clears the previous error before refetching, and only runs when a user session exists
     void checkPermission();
   }, [status, checkPermission]);
 
   return {
-    hasPermission,
-    isLoading,
+    hasPermission: userId ? hasPermission : false,
+    // Without a session there is no check to wait for, once the session itself has loaded.
+    isLoading: userId ? isLoading : status === "loading",
     error,
     refresh: checkPermission,
   };
