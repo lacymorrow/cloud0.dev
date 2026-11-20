@@ -58,6 +58,8 @@ export function FontSelector() {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [debouncedSearchQuery] = useDebounce(searchQuery, DEBOUNCE_DELAY);
   const [searchResults, setSearchResults] = React.useState<FontWithCategory[]>([]);
+  // The query the current searchResults/searchError answer. Results for any other query are stale.
+  const [resolvedQuery, setResolvedQuery] = React.useState("");
   const [searchLoading, setSearchLoading] = React.useState(false);
   const [searchError, setSearchError] = React.useState<string | null>(null);
 
@@ -219,11 +221,13 @@ export function FontSelector() {
         const data: FontsApiResponse = await response.json();
         const fonts = data.fonts || [];
         setSearchResults(fonts);
+        setResolvedQuery(debouncedSearchQuery);
         registerCategories(fonts);
       } catch (e: unknown) {
         console.error("Failed to search fonts:", e);
         setSearchError(e instanceof Error ? e.message : "Failed to search fonts");
         setSearchResults([]);
+        setResolvedQuery(debouncedSearchQuery);
       } finally {
         setSearchLoading(false);
       }
@@ -241,8 +245,11 @@ export function FontSelector() {
   if (!fontSelectorEnabled) return null;
   if (!mounted) return null;
 
-  // An empty search query shows no search results (derived, not reset in an effect).
-  const visibleSearchResults = debouncedSearchQuery ? searchResults : [];
+  // Results only show for the query they answered, so a new query never flashes the old list.
+  const searchCurrent = debouncedSearchQuery !== "" && resolvedQuery === debouncedSearchQuery;
+  const searchPending = debouncedSearchQuery !== "" && !searchCurrent;
+  const visibleSearchResults = searchCurrent ? searchResults : [];
+  const showSearchLoading = searchLoading || searchPending;
 
   const handleSelectFont = (currentValue: string) => {
     const newFont = currentValue === selectedFont ? "" : currentValue;
@@ -304,20 +311,20 @@ export function FontSelector() {
             <CommandList>
               {searchQuery ? (
                 <CommandGroup heading="Search Results">
-                  {searchLoading && (
+                  {showSearchLoading && (
                     <div className="flex items-center justify-center p-2 text-sm text-muted-foreground">
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Searching...
                     </div>
                   )}
-                  {!searchLoading && searchError && (
+                  {!showSearchLoading && searchCurrent && searchError && (
                     <div className="p-2 text-center text-xs text-destructive">
                       Error: {searchError}
                     </div>
                   )}
-                  {!searchLoading && !searchError && visibleSearchResults.length === 0 && (
+                  {!showSearchLoading && !searchError && visibleSearchResults.length === 0 && (
                     <CommandEmpty>No results for &quot;{searchQuery}&quot;.</CommandEmpty>
                   )}
-                  {!searchLoading &&
+                  {!showSearchLoading &&
                     !searchError &&
                     visibleSearchResults.length > 0 &&
                     visibleSearchResults.map((font) => (
