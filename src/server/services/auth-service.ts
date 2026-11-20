@@ -376,12 +376,12 @@ export const AuthService = {
       }
 
       // Handle non-redirect flow by evaluating the signIn result
-      const result = (await signIn("credentials", {
+      const result = await signIn("credentials", {
         email,
         password,
         redirect: false,
         callbackUrl: redirectTo,
-      })) as any;
+      });
 
       if (!result || result.ok === false) {
         return { ok: false, error: result?.error ?? STATUS_CODES.CREDENTIALS.message };
@@ -482,12 +482,12 @@ export const AuthService = {
       }
 
       // Non-redirect flow: evaluate the result
-      const result = (await signIn("credentials", {
+      const result = await signIn("credentials", {
         email,
         password,
         redirect: false,
         callbackUrl: redirectTo,
-      })) as any;
+      });
 
       if (!result || result.ok === false) {
         return { ok: false, error: result?.error ?? "Sign-up failed" };

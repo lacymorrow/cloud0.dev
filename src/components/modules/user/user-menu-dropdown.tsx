@@ -111,7 +111,6 @@ export function UserMenuDropdown({
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
 
-
         <DropdownMenuGroup>
           {isAdmin && (
             <DropdownMenuItem asChild>

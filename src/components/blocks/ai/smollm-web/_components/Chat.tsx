@@ -27,7 +27,7 @@ export default function Chat({ messages }: ChatProps) {
 
   return (
     <div
-      className={`flex-1 p-6 max-w-[960px] w-full ${empty ? "flex flex-col items-center justify-end" : "space-y-4"}`}
+      className={`w-full max-w-[960px] flex-1 p-6 ${empty ? "flex flex-col items-center justify-end" : "space-y-4"}`}
     >
       {empty ? (
         <div className="text-xl">Ready!</div>
@@ -37,9 +37,9 @@ export default function Chat({ messages }: ChatProps) {
           <div key={`message-${i}`} className="flex items-start space-x-4">
             {msg.role === "assistant" ? (
               <>
-                <BotIcon className="h-6 w-6 min-h-6 min-w-6 my-3 text-gray-500 dark:text-gray-300" />
-                <div className="bg-gray-200 dark:bg-gray-700 rounded-lg p-4">
-                  <p className="min-h-6 text-gray-800 dark:text-gray-200 overflow-wrap-anywhere">
+                <BotIcon className="my-3 h-6 min-h-6 w-6 min-w-6 text-gray-500 dark:text-gray-300" />
+                <div className="rounded-lg bg-gray-200 p-4 dark:bg-gray-700">
+                  <p className="overflow-wrap-anywhere min-h-6 text-gray-800 dark:text-gray-200">
                     {msg.content.length > 0 ? (
                       <span
                         className="markdown"
@@ -49,10 +49,10 @@ export default function Chat({ messages }: ChatProps) {
                         }}
                       />
                     ) : (
-                      <span className="h-6 flex items-center gap-1">
-                        <span className="w-2.5 h-2.5 bg-gray-600 dark:bg-gray-300 rounded-full animate-pulse" />
-                        <span className="w-2.5 h-2.5 bg-gray-600 dark:bg-gray-300 rounded-full animate-pulse animation-delay-200" />
-                        <span className="w-2.5 h-2.5 bg-gray-600 dark:bg-gray-300 rounded-full animate-pulse animation-delay-400" />
+                      <span className="flex h-6 items-center gap-1">
+                        <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-gray-600 dark:bg-gray-300" />
+                        <span className="animation-delay-200 h-2.5 w-2.5 animate-pulse rounded-full bg-gray-600 dark:bg-gray-300" />
+                        <span className="animation-delay-400 h-2.5 w-2.5 animate-pulse rounded-full bg-gray-600 dark:bg-gray-300" />
                       </span>
                     )}
                   </p>
@@ -60,9 +60,9 @@ export default function Chat({ messages }: ChatProps) {
               </>
             ) : (
               <>
-                <UserIcon className="h-6 w-6 min-h-6 min-w-6 my-3 text-gray-500 dark:text-gray-300" />
-                <div className="bg-blue-500 text-white rounded-lg p-4">
-                  <p className="min-h-6 overflow-wrap-anywhere">{msg.content}</p>
+                <UserIcon className="my-3 h-6 min-h-6 w-6 min-w-6 text-gray-500 dark:text-gray-300" />
+                <div className="rounded-lg bg-blue-500 p-4 text-white">
+                  <p className="overflow-wrap-anywhere min-h-6">{msg.content}</p>
                 </div>
               </>
             )}

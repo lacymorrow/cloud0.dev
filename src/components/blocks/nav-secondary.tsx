@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  type LucideIcon,
-  PanelLeftClose,
-  PanelLeftOpen,
-  Send,
-  Settings,
-} from "lucide-react";
+import { type LucideIcon, PanelLeftClose, PanelLeftOpen, Send, Settings } from "lucide-react";
 import type React from "react";
 import { FeedbackDialog } from "@/components/forms/feedback-dialog";
 import { Link } from "@/components/primitives/link";

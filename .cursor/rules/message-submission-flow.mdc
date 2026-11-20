@@ -35,7 +35,7 @@ This guide explains how messages are submitted and handled within the chat inter
 2.  **Input and Send**: Users type into the `ComposerPrimitive.Input` within the `Thread`.
     -   Clicking the send button (`ComposerPrimitive.Send`) or pressing Enter triggers message submission.
 
-3.  **Backend Communication**: The `assistant-ui` library, through the `AssistantRuntimeProvider` and the configured API endpoint (e.g., `/api/chat`), handles the actual sending of the message to the backend and receiving responses.
+3.  **Backend Communication**: The `assistant-ui` library, through the `AssistantRuntimeProvider` and the configured API endpoint (`/chat`), handles the actual sending of the message to the backend and receiving responses.
 
 4.  **Message Display**: New messages (both user and assistant) are automatically added to the `ThreadPrimitive.Messages` display area within the `Thread` component.
 
